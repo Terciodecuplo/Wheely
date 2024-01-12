@@ -4,7 +4,11 @@
 
 Wheely is an app that takes your rides to the next level. Wheely allows you to track your routes, share your experiences and metrics with the community and discover new friends to take your rides to a new level.
 
-### Features
+### Current Features
+
+- *In development...*
+  
+### Future Features
 
 - **Route recording:** Record and revisit your routes, printed on a map.
 - **Performance metrics:** Keep track of your speed, distance and duration of your rides.
