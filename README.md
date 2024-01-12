@@ -38,7 +38,7 @@ Wheely is an app that takes your rides to the next level. Wheely allows you to t
 
 - *Type of license.*
 
-## Mandatory GIF
+## Mandatory Meme
 
 ![sesame-street-workout-gif-by-muppet-wiki](https://github.com/Terciodecuplo/Wheely/assets/112321922/50066773-e33a-4bfe-8f80-8c684f67f022)
 
