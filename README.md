@@ -32,7 +32,7 @@ Wheely is an app that takes your rides to the next level. Wheely allows you to t
 ## Roadmap
 
 - *Future plans and features for Wheely.*
-- *Know bugs or problems already unfixed.*
+- *Known bugs or problems already unfixed.*
 
 ## Contributors
 
