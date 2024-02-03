@@ -1,3 +1,14 @@
 package com.jmblfma.wheely.model
 
-data class Track(val trackName:String?){}
+import java.util.Date
+
+data class Track(
+    val trackId: Int,
+    val trackName:String,
+    val trackPlace: String,
+    //map??
+    val trackPartners: User,
+    val trackDifficulty: String,
+    val trackRating: Long,
+    val trackDate: Date
+    ){}
