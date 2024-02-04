@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
 import com.jmblfma.wheely.model.Post
-import java.time.LocalDate
 
 class HomePageActivity : AppCompatActivity() {
     private lateinit var binding: HomePageBinding

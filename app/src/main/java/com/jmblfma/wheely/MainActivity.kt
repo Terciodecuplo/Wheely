@@ -1,8 +1,8 @@
 package com.jmblfma.wheely
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.jmblfma.wheely.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -12,8 +12,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.loginButton.setOnClickListener{
-            val intent = Intent(applicationContext,HomePageActivity::class.java)
+        binding.loginButton.setOnClickListener {
+            val intent = Intent(applicationContext, HomePageActivity::class.java)
             this.startActivity(intent)
         }
     }
