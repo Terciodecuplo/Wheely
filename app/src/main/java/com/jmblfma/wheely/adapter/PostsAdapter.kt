@@ -44,7 +44,7 @@ class PostsAdapter(val postList: ArrayList<Post>, var context: Context) :
         var post = postList[position]
         holder.userProfileImage.setImageResource(R.drawable.user_default_pic)
         holder.userName.text = post.userName
-        holder.trackInfo.text = post.postDate.toString()
+        holder.trackInfo.text = post.postDate
         holder.trackTitle.text = post.trackDescription
         holder.trackPreview.setImageResource(R.drawable.route_example)
     }
