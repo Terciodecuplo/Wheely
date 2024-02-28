@@ -1,12 +1,12 @@
 package com.jmblfma.wheely.model
 
-import java.time.LocalDate
+import java.util.Date
 
 data class Post(
-    val postId: Int,
+    val postId:Int,
     val userName: String,
     val userSurname: String,
     val trackPlace: String,
     val trackDescription: String,
-    val postDate: String
-) {}
+    val postDate: Date
+    ){}
