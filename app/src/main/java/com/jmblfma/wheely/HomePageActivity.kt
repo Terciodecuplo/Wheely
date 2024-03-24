@@ -1,5 +1,6 @@
 package com.jmblfma.wheely
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +31,16 @@ class HomePageActivity : AppCompatActivity() {
         binding.postRecycler.adapter = postsAdapter
         binding.postRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        binding.iconProfile.setOnClickListener {
+            openProfileScreen()
+        }
     }
+
+    private fun openProfileScreen() {
+        val intent = Intent(this, ProfilePageActivity::class.java)
+        startActivity(intent)
+    }
+
 
 }
