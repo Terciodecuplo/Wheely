@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
 import com.jmblfma.wheely.model.Post
@@ -32,9 +35,30 @@ class HomePageActivity : AppCompatActivity() {
         binding.postRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        binding.iconProfile.setOnClickListener {
-            openProfileScreen()
+        val bottomNavigationMenu = findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigationMenu.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_posts -> {
+                    startActivity((Intent(this, HomePageActivity::class.java)))
+                    true
+                }
+
+                R.id.nav_record -> {
+                    Snackbar.make(bottomNavigationMenu, "Not available yet", Snackbar.LENGTH_SHORT)
+                        .show()
+                    true
+                }
+
+                R.id.nav_profile -> {
+                    startActivity((Intent(this, ProfilePageActivity::class.java)))
+                    true
+                }
+
+                else -> false
+            }
         }
+
+
     }
 
     private fun openProfileScreen() {
