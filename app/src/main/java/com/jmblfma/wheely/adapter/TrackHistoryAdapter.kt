@@ -16,11 +16,12 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
     class MyHolder(item: View) : RecyclerView.ViewHolder(item) {
         var trackTitle: TextView
         var trackLocation: TextView
-        var trackDate: ImageView
-        var trackDuration: ImageView
-        var trackDistance: ImageView
-        var trackAvgSpeed: ImageView
-        var trackVehicle: ImageView
+        var trackDate: TextView
+        var trackDuration: TextView
+        var trackDistance: TextView
+        var trackAvgSpeed: TextView
+        var trackVehicle: TextView
+        var trackPreview: ImageView
 
 
         init {
@@ -31,6 +32,7 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
             trackDistance = item.findViewById(R.id.distance_text)
             trackAvgSpeed = item.findViewById(R.id.avgSpeed_text)
             trackVehicle = item.findViewById(R.id.vehicle_text)
+            trackPreview = item.findViewById(R.id.trackPreview_image)
         }
     }
 
@@ -45,8 +47,10 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        var post = trackHistoryList[position]
-        holder.trackTitle.text = post.
+        var history = trackHistoryList[position]
+        holder.trackTitle.text = history.name
+        holder.trackLocation.text = history.generalLocation
+        holder.trackDate =
         holder.trackPreview.setImageResource(R.drawable.route_example)
     }
 }
