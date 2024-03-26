@@ -44,6 +44,7 @@ class HomePageActivity : NavigationMenuActivity() {
         return R.id.nav_posts // Return the ID of the bottom navigation menu item for HomePageActivity
     }
 
+    // This is just an example Data. It will be removed in the future.
     @RequiresApi(Build.VERSION_CODES.O)
     fun createDemoData() : Post{
         val user = User(
@@ -57,7 +58,6 @@ class HomePageActivity : NavigationMenuActivity() {
             ownedVehicles = arrayListOf()
         )
 
-        // Step 2: Create Vehicle instance
         val vehicle = Vehicle(
             vehicleId = 1,
             owner = user,
