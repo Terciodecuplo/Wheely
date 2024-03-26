@@ -27,11 +27,11 @@ class HomePageActivity : NavigationMenuActivity() {
         setContentView(binding.root)
 
         postList = ArrayList()
-        postList.add(createDemoData())
-        postList.add(createDemoData())
-        postList.add(createDemoData())
-        postList.add(createDemoData())
-        postList.add(createDemoData())
+        postList.add(exampleData())
+        postList.add(exampleData())
+        postList.add(exampleData())
+        postList.add(exampleData())
+        postList.add(exampleData())
 
         postsAdapter = PostsAdapter(postList, this)
         binding.postRecycler.adapter = postsAdapter
@@ -46,12 +46,12 @@ class HomePageActivity : NavigationMenuActivity() {
 
     // This is just an example Data. It will be removed in the future.
     @RequiresApi(Build.VERSION_CODES.O)
-    fun createDemoData() : Post{
+    fun exampleData() : Post{
         val user = User(
             userId = 1,
-            name = "Jose Garcia",
+            name = "MoToreto",
             firstName = "Jose",
-            lastName = "Garcia",
+            lastName = "Murcia",
             email = "jose@example.com",
             dateOfBirth = "1990-01-01",
             drivenTracks = arrayListOf(),
@@ -61,10 +61,10 @@ class HomePageActivity : NavigationMenuActivity() {
         val vehicle = Vehicle(
             vehicleId = 1,
             owner = user,
-            name = "Speedster",
-            brand = "FastCars",
-            model = "X200",
-            year = "2020",
+            name = "Triciclo",
+            brand = "Yamaha",
+            model = "Mt07",
+            year = "2017",
             horsepower = 500,
             dateAdded = ZonedDateTime.now()
         )
@@ -77,7 +77,7 @@ class HomePageActivity : NavigationMenuActivity() {
             elapsedTime = 3600.0,
             maxSpeed = 150.0,
             averageSpeed = 100.0,
-            distanceTraveled = 100.0,
+            distanceTraveled = 323.0,
             maxInclination = 10.0,
             averageInclination = 5.0,
             maxAltitude = 200.0,

@@ -35,7 +35,7 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
             trackDuration = item.findViewById(R.id.duration_text)
             trackDistance = item.findViewById(R.id.distance_text)
             trackAvgSpeed = item.findViewById(R.id.avgSpeed_text)
-            trackVehicle = item.findViewById(R.id.vehicle_text)
+            trackVehicle = item.findViewById(R.id.vehicleName_text)
             trackPreview = item.findViewById(R.id.trackPreview_image)
         }
     }
