@@ -2,11 +2,13 @@ package com.jmblfma.wheely.model
 
 data class User(
     val userId: Int,
-    val userName:String,
-    val userSurname:String,
-    val userEmail:String,
-    val userBirthday:String,
-    val trackIds:MutableList<Track>
+    val name:String,
+    val firstName:String,
+    val lastName: String,
+    val email:String,
+    val dateOfBirth:String,
+    val drivenTracks: ArrayList<Track>,
+    val ownedVehicles: ArrayList<Vehicle>
 ){
 
 }

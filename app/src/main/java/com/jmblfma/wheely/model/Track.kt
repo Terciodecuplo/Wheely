@@ -1,14 +1,15 @@
 package com.jmblfma.wheely.model
 
-import java.util.Date
+import java.time.ZonedDateTime
 
 data class Track(
     val trackId: Int,
-    val trackName:String,
-    val trackPlace: String,
-    //map??
-    val trackPartners: User,
+    val drivenBy: User,
+    val vehicleUsed: Vehicle,
+    val name: String,
+    val generalLocation: String,
+    val creationDate: ZonedDateTime,
+    val trackData: ArrayList<PointData>,
     val trackDifficulty: String,
-    val trackRating: Long,
-    val trackDate: Date
-    ){}
+    val trackSummary: DataSummary
+) {}

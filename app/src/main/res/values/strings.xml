@@ -4,5 +4,7 @@
     <string name="nav_posts">Posts</string>
     <string name="nav_record">Record</string>
     <string name="nav_profile">Profile</string>
+    <string name="vehicle_display_format">%1$s %2$s</string>
+
 
 </resources>
