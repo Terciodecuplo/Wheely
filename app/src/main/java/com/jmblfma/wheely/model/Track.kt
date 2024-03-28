@@ -9,7 +9,7 @@ data class Track(
     val name: String,
     val generalLocation: String,
     val creationDate: ZonedDateTime,
-    val trackData: ArrayList<PointData>,
+    val trackData: ArrayList<TrackPoint>,
     val trackDifficulty: String,
     val trackSummary: DataSummary
 ) {}
