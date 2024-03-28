@@ -1,10 +1,11 @@
 package com.jmblfma.wheely.model
 
+import java.time.ZonedDateTime
+
 data class Post(
     val postId: Int,
-    val userName: String,
-    val userSurname: String,
-    val trackPlace: String,
-    val trackDescription: String,
-    val postDate: String
+    val description: String,
+    val postedBy: User,
+    val associatedTrack: Track,
+    val datePublished: ZonedDateTime
 ) {}
