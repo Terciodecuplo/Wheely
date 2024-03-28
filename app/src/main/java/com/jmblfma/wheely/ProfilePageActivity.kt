@@ -8,7 +8,7 @@ import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.adapter.TrackHistoryAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.DataSummary
-import com.jmblfma.wheely.model.PointData
+import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.Post
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
@@ -73,7 +73,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
         user.ownedVehicles.add(vehicle)
 
-        val trackData = arrayListOf<PointData>()
+        val trackData = arrayListOf<TrackPoint>()
         val dataSummary = DataSummary(
             summaryId = 1,
             elapsedTime = 3600.0,
