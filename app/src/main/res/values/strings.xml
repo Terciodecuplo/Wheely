@@ -5,6 +5,7 @@
     <string name="nav_record">Record</string>
     <string name="nav_profile">Profile</string>
     <string name="vehicle_display_format">%1$s %2$s</string>
-
+    <string name="vehicle_grid_list">Vehicles</string>
+    <string name="track_history_list">History</string>
 
 </resources>
