@@ -3,7 +3,6 @@ package com.jmblfma.wheely.utils
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.HomePageActivity
 import com.jmblfma.wheely.ProfilePageActivity
 import com.jmblfma.wheely.R
@@ -21,7 +20,6 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
 
                 R.id.nav_record -> {
                     startActivityIfNeeded(Intent(this, RecordActivityTest::class.java), 0)
-                    // Snackbar.make(bottomNavigation, "Not available yet", Snackbar.LENGTH_SHORT).show()
                     true
                 }
 

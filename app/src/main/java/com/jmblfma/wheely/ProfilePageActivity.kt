@@ -3,14 +3,14 @@ package com.jmblfma.wheely
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.jmblfma.wheely.adapter.PostsAdapter
-import com.jmblfma.wheely.adapter.TrackHistoryAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.jmblfma.wheely.adapter.TrackHistoryFragmentAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.DataSummary
-import com.jmblfma.wheely.model.TrackPoint
-import com.jmblfma.wheely.model.Post
 import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
@@ -18,7 +18,6 @@ import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
-    private lateinit var trackHistoryAdapter: TrackHistoryAdapter
     private lateinit var trackHistoryList: ArrayList<Track>
 
 
@@ -29,6 +28,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
         setContentView(binding.root)
         setupBottomNavigation()
 
+        val viewPager: ViewPager2 = binding.viewPager
+        val tabLayout: TabLayout = binding.tabLayout
+
         trackHistoryList = ArrayList()
         trackHistoryList.add(exampleData())
         trackHistoryList.add(exampleData())
@@ -36,11 +38,27 @@ class ProfilePageActivity : NavigationMenuActivity() {
         trackHistoryList.add(exampleData())
         trackHistoryList.add(exampleData())
 
-        trackHistoryAdapter = TrackHistoryAdapter(trackHistoryList, this)
-        binding.trackHistoryRecycler.adapter= trackHistoryAdapter
-        binding.trackHistoryRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        setupBottomNavigation()
+        val trackHistoryFragmentAdapter = TrackHistoryFragmentAdapter(this, trackHistoryList)
+
+        binding.viewPager.adapter = trackHistoryFragmentAdapter
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "History"
+                1 -> "Vehicles"
+                else -> null
+            }
+        }.attach()
+
+        // Optionally, if you want to listen for a tab click and manually set the page
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                viewPager.currentItem = tab.position
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
     override fun getBottomNavigationMenuItemId(): Int {
