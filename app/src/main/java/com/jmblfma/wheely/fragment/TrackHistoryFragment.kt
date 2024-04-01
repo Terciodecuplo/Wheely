@@ -31,10 +31,8 @@ class TrackHistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerView(view: View) {
-        // Initialize the adapter with the track history list
         trackHistoryAdapter = TrackHistoryAdapter(trackHistoryList ?: arrayListOf(), requireContext())
 
-        // Setup RecyclerView
         view.findViewById<RecyclerView>(R.id.trackHistory_recycler).apply {
             adapter = trackHistoryAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -44,7 +42,6 @@ class TrackHistoryFragment : Fragment() {
     companion object {
         private const val ARG_TRACK_HISTORY = "track_history"
 
-        // Method to create a new instance of HistoryFragment with track history data
         fun newInstance(trackHistoryList: ArrayList<Track>): TrackHistoryFragment {
             val fragment = TrackHistoryFragment()
             val args = Bundle()

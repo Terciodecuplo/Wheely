@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.jmblfma.wheely.adapter.TrackHistoryFragmentAdapter
+import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.DataSummary
 import com.jmblfma.wheely.model.Track
@@ -19,6 +19,7 @@ import java.time.ZonedDateTime
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
     private lateinit var trackHistoryList: ArrayList<Track>
+    private lateinit var vehicleList: ArrayList<Vehicle>
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -38,9 +39,15 @@ class ProfilePageActivity : NavigationMenuActivity() {
         trackHistoryList.add(exampleData())
         trackHistoryList.add(exampleData())
 
-        val trackHistoryFragmentAdapter = TrackHistoryFragmentAdapter(this, trackHistoryList)
+        vehicleList = ArrayList()
+        vehicleList.add(exampleVehicle())
+        vehicleList.add(exampleVehicle())
+        vehicleList.add(exampleVehicle())
+        vehicleList.add(exampleVehicle())
 
-        binding.viewPager.adapter = trackHistoryFragmentAdapter
+        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList, vehicleList)
+
+        binding.viewPager.adapter = profileViewPagerAdapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
@@ -49,16 +56,6 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 else -> null
             }
         }.attach()
-
-        // Optionally, if you want to listen for a tab click and manually set the page
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                viewPager.currentItem = tab.position
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
-            override fun onTabReselected(tab: TabLayout.Tab) {}
-        })
     }
 
     override fun getBottomNavigationMenuItemId(): Int {
@@ -83,7 +80,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             owner = user,
             name = "Triciclo",
             brand = "Yamaha",
-            model = "Mt07",
+            model = "MT-07",
             year = "2017",
             horsepower = 500,
             dateAdded = ZonedDateTime.now()
@@ -119,5 +116,32 @@ class ProfilePageActivity : NavigationMenuActivity() {
         user.drivenTracks.add(track)
 
         return track;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun exampleVehicle(): Vehicle {
+
+        val user = User(
+            userId = 1,
+            name = "MoToreto",
+            firstName = "Jose",
+            lastName = "Murcia",
+            email = "jose@example.com",
+            dateOfBirth = "1990-01-01",
+            drivenTracks = arrayListOf(),
+            ownedVehicles = arrayListOf()
+        )
+
+        val vehicle = Vehicle(
+            vehicleId = 1,
+            owner = user,
+            name = "Triciclo",
+            brand = "Yamaha",
+            model = "MT-07",
+            year = "2017",
+            horsepower = 500,
+            dateAdded = ZonedDateTime.now()
+        )
+        return vehicle
     }
 }
