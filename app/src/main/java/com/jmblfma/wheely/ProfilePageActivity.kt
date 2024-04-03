@@ -3,14 +3,14 @@ package com.jmblfma.wheely
 import android.os.Build
 import android.os.Bundle
 import androidx.annotation.RequiresApi
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.jmblfma.wheely.adapter.PostsAdapter
-import com.jmblfma.wheely.adapter.TrackHistoryAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.DataSummary
-import com.jmblfma.wheely.model.TrackPoint
-import com.jmblfma.wheely.model.Post
 import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
@@ -18,8 +18,8 @@ import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
-    private lateinit var trackHistoryAdapter: TrackHistoryAdapter
     private lateinit var trackHistoryList: ArrayList<Track>
+    private lateinit var vehicleList: ArrayList<Vehicle>
 
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -29,6 +29,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
         setContentView(binding.root)
         setupBottomNavigation()
 
+        val viewPager: ViewPager2 = binding.viewPager
+        val tabLayout: TabLayout = binding.tabLayout
+
         trackHistoryList = ArrayList()
         trackHistoryList.add(exampleData())
         trackHistoryList.add(exampleData())
@@ -36,11 +39,23 @@ class ProfilePageActivity : NavigationMenuActivity() {
         trackHistoryList.add(exampleData())
         trackHistoryList.add(exampleData())
 
-        trackHistoryAdapter = TrackHistoryAdapter(trackHistoryList, this)
-        binding.trackHistoryRecycler.adapter= trackHistoryAdapter
-        binding.trackHistoryRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        setupBottomNavigation()
+        vehicleList = ArrayList()
+        vehicleList.add(exampleVehicle())
+        vehicleList.add(exampleVehicle())
+        vehicleList.add(exampleVehicle())
+        vehicleList.add(exampleVehicle())
+
+        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList, vehicleList)
+
+        binding.viewPager.adapter = profileViewPagerAdapter
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = when (position) {
+                0 -> "History"
+                1 -> "Vehicles"
+                else -> null
+            }
+        }.attach()
     }
 
     override fun getBottomNavigationMenuItemId(): Int {
@@ -65,7 +80,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             owner = user,
             name = "Triciclo",
             brand = "Yamaha",
-            model = "Mt07",
+            model = "MT-07",
             year = "2017",
             horsepower = 500,
             dateAdded = ZonedDateTime.now()
@@ -101,5 +116,32 @@ class ProfilePageActivity : NavigationMenuActivity() {
         user.drivenTracks.add(track)
 
         return track;
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun exampleVehicle(): Vehicle {
+
+        val user = User(
+            userId = 1,
+            name = "MoToreto",
+            firstName = "Jose",
+            lastName = "Murcia",
+            email = "jose@example.com",
+            dateOfBirth = "1990-01-01",
+            drivenTracks = arrayListOf(),
+            ownedVehicles = arrayListOf()
+        )
+
+        val vehicle = Vehicle(
+            vehicleId = 1,
+            owner = user,
+            name = "Triciclo",
+            brand = "Yamaha",
+            model = "MT-07",
+            year = "2017",
+            horsepower = 500,
+            dateAdded = ZonedDateTime.now()
+        )
+        return vehicle
     }
 }

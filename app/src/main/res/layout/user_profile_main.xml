@@ -26,7 +26,6 @@
             android:src="@drawable/user_profile_banner" />
     </androidx.cardview.widget.CardView>
 
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
         android:layout_width="80dp"
@@ -64,17 +63,25 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.17" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/trackHistory_recycler"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tab_layout_background"
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
+        app:layout_constraintEnd_toEndOf="@+id/view_pager"
+        app:layout_constraintStart_toStartOf="@+id/view_pager" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="17dp"
         android:layout_marginEnd="17dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline8" />
+        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -89,6 +96,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.4" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50121653" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
