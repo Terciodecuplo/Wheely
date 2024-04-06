@@ -1,7 +1,10 @@
 package com.jmblfma.wheely
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
@@ -13,6 +16,7 @@ import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.UserLoginState
 import java.time.ZonedDateTime
 
 class HomePageActivity : NavigationMenuActivity() {
@@ -20,11 +24,14 @@ class HomePageActivity : NavigationMenuActivity() {
     private lateinit var postsAdapter: PostsAdapter
     private lateinit var postList: ArrayList<Post>
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+
 
         postList = ArrayList()
         postList.add(exampleData())
@@ -38,6 +45,25 @@ class HomePageActivity : NavigationMenuActivity() {
         binding.postRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         setupBottomNavigation()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.logout -> {
+                val userLoginState = UserLoginState(this)
+                userLoginState.isLoggedIn = false
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+
+        }
+        return true
     }
 
     override fun getBottomNavigationMenuItemId(): Int {
