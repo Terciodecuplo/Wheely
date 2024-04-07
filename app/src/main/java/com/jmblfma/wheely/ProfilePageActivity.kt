@@ -32,7 +32,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.toolbarProfile)
 
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout

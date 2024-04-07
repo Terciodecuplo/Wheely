@@ -30,7 +30,7 @@ class HomePageActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        setSupportActionBar(binding.toolbarHome)
 
 
         postList = ArrayList()
