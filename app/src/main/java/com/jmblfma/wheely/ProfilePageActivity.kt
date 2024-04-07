@@ -1,7 +1,10 @@
 package com.jmblfma.wheely
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -14,6 +17,7 @@ import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.UserLoginState
 import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
@@ -28,6 +32,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
+        setSupportActionBar(binding.toolbar)
 
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
@@ -58,6 +63,23 @@ class ProfilePageActivity : NavigationMenuActivity() {
         }.attach()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.toolbar_profile_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.logout -> {
+                val userLoginState = UserLoginState(this)
+                userLoginState.isLoggedIn = false
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+        }
+        return true
+    }
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_profile
     }
