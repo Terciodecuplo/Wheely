@@ -70,11 +70,15 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.logout -> {
+            R.id.logout_menu_option -> {
                 val userLoginState = UserLoginState(this)
                 userLoginState.isLoggedIn = false
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            }
+            R.id.add_vehicle_menu_option -> {
+                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
                 startActivity(intent)
             }
         }

@@ -9,8 +9,15 @@
     <string name="track_history_link">History</string>
     <string name="logout_menu_item">Logout</string>
     <string name="new_vehicle_menu_item">Add vehicle</string>
-
-
-
+    <string name="new_vehicle_brand">Brand</string>
+    <string name="new_vehicle_model">Model</string>
+    <string name="new_vehicle_name">Name</string>
+    <string name="new_vehicle_year">Year</string>
+    <string name="new_vehicle_horsepower">HP</string>
+    <string name="new_vehicle_name_hint">How do you call your vehicle?</string>
+    <string name="new_vehicle_brand_hint">Which brand is your vehicle?</string>
+    <string name="new_vehicle_model_hint">Which model it is?</string>
+    <string name="new_vehicle_year_hint">What year it is?</string>
+    <string name="new_vehicle_horsepower_hint">How many HP does it have?</string>
 
 </resources>

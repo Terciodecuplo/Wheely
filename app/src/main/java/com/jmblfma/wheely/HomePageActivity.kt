@@ -54,7 +54,7 @@ class HomePageActivity : NavigationMenuActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.logout -> {
+            R.id.logout_menu_option -> {
                 val userLoginState = UserLoginState(this)
                 userLoginState.isLoggedIn = false
                 val intent = Intent(applicationContext, MainActivity::class.java)
