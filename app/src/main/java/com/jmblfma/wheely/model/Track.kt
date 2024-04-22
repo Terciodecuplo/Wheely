@@ -1,18 +1,28 @@
 package com.jmblfma.wheely.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-import kotlinx.parcelize.RawValue
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.time.ZonedDateTime
-@Parcelize
+
+@Entity(tableName = "Tracks")
 data class Track(
-    val trackId: Int,
-    val drivenBy: @RawValue User,
-    val vehicleUsed: @RawValue Vehicle,
-    val name: String,
-    val generalLocation: String,
-    val creationDate: ZonedDateTime,
-    val trackData: @RawValue ArrayList<TrackPoint>,
-    val trackDifficulty: String,
-    val trackSummary: @RawValue DataSummary
-) : Parcelable {}
+    val trackData: List<TrackPoint>,
+    @PrimaryKey(autoGenerate = true) val trackId: Int = 0,
+    val drivenBy: User = User(),
+    val vehicleUsed: Vehicle? = null,
+    val name: String = "DefaultTrack",
+    val generalLocation: String = "-",
+    val creationTimestamp: ZonedDateTime = ZonedDateTime.now(),
+    val difficulty: String = "-"
+) {
+    val averageSpeed = computeAverageSpeed(trackData)
+    val startTime = trackData.first().timestamp
+    val endTime = trackData.last().timestamp
+
+    companion object {
+        fun computeAverageSpeed(trackData: List<TrackPoint>): Double {
+            return trackData.map { it.speed }.average()
+        }
+    }
+}
+

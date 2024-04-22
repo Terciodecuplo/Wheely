@@ -9,9 +9,8 @@ import com.jmblfma.wheely.databinding.TestRecordScreenBinding
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.services.TrackingService
 import com.jmblfma.wheely.utils.NavigationMenuActivity
-import com.jmblfma.wheely.viewmodels.TrackPointsViewModel
+import com.jmblfma.wheely.viewmodels.TrackDataViewModel
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
-import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
@@ -19,7 +18,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class RecordActivityTest : NavigationMenuActivity() {
     private lateinit var binding: TestRecordScreenBinding
-    private val viewModel: TrackPointsViewModel by viewModels()
+    private val viewModel: TrackDataViewModel by viewModels()
     private lateinit var map: MapView
 
     override fun getBottomNavigationMenuItemId(): Int {
@@ -37,7 +36,7 @@ class RecordActivityTest : NavigationMenuActivity() {
         startRecButton.setOnClickListener {
             Log.d("LocationTest","TrackingService Start Requested")
             Intent(this, TrackingService::class.java).also { intent ->
-                startService(intent)
+                startForegroundService(intent)
             }
         }
 
@@ -49,6 +48,24 @@ class RecordActivityTest : NavigationMenuActivity() {
             }
         }
 
+        val saveButton = binding.buttonTest3
+        saveButton.setOnClickListener {
+            viewModel.saveCurrentTrack()
+        }
+
+        val loadButton = binding.buttonTest4
+        loadButton.setOnClickListener {
+            viewModel.fetchLastTrack()
+        }
+
+        viewModel.lastTrack.observe(this) { track ->
+            if (track != null) {
+                map.overlays.clear()
+                updatePathOnMap(track.trackData, true)
+            } else {
+                // Handle the case where track is null (perhaps show an error or a message)
+            }
+        }
 
         map = binding.mapView
         setupMapDefaults()
@@ -58,7 +75,6 @@ class RecordActivityTest : NavigationMenuActivity() {
         viewModel.trackPoints.observe(this) { trackPoints ->
             Log.d("LocationTest","viewModel OBSERVED!")
             updatePathOnMap(trackPoints)
-
         }
     }
 
@@ -69,11 +85,11 @@ class RecordActivityTest : NavigationMenuActivity() {
         map.controller.setZoom(20)
     }
 
-    private fun updatePathOnMap(trackPoints: List<TrackPoint>) {
+    private fun updatePathOnMap(trackPoints: List<TrackPoint>, load: Boolean = false) {
         Log.d("LocationTest","PathUpdate!")
         val route = Polyline()
         val geoPoints = viewModel.convertTrackPointsToGeoPoints(trackPoints)
-        route.color = Color.RED
+        route.color = if (load) Color.BLUE else Color.RED
         route.setPoints(geoPoints)
         // map.overlays.clear()
         map.overlays.add(route)
