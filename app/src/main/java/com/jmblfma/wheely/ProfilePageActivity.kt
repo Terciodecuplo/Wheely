@@ -10,7 +10,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
-import com.jmblfma.wheely.model.DataSummary
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
@@ -83,7 +82,16 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     fun exampleData(): Track {
-        val user = User()
+
+
+        val user = User(
+            userId = 1,
+            nickname = "MoToreto",
+            firstName = "Jose",
+            lastName = "Murcia",
+            email = "jose@example.com",
+            dateOfBirth = "1990-01-01",
+        )
 
         val vehicle = Vehicle(
             vehicleId = 1,
@@ -96,31 +104,46 @@ class ProfilePageActivity : NavigationMenuActivity() {
             dateAdded = LocalDate.now()
         )
 
+
+
         val trackData = arrayListOf<TrackPoint>()
-        val dataSummary = DataSummary(
-            summaryId = 1,
-            elapsedTime = 3600.0,
-            maxSpeed = 150.0,
-            averageSpeed = 100.0,
-            distanceTraveled = 323.0,
-            maxInclination = 10.0,
-            averageInclination = 5.0,
-            maxAltitude = 200.0,
-            deltaAltitude = 50.0
-        )
 
         val track = Track(
             trackId = 1,
-            drivenBy = user,
+            userId = 1,
             vehicleUsed = vehicle,
             name = "Morning Route around Elche",
             generalLocation = "Elche",
-            creationDate = ZonedDateTime.now(),
+            creationTimestamp = ZonedDateTime.now(),
             trackData = trackData,
-            trackDifficulty = "Medium",
-            trackSummary = dataSummary
+            difficulty = "Medium",
         )
 
         return track;
+    }
+
+    fun exampleVehicle(): Vehicle {
+
+        val user = User(
+            userId = 1,
+            nickname = "MoToreto",
+            firstName = "Jose",
+            lastName = "Murcia",
+            email = "jose@example.com",
+            dateOfBirth = "1990-01-01",
+
+        )
+
+        val vehicle = Vehicle(
+            vehicleId = 1,
+            ownerId = 1,
+            name = "Triciclo",
+            brand = "Yamaha",
+            model = "MT-07",
+            year = "2017",
+            horsepower = 500,
+            dateAdded = LocalDate.now()
+        )
+        return vehicle
     }
 }

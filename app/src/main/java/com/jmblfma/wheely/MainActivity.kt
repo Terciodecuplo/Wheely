@@ -5,10 +5,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.jmblfma.wheely.databinding.ActivityMainBinding
 import com.jmblfma.wheely.utils.UserLoginState
-import org.osmdroid.config.Configuration
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,10 +27,6 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        // sets the user agent to comply with OpenStreetMaps usage policy
-        Configuration.getInstance().userAgentValue = applicationContext.packageName
-
-
         binding.loginButton.setOnClickListener {
             userLoginState.isLoggedIn = true
             val intent = Intent(applicationContext, HomePageActivity::class.java)
@@ -38,10 +34,10 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        binding.signupButton.setOnClickListener {
+        /*binding.signupButton.setOnClickListener {
             GlobalScope.launch {
                 val userId = AppDatabase.getDatabase(context).userDao().insertUser(newUser)
             }
-        }
+        }*/
     }
 }

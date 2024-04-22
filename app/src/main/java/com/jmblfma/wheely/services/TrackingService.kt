@@ -1,11 +1,11 @@
 package com.jmblfma.wheely.services
 
-import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -14,16 +14,15 @@ import android.location.Location
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.TrackPoint
-import com.jmblfma.wheely.repository.TrackPointsRepositoryImpl
+import com.jmblfma.wheely.repository.TrackDataRepository
 
 // https://developer.android.com/develop/sensors-and-location/location/request-updates
 
@@ -32,29 +31,50 @@ class TrackingService : Service(), SensorEventListener {
     private lateinit var locationCallback: LocationCallback
     private lateinit var sensorManager: SensorManager
     // Refresh rate for location requests in ms
-    private val locationRefreshRate = 1000
-    private val repository = TrackPointsRepositoryImpl.instance
+    private val repository = TrackDataRepository.getInstance()
 
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("LocationTest","TrackingService onStartCommand received!")
-        // initialize location updates and potentially other setup operations here
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        startLocationUpdates()
-
-        return START_NOT_STICKY // ensures service doesn't restart automatically if killed
+    companion object {
+        const val CHANNEL_ID = "ForegroundServiceChannel"
+        const val LOCATION_REFRESH_RATE = 1000
     }
 
-    /*override fun onCreate() {
+    override fun onCreate() {
         super.onCreate()
+        createNotificationChannel()
+        startForegroundService()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        // sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        startLocationUpdates()
-        // startSensorUpdates()
         // TODO ? request location access at runtime?
         // https://developer.android.com/develop/sensors-and-location/location/permissions
-        Log.d("LocationTest","TrackingService Launched!")
-    }*/
+        startLocationUpdates()
+        // sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        // startSensorUpdates()
+        Log.d("TrackingService/"," onCreate()")
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForegroundService()
+        Log.d("TrackingService/"," onStartCommand()")
+        return START_NOT_STICKY
+    }
+
+    private fun createNotificationChannel() {
+        val serviceChannel = NotificationChannel(
+            CHANNEL_ID,
+            "Foreground Service Channel",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(serviceChannel)
+    }
+
+    private fun startForegroundService() {
+        val notification: Notification = Notification.Builder(this, CHANNEL_ID)
+            .setContentTitle("Tracking Active")
+            .setContentText("Location is being tracked")
+            .setSmallIcon(R.drawable.ic_tracker)
+            .build()
+        startForeground(1, notification)
+    }
 
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
@@ -68,7 +88,7 @@ class TrackingService : Service(), SensorEventListener {
             } */
 
         // (1) sets the location request settings before initializing periodic updates
-        val locationRequest = LocationRequest.Builder(locationRefreshRate.toLong())
+        val locationRequest = LocationRequest.Builder(LOCATION_REFRESH_RATE.toLong())
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
             .build()
 
@@ -126,8 +146,10 @@ class TrackingService : Service(), SensorEventListener {
 
     override fun onDestroy() {
         super.onDestroy()
+        stopForeground(STOP_FOREGROUND_REMOVE)
         // stops location updates
         fusedLocationClient.removeLocationUpdates(locationCallback)
-        sensorManager.unregisterListener(this)
+        // sensorManager.unregisterListener(this)
+        Log.d("TrackingService/"," onDestroy()")
     }
 }

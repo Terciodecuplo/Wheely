@@ -19,9 +19,7 @@ class TrackHistoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            trackHistoryList = it.getParcelableArrayList<Track>(ARG_TRACK_HISTORY)
-        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -46,7 +44,6 @@ class TrackHistoryFragment : Fragment() {
         fun newInstance(trackHistoryList: ArrayList<Track>): TrackHistoryFragment {
             val fragment = TrackHistoryFragment()
             val args = Bundle()
-            args.putParcelableArrayList(ARG_TRACK_HISTORY, trackHistoryList)
             fragment.arguments = args
             return fragment
         }

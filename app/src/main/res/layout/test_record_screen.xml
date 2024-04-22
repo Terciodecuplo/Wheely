@@ -49,7 +49,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
-            android:text="Demo" />
+            android:text="Save" />
 
         <Button
             android:id="@+id/buttonTest4"
@@ -59,7 +59,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
-            android:text="t4" />
+            android:text="Load" />
     </GridLayout>
 
 
