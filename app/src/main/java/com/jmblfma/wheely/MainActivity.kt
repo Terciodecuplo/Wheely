@@ -37,5 +37,11 @@ class MainActivity : AppCompatActivity() {
             this.startActivity(intent)
             finish()
         }
+
+        binding.signupButton.setOnClickListener {
+            GlobalScope.launch {
+                val userId = AppDatabase.getDatabase(context).userDao().insertUser(newUser)
+            }
+        }
     }
 }

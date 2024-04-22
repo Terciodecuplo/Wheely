@@ -1,5 +1,6 @@
 package com.jmblfma.wheely.model
 
+
 data class DataSummary(
     val summaryId:Int,
     val elapsedTime: Double,
@@ -10,4 +11,4 @@ data class DataSummary(
     val averageInclination: Double,
     val maxAltitude: Double,
     val deltaAltitude: Double
-){}
+)

@@ -1,11 +1,13 @@
 package com.jmblfma.wheely.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Vehicle
@@ -32,10 +34,33 @@ class ProfileVehicleListAdapter(
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        val vehicles = vehicleList[position]
+        val vehicle = vehicleList[position]
+        Log.d("VehicleAdapter","Binding vehicle: ${vehicle.model}")
         holder.imageView.setImageResource(R.drawable.pic_vehicle_template)
-        holder.motoModel.text = vehicles.model
+        holder.motoModel.text = vehicle.model
     }
 
     override fun getItemCount() = vehicleList.size
+
+
+    fun updateVehicles(newVehicles: MutableList<Vehicle>) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = vehicleList.size
+
+            override fun getNewListSize(): Int = newVehicles.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return vehicleList[oldItemPosition].vehicleId == newVehicles[newItemPosition].vehicleId
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return vehicleList[oldItemPosition] == newVehicles[newItemPosition]
+            }
+        })
+
+        vehicleList.clear()
+        vehicleList.addAll(newVehicles)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
 }

@@ -1,11 +1,10 @@
 package com.jmblfma.wheely
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.annotation.RequiresApi
+import androidx.activity.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -18,15 +17,14 @@ import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserLoginState
+import com.jmblfma.wheely.viewmodels.AddVehicleViewModel
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
     private lateinit var trackHistoryList: ArrayList<Track>
-    private lateinit var vehicleList: ArrayList<Vehicle>
-
-
-    @RequiresApi(Build.VERSION_CODES.O)
+    private val viewModel: AddVehicleViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserProfileMainBinding.inflate(layoutInflater)
@@ -44,13 +42,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         trackHistoryList.add(exampleData())
         trackHistoryList.add(exampleData())
 
-        vehicleList = ArrayList()
-        vehicleList.add(exampleVehicle())
-        vehicleList.add(exampleVehicle())
-        vehicleList.add(exampleVehicle())
-        vehicleList.add(exampleVehicle())
-
-        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList, vehicleList)
+        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
 
         binding.viewPager.adapter = profileViewPagerAdapter
 
@@ -69,7 +61,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.logout_menu_option -> {
                 val userLoginState = UserLoginState(this)
                 userLoginState.isLoggedIn = false
@@ -77,6 +69,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
+
             R.id.add_vehicle_menu_option -> {
                 val intent = Intent(applicationContext, AddVehicleActivity::class.java)
                 startActivity(intent)
@@ -84,35 +77,24 @@ class ProfilePageActivity : NavigationMenuActivity() {
         }
         return true
     }
+
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_profile
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun exampleData(): Track {
-        val user = User(
-            userId = 1,
-            name = "MoToreto",
-            firstName = "Jose",
-            lastName = "Murcia",
-            email = "jose@example.com",
-            dateOfBirth = "1990-01-01",
-            drivenTracks = arrayListOf(),
-            ownedVehicles = arrayListOf()
-        )
+        val user = User()
 
         val vehicle = Vehicle(
             vehicleId = 1,
-            owner = user,
+            ownerId = user.userId,
             name = "Triciclo",
             brand = "Yamaha",
             model = "MT-07",
             year = "2017",
             horsepower = 500,
-            dateAdded = ZonedDateTime.now()
+            dateAdded = LocalDate.now()
         )
-
-        user.ownedVehicles.add(vehicle)
 
         val trackData = arrayListOf<TrackPoint>()
         val dataSummary = DataSummary(
@@ -139,35 +121,6 @@ class ProfilePageActivity : NavigationMenuActivity() {
             trackSummary = dataSummary
         )
 
-        user.drivenTracks.add(track)
-
         return track;
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun exampleVehicle(): Vehicle {
-
-        val user = User(
-            userId = 1,
-            name = "MoToreto",
-            firstName = "Jose",
-            lastName = "Murcia",
-            email = "jose@example.com",
-            dateOfBirth = "1990-01-01",
-            drivenTracks = arrayListOf(),
-            ownedVehicles = arrayListOf()
-        )
-
-        val vehicle = Vehicle(
-            vehicleId = 1,
-            owner = user,
-            name = "Triciclo",
-            brand = "Yamaha",
-            model = "MT-07",
-            year = "2017",
-            horsepower = 500,
-            dateAdded = ZonedDateTime.now()
-        )
-        return vehicle
     }
 }

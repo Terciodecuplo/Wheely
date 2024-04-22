@@ -17,6 +17,7 @@ import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserLoginState
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 class HomePageActivity : NavigationMenuActivity() {
@@ -25,7 +26,6 @@ class HomePageActivity : NavigationMenuActivity() {
     private lateinit var postList: ArrayList<Post>
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
@@ -71,31 +71,18 @@ class HomePageActivity : NavigationMenuActivity() {
     }
 
     // This is just an example Data. It will be removed in the future.
-    @RequiresApi(Build.VERSION_CODES.O)
     fun exampleData(): Post {
-        val user = User(
-            userId = 1,
-            name = "MoToreto",
-            firstName = "Jose",
-            lastName = "Murcia",
-            email = "jose@example.com",
-            dateOfBirth = "1990-01-01",
-            drivenTracks = arrayListOf(),
-            ownedVehicles = arrayListOf()
-        )
-
+        val user = User()
         val vehicle = Vehicle(
             vehicleId = 1,
-            owner = user,
+            ownerId = user.userId,
             name = "Triciclo",
             brand = "Yamaha",
             model = "Mt07",
             year = "2017",
             horsepower = 500,
-            dateAdded = ZonedDateTime.now()
+            dateAdded = LocalDate.now()
         )
-
-        user.ownedVehicles.add(vehicle)
 
         val trackData = arrayListOf<TrackPoint>()
         val dataSummary = DataSummary(
@@ -122,8 +109,6 @@ class HomePageActivity : NavigationMenuActivity() {
             trackSummary = dataSummary
         )
 
-        user.drivenTracks.add(track)
-
         val post = Post(
             postId = 1,
             description = "Great morning route around Elche!",
@@ -131,7 +116,6 @@ class HomePageActivity : NavigationMenuActivity() {
             associatedTrack = track,
             datePublished = ZonedDateTime.parse("2024-01-02T08:00:00+01:00[Europe/Madrid]")
         )
-
         return post;
     }
 

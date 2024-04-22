@@ -1,52 +1,55 @@
 package com.jmblfma.wheely.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.adapter.ProfileVehicleListAdapter
-import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.viewmodels.AddVehicleViewModel
 
-class VehicleFragment() : Fragment() {
+class VehicleFragment : Fragment() {
 
-    private var vehicleList: ArrayList<Vehicle>? = null
     private lateinit var profileVehicleListAdapter: ProfileVehicleListAdapter
-    private lateinit var gridRecyclerView : RecyclerView
+    private lateinit var gridRecyclerView: RecyclerView
+    private lateinit var viewModel: AddVehicleViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            vehicleList = it.getParcelableArrayList<Vehicle>(ARG_VEHICLE_LIST) ?: arrayListOf()
-        }
+        viewModel = ViewModelProvider(requireActivity()).get(AddVehicleViewModel::class.java)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         return inflater.inflate(R.layout.fragment_vehicle, container, false)
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         gridRecyclerView = view.findViewById(R.id.vehicle_grid_recycler)
-        profileVehicleListAdapter = ProfileVehicleListAdapter(vehicleList?: arrayListOf(), requireContext())
+        profileVehicleListAdapter = ProfileVehicleListAdapter(ArrayList(), requireContext())
 
         gridRecyclerView.layoutManager = GridLayoutManager(context, 3)
         gridRecyclerView.adapter = profileVehicleListAdapter
+/*
+        viewModel.vehicles.observe(viewLifecycleOwner) { vehicles ->
+            Log.d("VehicleFragment", "Received vehicle update: ${vehicles.size}")
+            profileVehicleListAdapter.updateVehicles(ArrayList(vehicles))
+
+        }*/
     }
 
     companion object {
-        private const val ARG_VEHICLE_LIST = "vehicle_list"
-
-        fun newInstance(vehicleList: ArrayList<Vehicle>): VehicleFragment {
-            val fragment = VehicleFragment()
-            val args = Bundle()
-            args.putParcelableArrayList(ARG_VEHICLE_LIST, vehicleList)
-            fragment.arguments = args
-            return fragment
+        fun newInstance(): VehicleFragment {
+            return VehicleFragment()
         }
     }
 }
