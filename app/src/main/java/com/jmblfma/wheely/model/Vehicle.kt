@@ -27,5 +27,5 @@ data class Vehicle(
     val model: String,
     val year: String,
     val horsepower: Int,
-    val dateAdded: LocalDate
+    val dateAdded: String = LocalDate.now().toString()
 )

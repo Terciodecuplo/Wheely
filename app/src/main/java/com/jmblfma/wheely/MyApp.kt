@@ -25,6 +25,6 @@ class MyApp : Application() {
 
         // Sets the user agent to comply with OpenStreetMaps usage policy
         Configuration.getInstance().userAgentValue = applicationContext.packageName
-        roomDB = RoomDatabaseBuilder.getInstance()
+        roomDB = RoomDatabaseBuilder.database
     }
 }

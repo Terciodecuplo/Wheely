@@ -1,4 +1,4 @@
-package com.jmblfma.wheely.repository
+package com.jmblfma.wheely.data
 
 import androidx.room.Dao
 import androidx.room.Insert

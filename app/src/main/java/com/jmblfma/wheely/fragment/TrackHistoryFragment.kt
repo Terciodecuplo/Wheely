@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.adapter.TrackHistoryAdapter
 import com.jmblfma.wheely.model.Track
-import com.jmblfma.wheely.viewmodels.AddVehicleViewModel
 
 class TrackHistoryFragment : Fragment() {
 

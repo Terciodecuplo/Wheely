@@ -12,8 +12,8 @@ import com.jmblfma.wheely.repository.TrackDataRepository
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 class TrackDataViewModel : ViewModel() {
-    private val trackDao: TrackDao = RoomDatabaseBuilder.getInstance().trackDao()
-    private val repository = TrackDataRepository.getInstance()
+    private val trackDao: TrackDao = RoomDatabaseBuilder.database.trackDao()
+    private val repository = TrackDataRepository.sharedInstance
 
     val trackPoints: LiveData<List<TrackPoint>> = repository.getCurrentTrack()
     // val latestTrackPoint: LiveData<TrackPoint> = repository.latestTrackPoint

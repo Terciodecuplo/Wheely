@@ -7,14 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.jmblfma.wheely.model.Vehicle
 import java.time.LocalDate
 
-class AddVehicleViewModel : ViewModel() {
+class NewVehicleDataViewModel : ViewModel() {
     private val _vehicles = MutableLiveData(generateTestData())
     var vehicles: LiveData<MutableList<Vehicle>> = _vehicles
 
     private fun generateTestData(): MutableList<Vehicle> {
         return mutableListOf(
-            Vehicle(vehicleId = 1, ownerId = 1, name = "Bike One", brand = "Yamaha", model = "YZF-R1", year = "2021", horsepower = 190, dateAdded = LocalDate.now()),
-            Vehicle(vehicleId = 2, ownerId = 2, name = "Bike Two", brand = "Honda", model = "CBR600RR", year = "2020", horsepower = 120, dateAdded = LocalDate.now())
+            Vehicle(vehicleId = 1, ownerId = 1, name = "Bike One", brand = "Yamaha", model = "YZF-R1", year = "2021", horsepower = 190, dateAdded = LocalDate.now().toString()),
+            Vehicle(vehicleId = 2, ownerId = 2, name = "Bike Two", brand = "Honda", model = "CBR600RR", year = "2020", horsepower = 120, dateAdded = LocalDate.now().toString())
         )
     }
 

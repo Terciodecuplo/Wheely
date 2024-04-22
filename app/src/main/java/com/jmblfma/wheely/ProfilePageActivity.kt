@@ -16,14 +16,14 @@ import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserLoginState
-import com.jmblfma.wheely.viewmodels.AddVehicleViewModel
+import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
     private lateinit var trackHistoryList: ArrayList<Track>
-    private val viewModel: AddVehicleViewModel by viewModels()
+    private val viewModel: NewVehicleDataViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserProfileMainBinding.inflate(layoutInflater)
@@ -101,7 +101,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             model = "MT-07",
             year = "2017",
             horsepower = 500,
-            dateAdded = LocalDate.now()
+            dateAdded = LocalDate.now().toString()
         )
 
 
@@ -111,11 +111,11 @@ class ProfilePageActivity : NavigationMenuActivity() {
         val track = Track(
             trackId = 1,
             userId = 1,
-            vehicleUsed = vehicle,
+            vehicleId = 1,
             name = "Morning Route around Elche",
             generalLocation = "Elche",
-            creationTimestamp = ZonedDateTime.now(),
-            trackData = trackData,
+            creationTimestamp = ZonedDateTime.now().toString(),
+            //trackData = trackData,
             difficulty = "Medium",
         )
 
@@ -142,7 +142,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             model = "MT-07",
             year = "2017",
             horsepower = 500,
-            dateAdded = LocalDate.now()
+            dateAdded = LocalDate.now().toString()
         )
         return vehicle
     }

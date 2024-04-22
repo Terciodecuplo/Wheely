@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Wheely</string>
     <string name="login_button">Login</string>
-    <string name="signup_button">Login</string>
+    <string name="signup_button">Sign Up</string>
     <string name="nav_posts">Posts</string>
     <string name="nav_record">Record</string>
     <string name="nav_profile">Profile</string>

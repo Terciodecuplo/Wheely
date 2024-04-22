@@ -50,21 +50,20 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
         return trackHistoryList.size
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy - HH:mm:ss", Locale.getDefault())
         var history = trackHistoryList[position]
         holder.trackTitle.text = history.name
         holder.trackLocation.text = history.generalLocation
-        holder.trackDate.text = history.creationDate.format(dateFormatter)
-        holder.trackDuration.text = history.trackSummary.elapsedTime.toString()
+        holder.trackDate.text = history.creationTimestamp.format(dateFormatter)
+        /*holder.trackDuration.text = history.trackSummary.elapsedTime.toString()
         holder.trackDistance.text = history.trackSummary.distanceTraveled.toString()
         holder.trackAvgSpeed.text = history.trackSummary.averageSpeed.toString()
         holder.trackVehicle.text = holder.itemView.context.getString(
             R.string.vehicle_display_format,
             history.vehicleUsed.brand,
             history.vehicleUsed.model
-        )
+        )*/
         holder.trackPreview.setImageResource(R.drawable.route_example)
     }
 }

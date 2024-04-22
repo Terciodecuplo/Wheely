@@ -61,7 +61,7 @@ class RecordActivityTest : NavigationMenuActivity() {
         viewModel.lastTrack.observe(this) { track ->
             if (track != null) {
                 map.overlays.clear()
-                updatePathOnMap(track.trackData, true)
+                //updatePathOnMap(track.trackData, true)
             } else {
                 // Handle the case where track is null (perhaps show an error or a message)
             }

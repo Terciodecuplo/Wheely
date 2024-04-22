@@ -72,7 +72,7 @@ class HomePageActivity : NavigationMenuActivity() {
 
     // This is just an example Data. It will be removed in the future.
     fun exampleData(): Post {
-        val user = User()
+        val user = User(0)
         val vehicle = Vehicle(
             vehicleId = 1,
             ownerId = user.userId,
@@ -81,7 +81,7 @@ class HomePageActivity : NavigationMenuActivity() {
             model = "Mt07",
             year = "2017",
             horsepower = 500,
-            dateAdded = LocalDate.now()
+            dateAdded = LocalDate.now().toString()
         )
 
         val trackData = arrayListOf<TrackPoint>()
@@ -99,14 +99,12 @@ class HomePageActivity : NavigationMenuActivity() {
 
         val track = Track(
             trackId = 1,
-            drivenBy = user,
-            vehicleUsed = vehicle,
+            userId = 0,
+            vehicleId = 1,
             name = "Morning Route around Elche",
             generalLocation = "Elche",
-            creationDate = ZonedDateTime.now(),
-            trackData = trackData,
-            trackDifficulty = "Medium",
-            trackSummary = dataSummary
+            creationTimestamp = ZonedDateTime.now().toString(),
+            difficulty = "Medium",
         )
 
         val post = Post(

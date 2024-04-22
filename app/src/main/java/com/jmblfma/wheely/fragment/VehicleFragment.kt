@@ -1,7 +1,6 @@
 package com.jmblfma.wheely.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +10,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.adapter.ProfileVehicleListAdapter
-import com.jmblfma.wheely.viewmodels.AddVehicleViewModel
+import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 
 class VehicleFragment : Fragment() {
 
     private lateinit var profileVehicleListAdapter: ProfileVehicleListAdapter
     private lateinit var gridRecyclerView: RecyclerView
-    private lateinit var viewModel: AddVehicleViewModel
+    private lateinit var viewModel: NewVehicleDataViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity()).get(AddVehicleViewModel::class.java)
+        viewModel = ViewModelProvider(requireActivity()).get(NewVehicleDataViewModel::class.java)
     }
 
     override fun onCreateView(
