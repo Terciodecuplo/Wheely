@@ -14,8 +14,8 @@ import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.NavigationMenuActivity
-import com.jmblfma.wheely.utils.UserLoginState
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 import java.time.LocalDate
 import java.time.ZonedDateTime
@@ -62,8 +62,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout_menu_option -> {
-                val userLoginState = UserLoginState(this)
-                userLoginState.isLoggedIn = false
+                LoginStateManager.setLoggedIn(false)
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -105,7 +104,6 @@ class ProfilePageActivity : NavigationMenuActivity() {
         )
 
 
-
         val trackData = arrayListOf<TrackPoint>()
 
         val track = Track(
@@ -132,7 +130,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             email = "jose@example.com",
             dateOfBirth = "1990-01-01",
 
-        )
+            )
 
         val vehicle = Vehicle(
             vehicleId = 1,

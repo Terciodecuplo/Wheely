@@ -21,7 +21,6 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // Optional: Initialize other components that need to be setup on app start.
 
         // Sets the user agent to comply with OpenStreetMaps usage policy
         Configuration.getInstance().userAgentValue = applicationContext.packageName

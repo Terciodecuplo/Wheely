@@ -20,18 +20,14 @@ class UserDataViewModel : ViewModel(){
         get() = _userAdditionStatus
 
     fun addUser(user: User){
-        viewModelScope.launch{
-            try {
-                val success = repository.addUser(user)
-                    if (success) {
-                        _userAdditionStatus.postValue("User added successfully")
-                    } else {
-                        _userAdditionStatus.postValue("User with this email already exists")
-                    }
-            } catch (e: Exception) {
-                    _userAdditionStatus.postValue("Error adding user: ${e.message}")
+        viewModelScope.launch {
+            repository.addUser(user) { isSuccess ->
+                if(isSuccess){
+                    _userAdditionStatus.postValue("User added successfully")
+                } else {
+                    _userAdditionStatus.postValue("User with this email already exists")
+                }
             }
         }
-
     }
 }

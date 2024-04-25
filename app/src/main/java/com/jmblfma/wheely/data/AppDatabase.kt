@@ -11,7 +11,7 @@ import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.data.VehicleDao
 
-@Database(entities = [Track::class, User::class, Vehicle::class], version = 2)
+@Database(entities = [Track::class, User::class, Vehicle::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun vehicleDao(): VehicleDao

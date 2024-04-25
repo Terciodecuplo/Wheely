@@ -1,11 +1,9 @@
 package com.jmblfma.wheely
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
@@ -16,7 +14,7 @@ import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
-import com.jmblfma.wheely.utils.UserLoginState
+import com.jmblfma.wheely.utils.UserSessionManager
 import java.time.LocalDate
 import java.time.ZonedDateTime
 
@@ -55,8 +53,7 @@ class HomePageActivity : NavigationMenuActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout_menu_option -> {
-                val userLoginState = UserLoginState(this)
-                userLoginState.isLoggedIn = false
+                UserSessionManager.logoutUser()
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
