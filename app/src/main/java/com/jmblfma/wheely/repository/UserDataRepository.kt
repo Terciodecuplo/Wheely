@@ -4,14 +4,13 @@ import com.jmblfma.wheely.data.RoomDatabaseBuilder
 import com.jmblfma.wheely.data.UserDao
 import com.jmblfma.wheely.model.User
 
-class UserDataRepository() {
+class UserDataRepository {
     private val roomsDB = RoomDatabaseBuilder.database
     private val userDao: UserDao = roomsDB.userDao()
 
     companion object {
         private val instance: UserDataRepository by lazy { UserDataRepository() }
-        val sharedInstance: UserDataRepository
-            get() = instance
+        val sharedInstance: UserDataRepository = instance
     }
 
     suspend fun addUser(user: User, onResult: (Boolean) -> Unit) {
@@ -19,7 +18,7 @@ class UserDataRepository() {
             onResult(false)
         } else {
             try {
-                val id = userDao.insertUser(user)
+                val id = userDao.postUser(user)
                 if (id == -1L) { // The -1 is returned by Room if the user can't be inserted
                     throw Exception("Failed to add a user")
                 }

@@ -11,14 +11,10 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.Track
-import com.jmblfma.wheely.model.TrackPoint
-import com.jmblfma.wheely.model.User
-import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
-import java.time.LocalDate
-import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
@@ -34,12 +30,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
 
+        profileUserMainDataSetup()
         trackHistoryList = ArrayList()
-        trackHistoryList.add(exampleData())
-        trackHistoryList.add(exampleData())
-        trackHistoryList.add(exampleData())
-        trackHistoryList.add(exampleData())
-        trackHistoryList.add(exampleData())
 
         val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
 
@@ -80,68 +72,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         return R.id.nav_profile
     }
 
-    fun exampleData(): Track {
-
-
-        val user = User(
-            userId = 1,
-            nickname = "MoToreto",
-            firstName = "Jose",
-            lastName = "Murcia",
-            email = "jose@example.com",
-            dateOfBirth = "1990-01-01",
-        )
-
-        val vehicle = Vehicle(
-            vehicleId = 1,
-            ownerId = user.userId,
-            name = "Triciclo",
-            brand = "Yamaha",
-            model = "MT-07",
-            year = "2017",
-            horsepower = 500,
-            dateAdded = LocalDate.now().toString()
-        )
-
-
-        val trackData = arrayListOf<TrackPoint>()
-
-        val track = Track(
-            trackId = 1,
-            userId = 1,
-            vehicleId = 1,
-            name = "Morning Route around Elche",
-            generalLocation = "Elche",
-            creationTimestamp = ZonedDateTime.now().toString(),
-            //trackData = trackData,
-            difficulty = "Medium",
-        )
-
-        return track;
-    }
-
-    fun exampleVehicle(): Vehicle {
-
-        val user = User(
-            userId = 1,
-            nickname = "MoToreto",
-            firstName = "Jose",
-            lastName = "Murcia",
-            email = "jose@example.com",
-            dateOfBirth = "1990-01-01",
-
-            )
-
-        val vehicle = Vehicle(
-            vehicleId = 1,
-            ownerId = 1,
-            name = "Triciclo",
-            brand = "Yamaha",
-            model = "MT-07",
-            year = "2017",
-            horsepower = 500,
-            dateAdded = LocalDate.now().toString()
-        )
-        return vehicle
+    private fun profileUserMainDataSetup(){
+        binding.userName.text = UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
     }
 }

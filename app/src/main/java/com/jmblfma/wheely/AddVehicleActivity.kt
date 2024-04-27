@@ -3,8 +3,10 @@ package com.jmblfma.wheely
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewVehicleLayoutBinding
 import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 import java.time.LocalDate
 
@@ -16,18 +18,29 @@ class AddVehicleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = NewVehicleLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.addVehicleButton.setOnClickListener{
-            viewModel.addVehicle(getNewVehicleData())
+        binding.addVehicleButton.setOnClickListener {
+            val newVehicle = setNewVehicleData()
+            viewModel.addVehicle(newVehicle)
+            finish()
         }
+        viewModel.vehiclePostStatus.observe(this) {status ->
+            status?.let {
+                showSnackbar(it)
+            }
+        }
+
     }
 
-    private fun getNewVehicleData(): Vehicle {
+
+    private fun setNewVehicleData(): Vehicle {
         val horsepower: Int = try {
             Integer.parseInt(binding.newVehicleHorsepowerEdittext.text.toString())
         } catch (e: NumberFormatException) {
             0
         }
-        return Vehicle( 0, 13,
+        return Vehicle(
+            0,
+            UserSessionManager.getCurrentUser()?.userId ?: -1,
             binding.newVehicleNameEdittext.text.toString(),
             binding.newVehicleBrandEdittext.text.toString(),
             binding.newVehicleModelEdittext.text.toString(),
@@ -35,5 +48,8 @@ class AddVehicleActivity : AppCompatActivity() {
             horsepower,
             LocalDate.now().toString()
         )
+    }
+    private fun showSnackbar(message: String) {
+        Snackbar.make(findViewById(R.id.new_vehicle_layout), message, Snackbar.LENGTH_LONG).show()
     }
 }

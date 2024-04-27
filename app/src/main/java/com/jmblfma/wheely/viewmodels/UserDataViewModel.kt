@@ -1,6 +1,5 @@
 package com.jmblfma.wheely.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +15,7 @@ class UserDataViewModel : ViewModel(){
     private val repository = UserDataRepository.sharedInstance
 
     private val _userAdditionStatus = MutableLiveData<String?>()
-    val userAdditionStatus : LiveData<String?>
+    val userPostStatus : LiveData<String?>
         get() = _userAdditionStatus
 
     fun addUser(user: User){

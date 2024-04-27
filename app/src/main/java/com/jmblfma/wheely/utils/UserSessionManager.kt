@@ -3,20 +3,17 @@ package com.jmblfma.wheely.utils
 import com.jmblfma.wheely.model.User
 
 object UserSessionManager {
-    private var currentUser: User? = null
 
-    fun loginUser(user: User) {
-        currentUser = user
+    fun loginUser(user: User?) {
+        LoginStateManager.saveCurrentUser(user)
         LoginStateManager.setLoggedIn(true)
     }
 
     fun logoutUser() {
-        currentUser = null
+        LoginStateManager.saveCurrentUser(null)
         LoginStateManager.setLoggedIn(false)
     }
 
-    fun getCurrentUser(): User? = currentUser
-    fun isLoggedIn(): Boolean {
-        return LoginStateManager.isLoggedIn()
-    }
+    fun getCurrentUser(): User? = LoginStateManager.getCurrentUser()
+    fun isLoggedIn(): Boolean = LoginStateManager.isLoggedIn()
 }

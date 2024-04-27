@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.userAdditionStatus.observe(this) { status ->
+        viewModel.userPostStatus.observe(this) { status ->
             status?.let {
                 showSnackbar(it)
             }
@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
             showLoginScreen()
-
         } else if (!UserSessionManager.isLoggedIn()) {
             showLoginScreen()
         } else {
