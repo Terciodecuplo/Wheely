@@ -1,6 +1,7 @@
 package com.jmblfma.wheely
 
 import android.os.Bundle
+import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -18,6 +19,13 @@ class AddVehicleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = NewVehicleLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbarNewVehicle)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        binding.toolbarNewVehicle.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
         binding.addVehicleButton.setOnClickListener {
             val newVehicle = setNewVehicleData()
             viewModel.addVehicle(newVehicle)
