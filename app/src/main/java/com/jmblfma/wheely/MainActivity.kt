@@ -43,8 +43,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.signupButton.setOnClickListener {
-            val user = User(0)
-            viewModel.addUser(user)
+            val intent = Intent(applicationContext, NewUserActivity::class.java)
+            this.startActivity(intent)
+            //val user = User(0)
+            //viewModel.addUser(user)
         }
     }
 

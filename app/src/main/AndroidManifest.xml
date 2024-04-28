@@ -34,6 +34,7 @@
         <activity android:name=".ProfilePageActivity"/>
         <activity android:name=".RecordActivityTest"/>
         <activity android:name=".AddVehicleActivity"/>
+        <activity android:name=".NewUserActivity"/>
 
 
         <service
