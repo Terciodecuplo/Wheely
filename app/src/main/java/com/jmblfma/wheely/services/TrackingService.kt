@@ -31,7 +31,7 @@ class TrackingService : Service(), SensorEventListener {
     private lateinit var locationCallback: LocationCallback
     private lateinit var sensorManager: SensorManager
     // Refresh rate for location requests in ms
-    private val repository = TrackDataRepository.getInstance()
+    private val repository = TrackDataRepository.sharedInstance
 
     companion object {
         const val CHANNEL_ID = "ForegroundServiceChannel"

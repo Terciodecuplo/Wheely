@@ -33,6 +33,8 @@
         <activity android:name=".HomePageActivity"/>
         <activity android:name=".ProfilePageActivity"/>
         <activity android:name=".RecordActivityTest"/>
+        <activity android:name=".AddVehicleActivity"/>
+
 
         <service
             android:name=".services.TrackingService"

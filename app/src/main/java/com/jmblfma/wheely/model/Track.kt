@@ -2,22 +2,23 @@ package com.jmblfma.wheely.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
-@Entity(tableName = "Tracks")
+@Entity(tableName = "tracks")
 data class Track(
-    val trackData: List<TrackPoint>,
+//    val trackData: List<TrackPoint>,
     @PrimaryKey(autoGenerate = true) val trackId: Int = 0,
-    val drivenBy: User = User(),
-    val vehicleUsed: Vehicle? = null,
+    val userId: Int = 1,
+    val vehicleId: Int = 1,
     val name: String = "DefaultTrack",
     val generalLocation: String = "-",
-    val creationTimestamp: ZonedDateTime = ZonedDateTime.now(),
+    val creationTimestamp: String = LocalDate.now().toString(),
     val difficulty: String = "-"
-) {
+) {/*
     val averageSpeed = computeAverageSpeed(trackData)
     val startTime = trackData.first().timestamp
-    val endTime = trackData.last().timestamp
+    val endTime = trackData.last().timestamp*/
 
     companion object {
         fun computeAverageSpeed(trackData: List<TrackPoint>): Double {

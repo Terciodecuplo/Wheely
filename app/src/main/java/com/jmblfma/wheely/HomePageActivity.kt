@@ -1,11 +1,9 @@
 package com.jmblfma.wheely
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
@@ -16,7 +14,8 @@ import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
-import com.jmblfma.wheely.utils.UserLoginState
+import com.jmblfma.wheely.utils.UserSessionManager
+import java.time.LocalDate
 import java.time.ZonedDateTime
 
 class HomePageActivity : NavigationMenuActivity() {
@@ -25,7 +24,6 @@ class HomePageActivity : NavigationMenuActivity() {
     private lateinit var postList: ArrayList<Post>
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
@@ -54,14 +52,12 @@ class HomePageActivity : NavigationMenuActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.logout -> {
-                val userLoginState = UserLoginState(this)
-                userLoginState.isLoggedIn = false
+            R.id.logout_menu_option -> {
+                UserSessionManager.logoutUser()
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
-
         }
         return true
     }
@@ -71,31 +67,18 @@ class HomePageActivity : NavigationMenuActivity() {
     }
 
     // This is just an example Data. It will be removed in the future.
-    @RequiresApi(Build.VERSION_CODES.O)
     fun exampleData(): Post {
-        val user = User(
-            userId = 1,
-            name = "MoToreto",
-            firstName = "Jose",
-            lastName = "Murcia",
-            email = "jose@example.com",
-            dateOfBirth = "1990-01-01",
-            drivenTracks = arrayListOf(),
-            ownedVehicles = arrayListOf()
-        )
-
+        val user = User(0)
         val vehicle = Vehicle(
             vehicleId = 1,
-            owner = user,
+            ownerId = user.userId,
             name = "Triciclo",
             brand = "Yamaha",
             model = "Mt07",
             year = "2017",
             horsepower = 500,
-            dateAdded = ZonedDateTime.now()
+            dateAdded = LocalDate.now().toString()
         )
-
-        user.ownedVehicles.add(vehicle)
 
         val trackData = arrayListOf<TrackPoint>()
         val dataSummary = DataSummary(
@@ -112,17 +95,13 @@ class HomePageActivity : NavigationMenuActivity() {
 
         val track = Track(
             trackId = 1,
-            drivenBy = user,
-            vehicleUsed = vehicle,
+            userId = 0,
+            vehicleId = 1,
             name = "Morning Route around Elche",
             generalLocation = "Elche",
-            creationDate = ZonedDateTime.now(),
-            trackData = trackData,
-            trackDifficulty = "Medium",
-            trackSummary = dataSummary
+            creationTimestamp = ZonedDateTime.now().toString(),
+            difficulty = "Medium",
         )
-
-        user.drivenTracks.add(track)
 
         val post = Post(
             postId = 1,
@@ -131,7 +110,6 @@ class HomePageActivity : NavigationMenuActivity() {
             associatedTrack = track,
             datePublished = ZonedDateTime.parse("2024-01-02T08:00:00+01:00[Europe/Madrid]")
         )
-
         return post;
     }
 

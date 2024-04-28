@@ -43,8 +43,8 @@ class PostsAdapter(val postList: ArrayList<Post>, var context: Context) :
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         var post = postList[position]
         holder.userProfileImage.setImageResource(R.drawable.user_default_pic)
-        holder.userName.text = post.postedBy.name
-        holder.trackInfo.text = post.associatedTrack.creationDate.toString()
+        holder.userName.text = post.postedBy.nickname
+        holder.trackInfo.text = post.associatedTrack.creationTimestamp
         holder.trackTitle.text = post.associatedTrack.name
         holder.trackPreview.setImageResource(R.drawable.route_example)
     }

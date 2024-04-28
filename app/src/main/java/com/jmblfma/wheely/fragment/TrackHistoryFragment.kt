@@ -18,20 +18,21 @@ class TrackHistoryFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            trackHistoryList = it.getParcelableArrayList<Track>(ARG_TRACK_HISTORY)
-        }
+
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val view = inflater.inflate(R.layout.fragment_track_history, container, false)
         setupRecyclerView(view)
         return view
     }
 
     private fun setupRecyclerView(view: View) {
-        trackHistoryAdapter = TrackHistoryAdapter(trackHistoryList ?: arrayListOf(), requireContext())
+        trackHistoryAdapter =
+            TrackHistoryAdapter(trackHistoryList ?: arrayListOf(), requireContext())
 
         view.findViewById<RecyclerView>(R.id.trackHistory_recycler).apply {
             adapter = trackHistoryAdapter
@@ -45,7 +46,6 @@ class TrackHistoryFragment : Fragment() {
         fun newInstance(trackHistoryList: ArrayList<Track>): TrackHistoryFragment {
             val fragment = TrackHistoryFragment()
             val args = Bundle()
-            args.putParcelableArrayList(ARG_TRACK_HISTORY, trackHistoryList)
             fragment.arguments = args
             return fragment
         }

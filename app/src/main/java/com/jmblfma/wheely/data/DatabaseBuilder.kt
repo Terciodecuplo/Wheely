@@ -12,6 +12,7 @@ object RoomDatabaseBuilder {
             "wheely_rooms_db"
         ).build()
     }
+    val database: AppDatabase
+        get() = instance
 
-    fun getInstance(): AppDatabase = instance
 }
