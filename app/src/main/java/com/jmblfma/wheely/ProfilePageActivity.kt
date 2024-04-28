@@ -19,7 +19,6 @@ import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
     private lateinit var trackHistoryList: ArrayList<Track>
-    private val viewModel: NewVehicleDataViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserProfileMainBinding.inflate(layoutInflater)

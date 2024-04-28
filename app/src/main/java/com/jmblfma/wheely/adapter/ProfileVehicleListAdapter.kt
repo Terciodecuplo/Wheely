@@ -43,7 +43,7 @@ class ProfileVehicleListAdapter(
     override fun getItemCount() = vehicleList.size
 
 
-    fun updateVehicles(newVehicles: MutableList<Vehicle>) {
+    fun updateVehicles(newVehicles: List<Vehicle>) {
         val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = vehicleList.size
 
