@@ -1,13 +1,11 @@
 package com.jmblfma.wheely.adapter
 
 import android.content.Context
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
@@ -51,7 +49,8 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy - HH:mm:ss", Locale.getDefault())
+        val dateFormatter =
+            DateTimeFormatter.ofPattern("dd MMMM yyyy - HH:mm:ss", Locale.getDefault())
         var history = trackHistoryList[position]
         holder.trackTitle.text = history.name
         holder.trackLocation.text = history.generalLocation

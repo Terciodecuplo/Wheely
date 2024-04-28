@@ -22,7 +22,7 @@ class TrackDataRepository() {
     }
 
     fun addTrackPoint(trackPoint: TrackPoint) {
-        Log.d("LocationTest","...trackPoint added!")
+        Log.d("LocationTest", "...trackPoint added!")
         trackPoints.add(trackPoint)
         trackPointsLiveData.postValue(trackPoints)
     }
@@ -40,6 +40,7 @@ class TrackDataRepository() {
         trackPointsLiveData.postValue(trackPoints)
         //trackDao.insert(newTrack)
     }
+
     suspend fun fetchLastTrack(): Track? = trackDao.getLastTrack()
     suspend fun fetchAllTracks(): List<Track> = trackDao.getAllTracks()
 }

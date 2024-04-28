@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 
-
 @Entity(
     tableName = "vehicles",
     foreignKeys = [

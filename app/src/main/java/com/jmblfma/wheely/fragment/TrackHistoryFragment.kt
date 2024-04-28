@@ -21,15 +21,18 @@ class TrackHistoryFragment : Fragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         val view = inflater.inflate(R.layout.fragment_track_history, container, false)
         setupRecyclerView(view)
         return view
     }
 
     private fun setupRecyclerView(view: View) {
-        trackHistoryAdapter = TrackHistoryAdapter(trackHistoryList ?: arrayListOf(), requireContext())
+        trackHistoryAdapter =
+            TrackHistoryAdapter(trackHistoryList ?: arrayListOf(), requireContext())
 
         view.findViewById<RecyclerView>(R.id.trackHistory_recycler).apply {
             adapter = trackHistoryAdapter

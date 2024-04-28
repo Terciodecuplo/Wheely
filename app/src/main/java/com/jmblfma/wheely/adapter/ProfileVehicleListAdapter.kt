@@ -27,7 +27,7 @@ class ProfileVehicleListAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):MyHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.vehicle_list_recycler, parent, false)
         return MyHolder(view)
@@ -35,7 +35,7 @@ class ProfileVehicleListAdapter(
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val vehicle = vehicleList[position]
-        Log.d("VehicleAdapter","Binding vehicle: ${vehicle.model}")
+        Log.d("VehicleAdapter", "Binding vehicle: ${vehicle.model}")
         holder.imageView.setImageResource(R.drawable.pic_vehicle_template)
         holder.motoModel.text = vehicle.model
     }

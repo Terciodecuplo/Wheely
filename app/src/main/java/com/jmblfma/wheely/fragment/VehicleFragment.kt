@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,8 +40,7 @@ class VehicleFragment : Fragment() {
             val userId = UserSessionManager.getCurrentUser()?.userId
             if (userId != null) {
                 vehicleList = repository.fetchVehicles(userId)
-                profileVehicleListAdapter.updateVehicles(vehicleList) // Make sure your adapter has this method
-
+                profileVehicleListAdapter.updateVehicles(vehicleList)
             }
         }
     }
@@ -62,12 +60,6 @@ class VehicleFragment : Fragment() {
 
         gridRecyclerView.layoutManager = GridLayoutManager(context, 3)
         gridRecyclerView.adapter = profileVehicleListAdapter
-        /*
-                viewModel.vehicles.observe(viewLifecycleOwner) { vehicles ->
-                    Log.d("VehicleFragment", "Received vehicle update: ${vehicles.size}")
-                    profileVehicleListAdapter.updateVehicles(ArrayList(vehicles))
-
-                }*/
     }
 
     companion object {

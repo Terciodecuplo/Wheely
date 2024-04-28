@@ -34,7 +34,7 @@ class RecordActivityTest : NavigationMenuActivity() {
         // TrackingService TEMP Start System for Testing
         val startRecButton = binding.buttonTest1
         startRecButton.setOnClickListener {
-            Log.d("LocationTest","TrackingService Start Requested")
+            Log.d("LocationTest", "TrackingService Start Requested")
             Intent(this, TrackingService::class.java).also { intent ->
                 startForegroundService(intent)
             }
@@ -42,7 +42,7 @@ class RecordActivityTest : NavigationMenuActivity() {
 
         val stopRecButton = binding.buttonTest2
         stopRecButton.setOnClickListener {
-            Log.d("LocationTest","TrackingService Stop Requested")
+            Log.d("LocationTest", "TrackingService Stop Requested")
             Intent(this, TrackingService::class.java).also { intent ->
                 stopService(intent)
             }
@@ -71,22 +71,23 @@ class RecordActivityTest : NavigationMenuActivity() {
         setupMapDefaults()
         testMapWithService()
     }
+
     private fun testMapWithService() {
         viewModel.trackPoints.observe(this) { trackPoints ->
-            Log.d("LocationTest","viewModel OBSERVED!")
+            Log.d("LocationTest", "viewModel OBSERVED!")
             updatePathOnMap(trackPoints)
         }
     }
 
     private fun setupMapDefaults() {
-        Log.d("LocationTest","Maps Defaults Set")
+        Log.d("LocationTest", "Maps Defaults Set")
         map.setMultiTouchControls(true)
         map.setTileSource(TileSourceFactory.MAPNIK)
         map.controller.setZoom(20)
     }
 
     private fun updatePathOnMap(trackPoints: List<TrackPoint>, load: Boolean = false) {
-        Log.d("LocationTest","PathUpdate!")
+        Log.d("LocationTest", "PathUpdate!")
         val route = Polyline()
         val geoPoints = viewModel.convertTrackPointsToGeoPoints(trackPoints)
         route.color = if (load) Color.BLUE else Color.RED
@@ -96,6 +97,7 @@ class RecordActivityTest : NavigationMenuActivity() {
         map.controller.setCenter(geoPoints.last())
         map.invalidate()
     }
+
     fun testMap() {
         val map = binding.mapView
         map.setMultiTouchControls(true)

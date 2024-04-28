@@ -6,9 +6,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.jmblfma.wheely.fragment.TrackHistoryFragment
 import com.jmblfma.wheely.fragment.VehicleFragment
 import com.jmblfma.wheely.model.Track
-import com.jmblfma.wheely.model.Vehicle
 
-class ProfileViewPagerAdapter (
+class ProfileViewPagerAdapter(
     fragmentActivity: FragmentActivity,
     private val trackHistoryList: ArrayList<Track>,
 ) : FragmentStateAdapter(fragmentActivity) {

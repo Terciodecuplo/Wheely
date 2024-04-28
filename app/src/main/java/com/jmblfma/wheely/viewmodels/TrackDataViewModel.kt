@@ -11,6 +11,7 @@ import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.repository.TrackDataRepository
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
+
 class TrackDataViewModel : ViewModel() {
     private val trackDao: TrackDao = RoomDatabaseBuilder.database.trackDao()
     private val repository = TrackDataRepository.sharedInstance

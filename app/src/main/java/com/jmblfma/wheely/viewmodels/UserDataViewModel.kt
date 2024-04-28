@@ -10,18 +10,18 @@ import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.repository.UserDataRepository
 import kotlinx.coroutines.launch
 
-class UserDataViewModel : ViewModel(){
+class UserDataViewModel : ViewModel() {
     private val userDao: UserDao = RoomDatabaseBuilder.database.userDao()
     private val repository = UserDataRepository.sharedInstance
 
     private val _userAdditionStatus = MutableLiveData<String?>()
-    val userPostStatus : LiveData<String?>
+    val userPostStatus: LiveData<String?>
         get() = _userAdditionStatus
 
-    fun addUser(user: User){
+    fun addUser(user: User) {
         viewModelScope.launch {
             repository.addUser(user) { isSuccess ->
-                if(isSuccess){
+                if (isSuccess) {
                     _userAdditionStatus.postValue("User added successfully")
                 } else {
                     _userAdditionStatus.postValue("User with this email already exists")

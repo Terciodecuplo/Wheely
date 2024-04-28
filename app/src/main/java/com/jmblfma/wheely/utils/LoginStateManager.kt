@@ -6,7 +6,8 @@ import com.jmblfma.wheely.MyApp
 import com.jmblfma.wheely.model.User
 
 object LoginStateManager {
-    private val prefs = MyApp.applicationContext().getSharedPreferences("UserSessionPrefs", Context.MODE_PRIVATE)
+    private val prefs =
+        MyApp.applicationContext().getSharedPreferences("UserSessionPrefs", Context.MODE_PRIVATE)
     private val gson = Gson()
 
     var isFirstLaunch: Boolean

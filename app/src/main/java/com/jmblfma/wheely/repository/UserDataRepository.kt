@@ -14,7 +14,7 @@ class UserDataRepository {
     }
 
     suspend fun addUser(user: User, onResult: (Boolean) -> Unit) {
-        if(userDao.checkEmailExists(user.email)){
+        if (userDao.checkEmailExists(user.email)) {
             onResult(false)
         } else {
             try {

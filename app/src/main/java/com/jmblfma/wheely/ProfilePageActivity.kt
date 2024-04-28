@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -14,7 +13,6 @@ import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserSessionManager
-import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
@@ -71,7 +69,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
         return R.id.nav_profile
     }
 
-    private fun profileUserMainDataSetup(){
-        binding.userName.text = UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
+    private fun profileUserMainDataSetup() {
+        binding.userName.text =
+            UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
     }
 }

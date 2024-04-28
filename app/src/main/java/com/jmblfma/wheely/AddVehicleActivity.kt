@@ -23,7 +23,7 @@ class AddVehicleActivity : AppCompatActivity() {
             viewModel.addVehicle(newVehicle)
             finish()
         }
-        viewModel.vehiclePostStatus.observe(this) {status ->
+        viewModel.vehiclePostStatus.observe(this) { status ->
             status?.let {
                 showSnackbar(it)
             }
@@ -49,6 +49,7 @@ class AddVehicleActivity : AppCompatActivity() {
             LocalDate.now().toString()
         )
     }
+
     private fun showSnackbar(message: String) {
         Snackbar.make(findViewById(R.id.new_vehicle_layout), message, Snackbar.LENGTH_LONG).show()
     }
