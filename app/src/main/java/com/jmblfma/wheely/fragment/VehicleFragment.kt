@@ -23,7 +23,6 @@ class VehicleFragment : Fragment() {
     private lateinit var gridRecyclerView: RecyclerView
     private lateinit var vehicleList: List<Vehicle>
     private val repository = VehicleDataRepository.sharedInstance
-    private val viewModel: NewVehicleDataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
