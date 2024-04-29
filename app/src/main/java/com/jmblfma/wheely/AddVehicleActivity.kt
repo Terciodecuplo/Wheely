@@ -1,6 +1,9 @@
 package com.jmblfma.wheely
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toolbar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -27,9 +30,11 @@ class AddVehicleActivity : AppCompatActivity() {
         }
 
         binding.addVehicleButton.setOnClickListener {
-            val newVehicle = setNewVehicleData()
-            viewModel.addVehicle(newVehicle)
-            finish()
+            if (!formHasErrors(findViewById(R.id.new_vehicle_layout))) {
+                val newVehicle = setNewVehicleData()
+                viewModel.addVehicle(newVehicle)
+                finish()
+            }
         }
         viewModel.vehiclePostStatus.observe(this) { status ->
             status?.let {
@@ -56,6 +61,32 @@ class AddVehicleActivity : AppCompatActivity() {
             horsepower,
             LocalDate.now().toString()
         )
+    }
+
+    private fun formHasErrors(view: View): Boolean {
+        var hasError = false
+
+        if (view is EditText) {
+
+            if (view.text.toString().trim().isEmpty()) {
+                view.error = getString(R.string.form_error_empty_field)
+                hasError = true
+            }
+
+            if (!hasError) {
+                view.error = null
+            }
+        }
+
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                if (formHasErrors(view.getChildAt(i))) {
+                    hasError = true
+                }
+            }
+        }
+
+        return hasError
     }
 
     private fun showSnackbar(message: String) {
