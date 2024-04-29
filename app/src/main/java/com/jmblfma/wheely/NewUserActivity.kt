@@ -35,12 +35,17 @@ class NewUserActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarNewUser)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        binding.toolbarNewUser.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
         }
         binding.addUserButton.setOnClickListener {
             if (!formHasErrors(findViewById(R.id.new_user_layout))) {
                 postUser()
+                finish()
+
             }
         }
         viewModel.userPostStatus.observe(this) { status ->
@@ -104,28 +109,6 @@ class NewUserActivity : AppCompatActivity() {
 
         return hasError
     }
-
-    /*
-        private fun validateForm() {
-            if (binding.userNicknameEdittext.text.toString().trim().isEmpty()) {
-                binding.userNicknameEdittext.error = getString(R.string.form_error_empty_field)
-            }
-            if (binding.userFirstnameEdittext.text.toString().trim().isEmpty()) {
-                binding.userFirstnameEdittext.error = getString(R.string.form_error_empty_field)
-            }
-            if (binding.userLastnameEdittext.text.toString().trim().isEmpty()) {
-                binding.userLastnameEdittext.error = getString(R.string.form_error_empty_field)
-            }
-            if (binding.userEmailEdittext.text.toString().trim().isEmpty()) {
-                binding.userEmailEdittext.error = getString(R.string.form_error_empty_field)
-            }
-            if (binding.userBirthdayEdittext.text.toString().trim().isEmpty()) {
-                binding.userBirthdayEdittext.error = getString(R.string.form_error_empty_field)
-            }
-        }
-
-     */
-
 
     private fun postUser() {
         val newUser = User(
