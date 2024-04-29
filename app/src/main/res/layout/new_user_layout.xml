@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="@+id/user_image" />
 
     <Button
-        android:id="@+id/add_vehicle_button"
+        android:id="@+id/add_user_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_user_button"
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="@string/user_nickname"
+        android:text="@string/user_username"
         app:layout_constraintStart_toStartOf="@+id/user_image"
         app:layout_constraintTop_toBottomOf="@id/user_image" />
 
@@ -61,7 +61,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
-        android:hint="@string/user_nickname_hint"
+        android:hint="@string/user_username_hint"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/user_image"
         app:layout_constraintTop_toBottomOf="@+id/user_nickname_textview" />
@@ -80,6 +81,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/user_firstname_hint"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
         app:layout_constraintStart_toStartOf="@+id/user_image"
         app:layout_constraintTop_toBottomOf="@+id/user_firstname_textview" />
@@ -99,6 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="20dp"
         android:hint="@string/user_lastname_hint"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/user_image"
         app:layout_constraintTop_toBottomOf="@+id/user_lastname_textview" />
@@ -117,6 +120,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/user_email_hint"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
         app:layout_constraintStart_toStartOf="@+id/user_image"
         app:layout_constraintTop_toBottomOf="@+id/user_email_textview" />
@@ -133,11 +137,12 @@
     <EditText
         android:id="@+id/user_birthday_edittext"
         android:layout_width="0dp"
-        android:focusable="false"
-        android:cursorVisible="false"
-        android:clickable="true"
         android:layout_height="wrap_content"
+        android:clickable="true"
+        android:cursorVisible="false"
+        android:focusable="false"
         android:hint="@string/user_birthday_hint"
+        android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
         app:layout_constraintStart_toStartOf="@+id/user_image"
         app:layout_constraintTop_toBottomOf="@+id/user_birthday_textview" />

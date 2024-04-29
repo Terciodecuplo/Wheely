@@ -37,4 +37,14 @@ class UserDataRepository {
             throw Exception("Database error: ${e.message}")
         }
     }
+
+    suspend fun checkUserExists(email: String, onResult: (Boolean) -> Unit) {
+        try{
+            val user = userDao.checkEmailExists(email)
+            onResult(true)
+        }catch (e: Exception){
+            onResult(false)
+            throw  Exception("Email exists error: ${e.message}")
+        }
+    }
 }

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.ActivityMainBinding
-import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.UserSessionManager
