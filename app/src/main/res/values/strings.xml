@@ -9,6 +9,7 @@
     <string name="vehicle_grid_link">Vehicles</string>
     <string name="track_history_link">History</string>
     <string name="logout_menu_item">Logout</string>
+    <string name="add_vehicle_button">Add Vehicle</string>
     <string name="new_vehicle_menu_item">Add vehicle</string>
     <string name="new_vehicle_brand">Brand</string>
     <string name="new_vehicle_model">Model</string>
@@ -20,5 +21,19 @@
     <string name="new_vehicle_model_hint">Which model is it?</string>
     <string name="new_vehicle_year_hint">What year is it from?</string>
     <string name="new_vehicle_horsepower_hint">How many HP does it have?</string>
+    <string name="add_user_button">Add User</string>
+    <string name="user_username">Username</string>
+    <string name="user_username_hint">How do you want to be called?</string>
+    <string name="user_firstname">Firstname</string>
+    <string name="user_firstname_hint">What is your name?</string>
+    <string name="user_lastname">Lastname</string>
+    <string name="user_lastname_hint">What is your lastname?</string>
+    <string name="user_email">Email</string>
+    <string name="user_email_hint">What is your email?</string>
+    <string name="user_birthday">Date of Birth</string>
+    <string name="user_birthday_hint">dd/mm/yyyy</string>
+    <string name="form_error_empty_field">This field cannot be empty</string>
+    <string name="form_error_invalid_email_format">The email format is not correct</string>
+
 
 </resources>
