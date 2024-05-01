@@ -25,6 +25,7 @@ import com.jmblfma.wheely.databinding.NewUserLayoutBinding
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.ImagePicker.createImageFile
+import com.jmblfma.wheely.utils.ImagePicker.fixImageOrientation
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
+import java.util.UUID
 
 class NewUserActivity : AppCompatActivity() {
     private lateinit var binding: NewUserLayoutBinding
@@ -126,17 +128,21 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
+        val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let { receivedUri ->
                     // Use Glide to load and display the image without delays
-                    Glide.with(this).load(receivedUri).into(binding.userImage)
+                    Glide
+                        .with(this@NewUserActivity)
+                        .load(receivedUri)
+                        .into(binding.userImage)
+                    val bitmap = fixImageOrientation(this, uri)
                     // Save the image asynchronously
                     CoroutineScope(Dispatchers.IO).launch {
-                        val bitmap = ImagePicker.getBitmapFromUri(this@NewUserActivity, uri)
                         bitmap?.let {
                             savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@NewUserActivity, it, "profile_image.jpg"
+                                this@NewUserActivity, it, "profile-pic-$imageId.jpg"
                             )
                         }
                     }
@@ -145,11 +151,21 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun setupTakePictureLauncher() {
+        val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
-                    photoURI?.let {
-                        binding.userImage.setImageURI(it)
+                    photoURI?.let { receivedUri ->
+                        binding.userImage.setImageURI(receivedUri)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val bitmap =
+                                ImagePicker.getBitmapFromUri(this@NewUserActivity, receivedUri)
+                            bitmap?.let {
+                                savedPath = ImagePicker.saveImageToInternalStorage(
+                                    this@NewUserActivity, it, "profile-pic-$imageId.jpg"
+                                )
+                            }
+                        }
                     }
                 }
             }

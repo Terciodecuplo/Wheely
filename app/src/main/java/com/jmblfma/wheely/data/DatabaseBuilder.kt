@@ -12,6 +12,7 @@ object RoomDatabaseBuilder {
             "wheely_rooms_db"
         )
             .addMigrations(MIGRATION_1_2)
+            .addMigrations(MIGRATION_2_3)
             .build()
     }
     val database: AppDatabase
