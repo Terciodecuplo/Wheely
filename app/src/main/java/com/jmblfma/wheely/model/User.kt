@@ -11,5 +11,6 @@ data class User(
     val firstName: String = "Pedro",
     val lastName: String = "Picapiedra",
     val email: String = "flintstones@stoneage.bc",
-    val dateOfBirth: String = "01/01/00"
+    val dateOfBirth: String = "01/01/00",
+    val profileImage: String = ""
 )

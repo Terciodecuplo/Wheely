@@ -1,5 +1,6 @@
 package com.jmblfma.wheely
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.pm.PackageManager
@@ -11,15 +12,13 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewUserLayoutBinding
 import com.jmblfma.wheely.model.User
@@ -27,6 +26,9 @@ import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.ImagePicker.createImageFile
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
 
@@ -34,10 +36,10 @@ class NewUserActivity : AppCompatActivity() {
     private lateinit var binding: NewUserLayoutBinding
     private val calendar = Calendar.getInstance()
     private val viewModel: UserDataViewModel by viewModels()
-    private lateinit var profileImageView: ImageView
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var photoURI: Uri? = null
+    private var savedPath: String? = null
 
     companion object {
         private val EMAIL_PATTERN = "^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\\.[a-zA-Z]{2,}$".toRegex()
@@ -77,8 +79,7 @@ class NewUserActivity : AppCompatActivity() {
                 showSnackbar(it)
                 binding.userEmailEdittext.setTextColor(
                     ContextCompat.getColor(
-                        this,
-                        R.color.incorrect_field_data
+                        this, R.color.incorrect_field_data
                     )
                 )
                 binding.userEmailEdittext.requestFocus()
@@ -124,13 +125,17 @@ class NewUserActivity : AppCompatActivity() {
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let { receivedUri ->
-                    profileImageView.setImageURI(receivedUri)
-                    val bitmap = ImagePicker.getBitmapFromUri(this, receivedUri)
-                    bitmap?.let {receivedBitmap ->
-                        val savedPath = ImagePicker.saveImageToInternalStorage(this, receivedBitmap, "profile_image.png")
+                    // Use Glide to load and display the image without delays
+                    Glide.with(this).load(receivedUri).into(binding.userImage)
+                    // Save the image asynchronously
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val bitmap = ImagePicker.getBitmapFromUri(this@NewUserActivity, uri)
+                        bitmap?.let {
+                            savedPath = ImagePicker.saveImageToInternalStorage(
+                                this@NewUserActivity, it, "profile_image.jpg"
+                            )
+                        }
                     }
-
-                    //saveImageToInternalStorage(it)
                 }
             }
     }
@@ -140,17 +145,26 @@ class NewUserActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     photoURI?.let {
-                        profileImageView.setImageURI(it)
-                        //saveImageToInternalStorage(it)
+                        binding.userImage.setImageURI(it)
                     }
                 }
             }
     }
 
-    private fun checkCameraPermission(){
-        PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            takePicture()
+        } else {
+            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+        }
     }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -166,9 +180,9 @@ class NewUserActivity : AppCompatActivity() {
     private fun takePicture() {
         // Ensure the device has a camera
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            // Create a file URI to save the image
-            photoURI = createImageFile(this)  // This would use your FileUtils class to create a file
-            takePictureLauncher.launch(photoURI)  // Launch the camera activity
+            photoURI =
+                createImageFile(this)
+            takePictureLauncher.launch(photoURI)
         } else {
             showSnackbar("This device does not have a camera")
         }
@@ -220,14 +234,16 @@ class NewUserActivity : AppCompatActivity() {
             binding.userFirstnameEdittext.text.toString(),
             binding.userLastnameEdittext.text.toString(),
             binding.userEmailEdittext.text.toString(),
-            binding.userBirthdayEdittext.text.toString()
+            binding.userBirthdayEdittext.text.toString(),
+            savedPath.toString()
         )
         viewModel.addUser(newUser)
     }
 
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(
-            this, { DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+            this,
+            { DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(year, monthOfYear, dayOfMonth)
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -243,8 +259,7 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun showSnackbar(message: String) {
-        Snackbar.make(findViewById(R.id.new_user_layout), message, Snackbar.LENGTH_LONG)
-            .show()
+        Snackbar.make(findViewById(R.id.new_user_layout), message, Snackbar.LENGTH_LONG).show()
     }
 
 }

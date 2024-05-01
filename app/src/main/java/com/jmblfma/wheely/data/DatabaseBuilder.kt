@@ -10,7 +10,9 @@ object RoomDatabaseBuilder {
             MyApp.applicationContext(),
             AppDatabase::class.java,
             "wheely_rooms_db"
-        ).build()
+        )
+            .addMigrations(MIGRATION_1_2)
+            .build()
     }
     val database: AppDatabase
         get() = instance
