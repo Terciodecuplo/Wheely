@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
@@ -72,5 +74,18 @@ class ProfilePageActivity : NavigationMenuActivity() {
     private fun profileUserMainDataSetup() {
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
+        setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
+    }
+
+    fun setProfileImage(imageView: ImageView, imagePath: String?) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            Glide.with(imageView.context)
+                .load(R.drawable.user_default_pic) // Your placeholder drawable
+                .into(imageView)
+        } else {
+            Glide.with(imageView.context)
+                .load(imagePath)
+                .into(imageView)
+        }
     }
 }
