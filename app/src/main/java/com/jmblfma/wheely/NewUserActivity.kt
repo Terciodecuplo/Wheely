@@ -11,6 +11,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,6 +53,7 @@ class NewUserActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarNewUser)
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setupImagePickerLauncher()
         setupTakePictureLauncher()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -59,7 +61,9 @@ class NewUserActivity : AppCompatActivity() {
         binding.toolbarNewUser.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
+        binding.userBirthdayEdittext.setOnFocusChangeListener { _, _ ->
+            showDatePicker()
+        }
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
         }
