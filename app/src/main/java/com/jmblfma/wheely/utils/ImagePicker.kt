@@ -25,7 +25,6 @@ object ImagePicker {
         }
     }
 
-    // Function to save Bitmap to internal storage
     fun saveImageToInternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
         return try {
             val file = File(context.filesDir, fileName)
@@ -45,14 +44,12 @@ object ImagePicker {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-        // Create a temporary file
         val imageFile = File.createTempFile(
-            "JPEG_${timeStamp}_", // Prefix
-            ".jpg",               // Suffix
-            storageDir            // Directory
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
         )
 
-        // Return a content URI for the file
         return FileProvider.getUriForFile(context, "${context.packageName}.provider", imageFile)
     }
 

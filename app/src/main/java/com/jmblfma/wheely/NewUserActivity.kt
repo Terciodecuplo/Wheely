@@ -18,12 +18,14 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewUserLayoutBinding
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.ImagePicker.createImageFile
+import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import java.util.Calendar
 import java.util.Locale
@@ -39,6 +41,7 @@ class NewUserActivity : AppCompatActivity() {
 
     companion object {
         private val EMAIL_PATTERN = "^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\\.[a-zA-Z]{2,}$".toRegex()
+        private const val CAMERA_REQUEST_CODE = 101
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +108,7 @@ class NewUserActivity : AppCompatActivity() {
 
         builder.setItems(options) { _, which ->
             when (which) {
-                0 -> takePicture()
+                0 -> checkCameraPermission()
                 1 -> chooseImageFromGallery()
             }
         }
@@ -120,11 +123,11 @@ class NewUserActivity : AppCompatActivity() {
     private fun setupImagePickerLauncher() {
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-                uri?.let {
-                    profileImageView.setImageURI(it)
-                    val bitmap = ImagePicker.getBitmapFromUri(this, it)
-                    bitmap?.let {
-                        val savedPath = ImagePicker.saveImageToInternalStorage(this, it, "profile_image.png")
+                uri?.let { receivedUri ->
+                    profileImageView.setImageURI(receivedUri)
+                    val bitmap = ImagePicker.getBitmapFromUri(this, receivedUri)
+                    bitmap?.let {receivedBitmap ->
+                        val savedPath = ImagePicker.saveImageToInternalStorage(this, receivedBitmap, "profile_image.png")
                     }
 
                     //saveImageToInternalStorage(it)
@@ -143,6 +146,23 @@ class NewUserActivity : AppCompatActivity() {
                 }
             }
     }
+
+    private fun checkCameraPermission(){
+        PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted
+                takePicture()
+            } else {
+                // Permission was denied
+                showSnackbar("Camera permission is necessary to use the camera")
+            }
+        }
+    }
+
     private fun takePicture() {
         // Ensure the device has a camera
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
@@ -150,7 +170,7 @@ class NewUserActivity : AppCompatActivity() {
             photoURI = createImageFile(this)  // This would use your FileUtils class to create a file
             takePictureLauncher.launch(photoURI)  // Launch the camera activity
         } else {
-            Toast.makeText(this, "This device does not have a camera", Toast.LENGTH_SHORT).show()
+            showSnackbar("This device does not have a camera")
         }
     }
 
