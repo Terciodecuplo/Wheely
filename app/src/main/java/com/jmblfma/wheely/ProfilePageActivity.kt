@@ -78,7 +78,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        if (imagePath == null || imagePath.isEmpty()) {
+        if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(R.drawable.user_default_pic) // Your placeholder drawable
                 .into(imageView)

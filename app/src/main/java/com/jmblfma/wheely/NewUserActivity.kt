@@ -153,9 +153,8 @@ class NewUserActivity : AppCompatActivity() {
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.userImage.setImageURI(receivedUri)
+                        val bitmap = fixImageOrientation(this, receivedUri)
                         CoroutineScope(Dispatchers.IO).launch {
-                            val bitmap =
-                                ImagePicker.getBitmapFromUri(this@NewUserActivity, receivedUri)
                             bitmap?.let {
                                 savedPath = ImagePicker.saveImageToInternalStorage(
                                     this@NewUserActivity, it, "profile-pic-$imageId.jpg"

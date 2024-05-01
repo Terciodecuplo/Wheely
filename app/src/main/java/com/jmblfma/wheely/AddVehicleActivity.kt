@@ -136,9 +136,8 @@ class AddVehicleActivity : AppCompatActivity() {
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.vehiclePreviewImage.setImageURI(receivedUri)
+                        val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
                         CoroutineScope(Dispatchers.IO).launch {
-                            val bitmap =
-                                ImagePicker.getBitmapFromUri(this@AddVehicleActivity, receivedUri)
                             bitmap?.let {
                                 savedPath = ImagePicker.saveImageToInternalStorage(
                                     this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
