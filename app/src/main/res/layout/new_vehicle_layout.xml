@@ -30,7 +30,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_menu_compass"
+        android:src="@drawable/ic_edit"
         app:layout_constraintBottom_toBottomOf="@+id/vehicle_preview_image"
         app:layout_constraintEnd_toEndOf="@+id/vehicle_preview_image" />
 

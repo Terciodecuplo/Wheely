@@ -2,19 +2,28 @@ package com.jmblfma.wheely
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewUserLayoutBinding
 import com.jmblfma.wheely.model.User
+import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.ImagePicker.createImageFile
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import java.util.Calendar
 import java.util.Locale
@@ -23,8 +32,12 @@ class NewUserActivity : AppCompatActivity() {
     private lateinit var binding: NewUserLayoutBinding
     private val calendar = Calendar.getInstance()
     private val viewModel: UserDataViewModel by viewModels()
+    private lateinit var profileImageView: ImageView
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private var photoURI: Uri? = null
 
-    companion object{
+    companion object {
         private val EMAIL_PATTERN = "^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\\.[a-zA-Z]{2,}$".toRegex()
     }
 
@@ -32,12 +45,16 @@ class NewUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = NewUserLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         setSupportActionBar(binding.toolbarNewUser)
+        setupImagePickerLauncher()
+        setupTakePictureLauncher()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         binding.toolbarNewUser.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
         }
@@ -48,6 +65,10 @@ class NewUserActivity : AppCompatActivity() {
 
             }
         }
+        binding.addUserImage.setOnClickListener {
+            showImageSourceDialog()
+        }
+
         viewModel.userPostStatus.observe(this) { status ->
             status?.let {
                 showSnackbar(it)
@@ -76,6 +97,68 @@ class NewUserActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun showImageSourceDialog() {
+        val options = arrayOf("Take Photo", "Choose from Gallery")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Select Image")
+
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> takePicture()
+                1 -> chooseImageFromGallery()
+            }
+        }
+
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+        val dialog = builder.create()
+        dialog.show()
+
+
+    }
+
+    private fun setupImagePickerLauncher() {
+        imagePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                uri?.let {
+                    profileImageView.setImageURI(it)
+                    val bitmap = ImagePicker.getBitmapFromUri(this, it)
+                    bitmap?.let {
+                        val savedPath = ImagePicker.saveImageToInternalStorage(this, it, "profile_image.png")
+                    }
+
+                    //saveImageToInternalStorage(it)
+                }
+            }
+    }
+
+    private fun setupTakePictureLauncher() {
+        takePictureLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                if (success) {
+                    photoURI?.let {
+                        profileImageView.setImageURI(it)
+                        //saveImageToInternalStorage(it)
+                    }
+                }
+            }
+    }
+    private fun takePicture() {
+        // Ensure the device has a camera
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            // Create a file URI to save the image
+            photoURI = createImageFile(this)  // This would use your FileUtils class to create a file
+            takePictureLauncher.launch(photoURI)  // Launch the camera activity
+        } else {
+            Toast.makeText(this, "This device does not have a camera", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun chooseImageFromGallery() {
+        // MIME type for image/* to select any image type
+        imagePickerLauncher.launch("image/*")
+    }
+
 
     private fun formHasErrors(view: View): Boolean {
         var hasError = false
@@ -140,7 +223,8 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun showSnackbar(message: String) {
-        Snackbar.make(findViewById(R.id.new_user_layout), message, Snackbar.LENGTH_LONG).show()
+        Snackbar.make(findViewById(R.id.new_user_layout), message, Snackbar.LENGTH_LONG)
+            .show()
     }
 
 }
