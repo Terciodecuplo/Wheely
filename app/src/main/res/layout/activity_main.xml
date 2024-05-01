@@ -30,13 +30,13 @@
 
     <EditText
         android:id="@+id/login_email"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:maxLines="1"
         android:imeOptions="actionDone"
         android:layout_marginBottom="30dp"
-        android:hint="Write here your email to login"
+        android:hint="@string/login_email_hint"
         app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

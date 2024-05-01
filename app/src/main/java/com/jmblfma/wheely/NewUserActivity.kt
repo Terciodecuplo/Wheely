@@ -112,19 +112,15 @@ class NewUserActivity : AppCompatActivity() {
         val options = arrayOf("Take Photo", "Choose from Gallery")
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Select Image")
-
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> checkCameraPermission()
                 1 -> chooseImageFromGallery()
             }
         }
-
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
-
-
     }
 
     private fun setupImagePickerLauncher() {

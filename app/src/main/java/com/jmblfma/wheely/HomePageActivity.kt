@@ -77,7 +77,8 @@ class HomePageActivity : NavigationMenuActivity() {
             model = "Mt07",
             year = "2017",
             horsepower = 500,
-            dateAdded = LocalDate.now().toString()
+            dateAdded = LocalDate.now().toString(),
+            ""
         )
 
         val trackData = arrayListOf<TrackPoint>()
