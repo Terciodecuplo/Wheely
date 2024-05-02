@@ -2,11 +2,15 @@ package com.jmblfma.wheely
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.UUID
+
 
 class AddVehicleActivity : AppCompatActivity() {
     private lateinit var binding: NewVehicleLayoutBinding
@@ -53,6 +58,7 @@ class AddVehicleActivity : AppCompatActivity() {
         binding.toolbarNewVehicle.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
         binding.addVehiclePreviewImage.setOnClickListener {
             showImageSourceDialog()
         }
@@ -68,9 +74,38 @@ class AddVehicleActivity : AppCompatActivity() {
                 showSnackbar(it)
             }
         }
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val earliestYear = 1885 //First motorcycle invention
+
+
+        binding.newVehicleYearEdittext.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val enteredText = v.text.toString()
+                if (enteredText.isNotEmpty()) {
+                    try {
+                        val year = enteredText.toInt()
+                        if (year < earliestYear || year > currentYear) {
+                            binding.newVehicleYearEdittext.error = "Year must be between $earliestYear and $currentYear"
+                            if(year<earliestYear){
+                                showSnackbar("Did you know the first motorcycle was invented in 1885?")
+                            }
+                            true
+                        } else {
+                            false
+                        }
+                    } catch (e: NumberFormatException) {
+                        binding.newVehicleYearTextview.error = "Invalid input"
+                        true
+                    }
+                } else {
+                    false
+                }
+            } else {
+                false
+            }
+        }
 
     }
-
 
     private fun setNewVehicleData(): Vehicle {
         val horsepower: Int = try {

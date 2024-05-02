@@ -183,10 +183,10 @@ class NewUserActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted
+                // Permission is granted
                 takePicture()
             } else {
-                // Permission was denied
+                // Permission is denied
                 showSnackbar("Camera permission is necessary to use the camera")
             }
         }
