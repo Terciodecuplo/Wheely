@@ -12,10 +12,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
 
     <application
         android:name=".MyApp"
@@ -38,11 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".HomePageActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".ProfilePageActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".RecordActivityTest"
             android:screenOrientation="portrait"/>
         <activity android:name=".AddVehicleActivity"
             android:screenOrientation="portrait"/>
@@ -50,12 +48,17 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".UserStatsActivity"
             android:screenOrientation="portrait"/>
-
+        <activity android:name=".TrackRecordingActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".TrackViewerActivity"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".services.TrackingService"
             android:exported="false"
-            android:foregroundServiceType="location"/>
+            android:foregroundServiceType="location"
+            tools:ignore="ForegroundServicePermission" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -67,5 +70,4 @@
         </provider>
 
     </application>
-
 </manifest>

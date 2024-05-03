@@ -7,32 +7,21 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
-import com.jmblfma.wheely.model.DataSummary
 import com.jmblfma.wheely.model.Post
-import com.jmblfma.wheely.model.Track
-import com.jmblfma.wheely.model.TrackPoint
-import com.jmblfma.wheely.model.User
-import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserSessionManager
-import java.time.LocalDate
-import java.time.ZonedDateTime
 
 class HomePageActivity : NavigationMenuActivity() {
     private lateinit var binding: HomePageBinding
     private lateinit var postsAdapter: PostsAdapter
     private lateinit var postList: ArrayList<Post>
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbarHome)
-
-
         postList = ArrayList()
-        
 
         postsAdapter = PostsAdapter(postList, this)
         binding.postRecycler.adapter = postsAdapter
@@ -61,5 +50,4 @@ class HomePageActivity : NavigationMenuActivity() {
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_posts // Return the ID of the bottom navigation menu item for HomePageActivity
     }
-
 }

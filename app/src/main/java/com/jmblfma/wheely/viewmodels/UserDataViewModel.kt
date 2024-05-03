@@ -12,7 +12,7 @@ import com.jmblfma.wheely.utils.UserSessionManager
 import kotlinx.coroutines.launch
 
 class UserDataViewModel : ViewModel() {
-    private val userDao: UserDao = RoomDatabaseBuilder.database.userDao()
+    private val userDao: UserDao = RoomDatabaseBuilder.sharedInstance.userDao()
     private val repository = UserDataRepository.sharedInstance
     private val _userUpdateStatus = MutableLiveData<String?>()
     private val _userAdditionStatus = MutableLiveData<String?>()

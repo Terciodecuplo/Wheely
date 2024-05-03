@@ -6,7 +6,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.jmblfma.wheely.HomePageActivity
 import com.jmblfma.wheely.ProfilePageActivity
 import com.jmblfma.wheely.R
-import com.jmblfma.wheely.RecordActivityTest
+import com.jmblfma.wheely.TrackRecordingActivity
+import com.jmblfma.wheely.TrackViewerActivity
 
 abstract class NavigationMenuActivity : AppCompatActivity() {
     protected fun setupBottomNavigation() {
@@ -20,8 +21,12 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
                 }
 
                 R.id.nav_record -> {
+/*
                     startActivityIfNeeded(Intent(this, RecordActivityTest::class.java), 0)
-                    finish()
+                    finish()*/
+
+                    startActivityIfNeeded(Intent(this, TrackRecordingActivity::class.java), 0)
+
                     true
                 }
 
@@ -31,10 +36,14 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
                     true
                 }
 
+                R.id.nav_viewer -> {
+                    startActivityIfNeeded(Intent(this, TrackViewerActivity::class.java), 0)
+                    true
+                }
+
                 else -> false
             }
         }
-
 
         val menu = bottomNavigation.menu
         val menuItemId = getBottomNavigationMenuItemId()
