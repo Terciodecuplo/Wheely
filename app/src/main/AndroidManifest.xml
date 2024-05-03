@@ -46,6 +46,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".NewUserActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".UserStatsActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".TrackRecordingActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".TrackViewerActivity"

@@ -16,21 +16,29 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_posts -> {
                     startActivityIfNeeded(Intent(this, HomePageActivity::class.java), 0)
+                    finish()
                     true
                 }
 
                 R.id.nav_record -> {
+/*
+                    startActivityIfNeeded(Intent(this, RecordActivityTest::class.java), 0)
+                    finish()*/
+
                     startActivityIfNeeded(Intent(this, TrackRecordingActivity::class.java), 0)
+                    finish()
                     true
                 }
 
                 R.id.nav_profile -> {
                     startActivityIfNeeded(Intent(this, ProfilePageActivity::class.java), 0)
+                    finish()
                     true
                 }
 
                 R.id.nav_viewer -> {
                     startActivityIfNeeded(Intent(this, TrackViewerActivity::class.java), 0)
+                    finish()
                     true
                 }
 
