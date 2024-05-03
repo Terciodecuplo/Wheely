@@ -1,146 +1,111 @@
 package com.jmblfma.wheely
 
 import android.Manifest
-import android.content.Intent
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
 import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.ImageView
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
-import com.jmblfma.wheely.databinding.UserProfileMainBinding
-import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.databinding.NewUserLayoutBinding
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
-import com.jmblfma.wheely.utils.LoginStateManager
-import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.ImagePicker.createImageFile
+import com.jmblfma.wheely.utils.ImagePicker.fixImageOrientation
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.Calendar
+import java.util.Locale
 import java.util.UUID
 
-class ProfilePageActivity : NavigationMenuActivity() {
-    private lateinit var binding: UserProfileMainBinding
-    private lateinit var trackHistoryList: ArrayList<Track>
+class NewUserActivity : AppCompatActivity() {
+    private lateinit var binding: NewUserLayoutBinding
+    private val calendar = Calendar.getInstance()
+    private val viewModel: UserDataViewModel by viewModels()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
-    private val viewModel: UserDataViewModel by viewModels()
     private var photoURI: Uri? = null
     private var savedPath: String? = null
 
     companion object {
+        private val EMAIL_PATTERN = "^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\\.[a-zA-Z]{2,}$".toRegex()
         private const val CAMERA_REQUEST_CODE = 101
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = UserProfileMainBinding.inflate(layoutInflater)
+        binding = NewUserLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupBottomNavigation()
-        setSupportActionBar(binding.toolbarProfile)
+
+        setSupportActionBar(binding.toolbarNewUser)
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         setupImagePickerLauncher()
         setupTakePictureLauncher()
-        val viewPager: ViewPager2 = binding.viewPager
-        val tabLayout: TabLayout = binding.tabLayout
-        binding.editBannerProfile.setOnClickListener {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        binding.toolbarNewUser.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+        binding.userBirthdayEdittext.setOnClickListener {
+            showDatePicker()
+        }
+        binding.addUserButton.setOnClickListener {
+            if (!formHasErrors(findViewById(R.id.new_user_layout))) {
+                postUser()
+                finish()
+
+            }
+        }
+        binding.addUserImage.setOnClickListener {
             showImageSourceDialog()
         }
-        profileUserMainDataSetup()
-        trackHistoryList = ArrayList()
 
-        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
-
-        binding.viewPager.adapter = profileViewPagerAdapter
-
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "History"
-                1 -> "Vehicles"
-                else -> null
-            }
-        }.attach()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_profile_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.logout_menu_option -> {
-                LoginStateManager.setLoggedIn(false)
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-
-            R.id.add_vehicle_menu_option -> {
-                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
-                startActivity(intent)
+        viewModel.userPostStatus.observe(this) { status ->
+            status?.let {
+                showSnackbar(it)
+                binding.userEmailEdittext.setTextColor(
+                    ContextCompat.getColor(
+                        this, R.color.incorrect_field_data
+                    )
+                )
+                binding.userEmailEdittext.requestFocus()
             }
         }
-        return true
-    }
+        binding.userEmailEdittext.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    override fun getBottomNavigationMenuItemId(): Int {
-        return R.id.nav_profile
-    }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-    private fun profileUserMainDataSetup() {
-        binding.userName.text =
-            UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
-        setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
-        if (UserSessionManager.getCurrentUser()?.profileBanner.isNullOrEmpty()) {
-            binding.bannerProfile.setImageResource(R.drawable.ic_banner_placeholder)
-        } else {
-            setBannerImage(
-                binding.bannerProfile,
-                UserSessionManager.getCurrentUser()?.profileBanner
-            )
-        }
-    }
-
-    private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
-            Glide.with(imageView.context)
-                .load(R.drawable.user_default_pic) // Your placeholder drawable
-                .into(imageView)
-        } else {
-            Glide.with(imageView.context)
-                .load(imagePath)
-                .into(imageView)
-        }
-    }
-
-    private fun setBannerImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
-            Glide.with(imageView.context)
-                .load(R.drawable.ic_banner_placeholder) // Your placeholder drawable
-                .into(imageView)
-        } else {
-            Glide.with(imageView.context)
-                .load(imagePath)
-                .into(imageView)
-        }
+            @SuppressLint("PrivateResource")
+            override fun afterTextChanged(s: Editable?) {
+                binding.userEmailEdittext.setTextColor(
+                    ContextCompat.getColor(
+                        binding.userEmailEdittext.context,
+                        com.google.android.material.R.color.m3_default_color_primary_text
+                    )
+                )
+            }
+        })
     }
 
     private fun showImageSourceDialog() {
@@ -166,10 +131,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 uri?.let { receivedUri ->
                     // Use Glide to load and display the image without delays
                     Glide
-                        .with(this@ProfilePageActivity)
+                        .with(this@NewUserActivity)
                         .load(receivedUri)
-                        .into(binding.bannerProfile)
-                    val bitmap = ImagePicker.fixImageOrientation(this, uri)
+                        .into(binding.userImage)
+                    val bitmap = fixImageOrientation(this, uri)
                     // Save the image asynchronously
                     lifecycleScope.launch(Dispatchers.IO) {
                         bitmap?.let { it ->
@@ -180,11 +145,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
                                 }
                             }
                             savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@ProfilePageActivity, it, "banner-pic-$imageId.jpg"
+                                this@NewUserActivity, it, "profile-pic-$imageId.jpg"
                             )
-                            runOnUiThread { // This waits until the I/O saving operation finishes to persist the path into the DB
-                                updateUserBanner()
-                            }
                         }
                     }
                 }
@@ -198,8 +160,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     photoURI?.let { receivedUri ->
-                        binding.bannerProfile.setImageURI(receivedUri)
-                        val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
+                        binding.userImage.setImageURI(receivedUri)
+                        val bitmap = fixImageOrientation(this, receivedUri)
                         lifecycleScope.launch(Dispatchers.IO) {
                             bitmap?.let { it ->
                                 currentBannerImagePath?.let { path ->
@@ -209,11 +171,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
                                     }
                                 }
                                 savedPath = ImagePicker.saveImageToInternalStorage(
-                                    this@ProfilePageActivity, it, "banner-pic-$imageId.jpg"
+                                    this@NewUserActivity, it, "profile-pic-$imageId.jpg"
                                 )
-                                withContext(Dispatchers.Main) { // This waits until the I/O saving operation finishes to persist the path into the DB
-                                    updateUserBanner()
-                                }
                             }
                         }
                     }
@@ -251,7 +210,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         // Ensure the device has a camera
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             photoURI =
-                ImagePicker.createImageFile(this)
+                createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
             showSnackbar("This device does not have a camera")
@@ -263,30 +222,74 @@ class ProfilePageActivity : NavigationMenuActivity() {
         imagePickerLauncher.launch("image/*")
     }
 
-    private fun updateUserBanner() {
-        Log.d("UPDATE USER", "Banner Path: ${savedPath.toString()}")
-        UserSessionManager.getCurrentUser()?.userId?.let {
-            viewModel.updateUserBanner(
-                it,
-                savedPath.toString()
-            )
+
+    private fun formHasErrors(view: View): Boolean {
+        var hasError = false
+
+        if (view is EditText) {
+
+            if (view.text.toString().trim().isEmpty()) {
+                view.error = getString(R.string.form_error_empty_field)
+                hasError = true
+            }
+
+            if (view.id == R.id.user_email_edittext && !EMAIL_PATTERN.matches(view.text.toString())) {
+                if (view.text.toString().isNotEmpty()) {
+                    view.error = getString(R.string.form_error_invalid_email_format)
+                    hasError = true
+                }
+            }
+
+            if (!hasError) {
+                view.error = null
+            }
         }
-        val updatedUser = UserSessionManager.getCurrentUser()?.let {
-            User(
-                it.userId,
-                it.nickname,
-                it.firstName,
-                it.lastName,
-                it.email,
-                it.dateOfBirth,
-                it.profileImage,
-                savedPath.toString()
-            )
+
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                if (formHasErrors(view.getChildAt(i))) {
+                    hasError = true
+                }
+            }
         }
-        UserSessionManager.updateLoggedUser(updatedUser)
+
+        return hasError
+    }
+
+    private fun postUser() {
+        val newUser = User(
+            0,
+            binding.userNicknameEdittext.text.toString(),
+            binding.userFirstnameEdittext.text.toString(),
+            binding.userLastnameEdittext.text.toString(),
+            binding.userEmailEdittext.text.toString(),
+            binding.userBirthdayEdittext.text.toString(),
+            savedPath.toString(),
+            null
+        )
+        viewModel.addUser(newUser)
+    }
+
+    private fun showDatePicker() {
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(year, monthOfYear, dayOfMonth)
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(selectedDate.time)
+                binding.userBirthdayEdittext.setText(formattedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.show()
     }
 
     private fun showSnackbar(message: String) {
         Snackbar.make(findViewById(R.id.new_user_layout), message, Snackbar.LENGTH_LONG).show()
     }
+
 }

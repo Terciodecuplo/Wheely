@@ -5,5 +5,7 @@
     <color name="subtext_grey">#646464</color>
     <color name="tab_layout_background">#D1CECE</color>
     <color name="bottom_nav_active_icon">#75FF98</color>
+    <color name="incorrect_field_data">#D3312A</color>
+
 
 </resources>

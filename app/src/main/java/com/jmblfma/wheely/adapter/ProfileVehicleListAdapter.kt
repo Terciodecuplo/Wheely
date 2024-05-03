@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Vehicle
 
@@ -36,7 +37,7 @@ class ProfileVehicleListAdapter(
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val vehicle = vehicleList[position]
         Log.d("VehicleAdapter", "Binding vehicle: ${vehicle.model}")
-        holder.imageView.setImageResource(R.drawable.pic_vehicle_template)
+        setVehicleImage(holder.imageView, vehicle.image)
         holder.motoModel.text = vehicle.model
     }
 
@@ -61,6 +62,17 @@ class ProfileVehicleListAdapter(
         vehicleList.clear()
         vehicleList.addAll(newVehicles)
         diffResult.dispatchUpdatesTo(this)
+    }
+    fun setVehicleImage(imageView: ImageView, imagePath: String?) {
+        if (!imagePath!!.startsWith("/")) {
+            Glide.with(imageView.context)
+                .load(R.drawable.pic_vehicle_template) // Your placeholder drawable
+                .into(imageView)
+        } else {
+            Glide.with(imageView.context)
+                .load(imagePath)
+                .into(imageView)
+        }
     }
 
 }

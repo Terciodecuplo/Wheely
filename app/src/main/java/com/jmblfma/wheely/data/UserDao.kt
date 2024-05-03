@@ -1,5 +1,6 @@
 package com.jmblfma.wheely.data
 
+import android.provider.ContactsContract.CommonDataKinds.Nickname
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -16,4 +17,8 @@ interface UserDao {
 
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     suspend fun getUserByEmail(email: String): User?
+
+    @Query("UPDATE users SET profileBanner = COALESCE(:profileBanner, profileBanner) WHERE userId = :userId")
+    suspend fun updateUserBanner(userId: Int, profileBanner: String) : Int
+
 }

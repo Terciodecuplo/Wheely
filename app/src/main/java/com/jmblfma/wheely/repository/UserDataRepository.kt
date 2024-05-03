@@ -33,8 +33,25 @@ class UserDataRepository {
             val user = userDao.getUserByEmail(email)
             onResult(user)
         } catch (e: Exception) {
-            onResult(null)
             throw Exception("Database error: ${e.message}")
+        }
+    }
+
+    suspend fun updateUserBanner(userId: Int, bannerPath: String, onResult: (Int) -> Unit){
+        try {
+            val result = userDao.updateUserBanner(userId, bannerPath)
+            onResult(result) // The result will be the number of rows affected by the UPDATE
+        }catch (e:Exception){
+            throw Exception("Database error: ${e.message}")
+        }
+    }
+    suspend fun checkUserExists(email: String, onResult: (Boolean) -> Unit) {
+        try{
+            val user = userDao.checkEmailExists(email)
+            onResult(true)
+        }catch (e: Exception){
+            onResult(false)
+            throw  Exception("Email exists error: ${e.message}")
         }
     }
 }

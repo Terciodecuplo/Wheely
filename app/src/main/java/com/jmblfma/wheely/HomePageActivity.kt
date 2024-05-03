@@ -32,11 +32,7 @@ class HomePageActivity : NavigationMenuActivity() {
 
 
         postList = ArrayList()
-        postList.add(exampleData())
-        postList.add(exampleData())
-        postList.add(exampleData())
-        postList.add(exampleData())
-        postList.add(exampleData())
+        
 
         postsAdapter = PostsAdapter(postList, this)
         binding.postRecycler.adapter = postsAdapter
@@ -64,53 +60,6 @@ class HomePageActivity : NavigationMenuActivity() {
 
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_posts // Return the ID of the bottom navigation menu item for HomePageActivity
-    }
-
-    // This is just an example Data. It will be removed in the future.
-    fun exampleData(): Post {
-        val user = User(0)
-        val vehicle = Vehicle(
-            vehicleId = 1,
-            ownerId = user.userId,
-            name = "Triciclo",
-            brand = "Yamaha",
-            model = "Mt07",
-            year = "2017",
-            horsepower = 500,
-            dateAdded = LocalDate.now().toString()
-        )
-
-        val trackData = arrayListOf<TrackPoint>()
-        val dataSummary = DataSummary(
-            summaryId = 1,
-            elapsedTime = 3600.0,
-            maxSpeed = 150.0,
-            averageSpeed = 100.0,
-            distanceTraveled = 323.0,
-            maxInclination = 10.0,
-            averageInclination = 5.0,
-            maxAltitude = 200.0,
-            deltaAltitude = 50.0
-        )
-
-        val track = Track(
-            trackId = 1,
-            userId = 0,
-            vehicleId = 1,
-            name = "Morning Route around Elche",
-            generalLocation = "Elche",
-            creationTimestamp = ZonedDateTime.now().toString(),
-            difficulty = "Medium",
-        )
-
-        val post = Post(
-            postId = 1,
-            description = "Great morning route around Elche!",
-            postedBy = user,
-            associatedTrack = track,
-            datePublished = ZonedDateTime.parse("2024-01-02T08:00:00+01:00[Europe/Madrid]")
-        )
-        return post;
     }
 
 }
