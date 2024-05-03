@@ -69,6 +69,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
         val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
 
         binding.viewPager.adapter = profileViewPagerAdapter
+        binding.profileImage.setOnClickListener{
+            val intent = Intent(applicationContext, UserStatsActivity::class.java)
+            startActivity(intent)
+        }
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
@@ -77,6 +81,15 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 else -> null
             }
         }.attach()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Check if HomeActivity is in the back stack
+        val startMain = Intent(this, HomePageActivity::class.java)
+        startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(startMain)
+        finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

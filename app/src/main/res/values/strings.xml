@@ -14,6 +14,7 @@
     <string name="new_vehicle_menu_item">Add vehicle</string>
     <string name="remove_vehicle_menu_item">Remove vehicle</string>
     <string name="edit_user_menu_item">Edit user</string>
+    <string name="remove_user_menu_item">Remove user</string>
     <string name="new_vehicle_brand">Brand</string>
     <string name="new_vehicle_model">Model</string>
     <string name="new_vehicle_name">Name</string>

@@ -139,7 +139,8 @@
         android:background="@color/tab_layout_background"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="@+id/view_pager"
-        app:layout_constraintStart_toStartOf="@+id/view_pager" />
+        app:layout_constraintStart_toStartOf="@+id/view_pager"
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
