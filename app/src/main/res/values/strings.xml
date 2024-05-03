@@ -31,6 +31,7 @@
     <string name="new_vehicle_model_hint">Which model is it?*</string>
     <string name="new_vehicle_year_hint">What year is it from?*</string>
     <string name="new_vehicle_horsepower_hint">How many HP does it have?*</string>
+    <string name="submit_changes_button">Submit changes</string>
     <string name="add_user_button">Add User</string>
     <string name="user_username">Username</string>
     <string name="user_username_hint">How do you want to be called?*</string>
