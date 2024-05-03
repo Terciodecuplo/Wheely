@@ -64,7 +64,7 @@ class ProfileVehicleListAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
     fun setVehicleImage(imageView: ImageView, imagePath: String?) {
-        if (imagePath.isNullOrEmpty()) {
+        if (!imagePath!!.startsWith("/")) {
             Glide.with(imageView.context)
                 .load(R.drawable.pic_vehicle_template) // Your placeholder drawable
                 .into(imageView)

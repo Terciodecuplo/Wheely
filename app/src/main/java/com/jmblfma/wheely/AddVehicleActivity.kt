@@ -18,6 +18,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewVehicleLayoutBinding
@@ -29,6 +30,7 @@ import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.LocalDate
 import java.util.UUID
 
@@ -142,6 +144,7 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
+        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
         val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -153,8 +156,14 @@ class AddVehicleActivity : AppCompatActivity() {
                         .into(binding.vehiclePreviewImage)
                     val bitmap = ImagePicker.fixImageOrientation(this, uri)
                     // Save the image asynchronously
-                    CoroutineScope(Dispatchers.IO).launch {
-                        bitmap?.let {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        bitmap?.let { it ->
+                            currentBannerImagePath?.let { path ->
+                                val file = File(path)
+                                if (file.exists()) {
+                                    file.delete()
+                                }
+                            }
                             savedPath = ImagePicker.saveImageToInternalStorage(
                                 this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
                             )
@@ -165,6 +174,7 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun setupTakePictureLauncher() {
+        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
         val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -172,8 +182,14 @@ class AddVehicleActivity : AppCompatActivity() {
                     photoURI?.let { receivedUri ->
                         binding.vehiclePreviewImage.setImageURI(receivedUri)
                         val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            bitmap?.let {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            bitmap?.let { it ->
+                                currentBannerImagePath?.let { path ->
+                                    val file = File(path)
+                                    if (file.exists()) {
+                                        file.delete()
+                                    }
+                                }
                                 savedPath = ImagePicker.saveImageToInternalStorage(
                                     this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
                                 )

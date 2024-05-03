@@ -19,6 +19,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewUserLayoutBinding
@@ -27,10 +28,12 @@ import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.ImagePicker.createImageFile
 import com.jmblfma.wheely.utils.ImagePicker.fixImageOrientation
 import com.jmblfma.wheely.utils.PermissionsManager
+import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
@@ -62,9 +65,6 @@ class NewUserActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
         binding.toolbarNewUser.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-        }
-        binding.userBirthdayEdittext.setOnFocusChangeListener { _, _ ->
-            showDatePicker()
         }
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
@@ -124,6 +124,7 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
+        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
         val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -135,8 +136,14 @@ class NewUserActivity : AppCompatActivity() {
                         .into(binding.userImage)
                     val bitmap = fixImageOrientation(this, uri)
                     // Save the image asynchronously
-                    CoroutineScope(Dispatchers.IO).launch {
-                        bitmap?.let {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        bitmap?.let { it ->
+                            currentBannerImagePath?.let { path ->
+                                val file = File(path)
+                                if (file.exists()) {
+                                    file.delete()
+                                }
+                            }
                             savedPath = ImagePicker.saveImageToInternalStorage(
                                 this@NewUserActivity, it, "profile-pic-$imageId.jpg"
                             )
@@ -147,6 +154,7 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun setupTakePictureLauncher() {
+        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
         val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -154,8 +162,14 @@ class NewUserActivity : AppCompatActivity() {
                     photoURI?.let { receivedUri ->
                         binding.userImage.setImageURI(receivedUri)
                         val bitmap = fixImageOrientation(this, receivedUri)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            bitmap?.let {
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            bitmap?.let { it ->
+                                currentBannerImagePath?.let { path ->
+                                    val file = File(path)
+                                    if (file.exists()) {
+                                        file.delete()
+                                    }
+                                }
                                 savedPath = ImagePicker.saveImageToInternalStorage(
                                     this@NewUserActivity, it, "profile-pic-$imageId.jpg"
                                 )
@@ -250,7 +264,8 @@ class NewUserActivity : AppCompatActivity() {
             binding.userLastnameEdittext.text.toString(),
             binding.userEmailEdittext.text.toString(),
             binding.userBirthdayEdittext.text.toString(),
-            savedPath.toString()
+            savedPath.toString(),
+            null
         )
         viewModel.addUser(newUser)
     }
@@ -258,7 +273,7 @@ class NewUserActivity : AppCompatActivity() {
     private fun showDatePicker() {
         val datePickerDialog = DatePickerDialog(
             this,
-            { DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(year, monthOfYear, dayOfMonth)
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
