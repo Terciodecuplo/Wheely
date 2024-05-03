@@ -8,7 +8,7 @@ data class User(
     val lastName: String = "-",
     val email:String = "-",
     val dateOfBirth:String = "-",
-    val drivenTracks: ArrayList<Track>? = null,
+    val drivenTracks: ArrayList<TrackTest>? = null,
     val ownedVehicles: ArrayList<Vehicle>? = null
 ){
 

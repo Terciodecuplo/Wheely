@@ -9,17 +9,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.adapter.TrackHistoryAdapter
-import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.TrackTest
 
 class TrackHistoryFragment : Fragment() {
 
-    private var trackHistoryList: ArrayList<Track>? = null
+    private var trackHistoryList: ArrayList<TrackTest>? = null
     private lateinit var trackHistoryAdapter: TrackHistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            trackHistoryList = it.getParcelableArrayList<Track>(ARG_TRACK_HISTORY)
+            trackHistoryList = it.getParcelableArrayList<TrackTest>(ARG_TRACK_HISTORY)
         }
     }
 
@@ -42,7 +42,7 @@ class TrackHistoryFragment : Fragment() {
     companion object {
         private const val ARG_TRACK_HISTORY = "track_history"
 
-        fun newInstance(trackHistoryList: ArrayList<Track>): TrackHistoryFragment {
+        fun newInstance(trackHistoryList: ArrayList<TrackTest>): TrackHistoryFragment {
             val fragment = TrackHistoryFragment()
             val args = Bundle()
             args.putParcelableArrayList(ARG_TRACK_HISTORY, trackHistoryList)

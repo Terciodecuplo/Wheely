@@ -1,27 +1,24 @@
 package com.jmblfma.wheely
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.annotation.RequiresApi
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
-import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.DataSummary
 import com.jmblfma.wheely.model.TrackPoint
+import com.jmblfma.wheely.model.TrackTest
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.NavigationMenuActivity
-import com.jmblfma.wheely.utils.UserLoginState
 import java.time.ZonedDateTime
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
-    private lateinit var trackHistoryList: ArrayList<Track>
+    private lateinit var trackHistoryList: ArrayList<TrackTest>
     private lateinit var vehicleList: ArrayList<Vehicle>
 
 
@@ -31,7 +28,6 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
-        setSupportActionBar(binding.toolbarProfile)
 
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
@@ -62,29 +58,12 @@ class ProfilePageActivity : NavigationMenuActivity() {
         }.attach()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.toolbar_profile_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.logout -> {
-                val userLoginState = UserLoginState(this)
-                userLoginState.isLoggedIn = false
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-            }
-        }
-        return true
-    }
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_profile
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun exampleData(): Track {
+    fun exampleData(): TrackTest {
         val user = User(
             userId = 1,
             userName = "MoToreto",
@@ -107,22 +86,34 @@ class ProfilePageActivity : NavigationMenuActivity() {
             dateAdded = ZonedDateTime.now()
         )
 
-        user.ownedVehicles!!.add(vehicle)
+        user.ownedVehicles?.add(vehicle)
 
         val trackData = arrayListOf<TrackPoint>()
+        val dataSummary = DataSummary(
+            summaryId = 1,
+            elapsedTime = 3600.0,
+            maxSpeed = 150.0,
+            averageSpeed = 100.0,
+            distanceTraveled = 323.0,
+            maxInclination = 10.0,
+            averageInclination = 5.0,
+            maxAltitude = 200.0,
+            deltaAltitude = 50.0
+        )
 
-        val track = Track(
+        val track = TrackTest(
             trackId = 1,
             drivenBy = user,
             vehicleUsed = vehicle,
             name = "Morning Route around Elche",
             generalLocation = "Elche",
-            creationTimestamp = ZonedDateTime.now(),
+            creationDate = ZonedDateTime.now(),
             trackData = trackData,
-            difficulty = "Medium",
+            trackDifficulty = "Medium",
+            trackSummary = dataSummary
         )
 
-        user.drivenTracks!!.add(track)
+        user.drivenTracks?.add(track)
 
         return track;
     }

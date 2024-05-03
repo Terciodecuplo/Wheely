@@ -10,11 +10,11 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
-import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.TrackTest
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: Context) :
+class TrackHistoryAdapter(val trackHistoryList: ArrayList<TrackTest>, var context: Context) :
     RecyclerView.Adapter<TrackHistoryAdapter.MyHolder>() {
 
     class MyHolder(item: View) : RecyclerView.ViewHolder(item) {

@@ -11,9 +11,13 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
+import android.os.Binder
+import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -23,21 +27,25 @@ import com.google.android.gms.location.Priority
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.repository.TrackDataRepository
+import com.jmblfma.wheely.utils.formatTime
 
 // https://developer.android.com/develop/sensors-and-location/location/request-updates
 
 class TrackingService : Service(), SensorEventListener {
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationCallback: LocationCallback
-    private lateinit var sensorManager: SensorManager
-    // Refresh rate for location requests in ms
-    private val repository = TrackDataRepository.getInstance()
-
     companion object {
         const val CHANNEL_ID = "ForegroundServiceChannel"
+        // Refresh rate for location requests in ms
         const val LOCATION_REFRESH_RATE = 1000
+        const val ACCURACY_THRESHOLD = 10
+        @Volatile var isRunning = false
+        @Volatile var enoughAccuracyForTracking = false
+
+        fun isAccuracyEnough(location: Location): Boolean {
+            return location.accuracy <= ACCURACY_THRESHOLD
+        }
     }
 
+    // SERVICE CFG AND STATES
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
@@ -46,17 +54,18 @@ class TrackingService : Service(), SensorEventListener {
         // TODO ? request location access at runtime?
         // https://developer.android.com/develop/sensors-and-location/location/permissions
         startLocationUpdates()
+        isRunning = true
         // sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         // startSensorUpdates()
-        Log.d("TrackingService/"," onCreate()")
+        Log.d("TESTING"," onCreate()")
     }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForegroundService()
-        Log.d("TrackingService/"," onStartCommand()")
+        Log.d("TESTING"," onStartCommand()")
         return START_NOT_STICKY
     }
 
+    private var notificationBuilder: Notification.Builder? = null
     private fun createNotificationChannel() {
         val serviceChannel = NotificationChannel(
             CHANNEL_ID,
@@ -68,14 +77,38 @@ class TrackingService : Service(), SensorEventListener {
     }
 
     private fun startForegroundService() {
-        val notification: Notification = Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle("Tracking Active")
+        notificationBuilder = Notification.Builder(this, CHANNEL_ID)
+            .setContentTitle("Wheely - Route in progress")
             .setContentText("Location is being tracked")
             .setSmallIcon(R.drawable.ic_tracker)
-            .build()
+        val notification: Notification = notificationBuilder!!.build()
         startForeground(1, notification)
     }
+    override fun onDestroy() {
+        isRunning = false
+        super.onDestroy()
+        stopTimer()
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        // stops location updates
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+        // sensorManager.unregisterListener(this)
+        Log.d("TESTING"," onDestroy()")
+    }
 
+    // BINDER SYSTEM TO CONTROL SERVICE STATES
+    private val binder = LocalBinder()
+    inner class LocalBinder : Binder() {
+        fun getService(): TrackingService = this@TrackingService
+    }
+    override fun onBind(intent: Intent?): IBinder {
+        return binder
+    }
+
+    // LOCATION TRACKING
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+    private var isPaused: Boolean = false
+    var isTrackingActive = false
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         // gets default base location before starting periodic updates
@@ -96,12 +129,27 @@ class TrackingService : Service(), SensorEventListener {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult ?: return
-                for (location in locationResult.locations){
-                    Log.d("LocationTest","processing LocationResult...")
-                    repository.addTrackPoint(buildTrackPoint(location))
-
+                if (!isPaused) {
+                    for (location in locationResult.locations) {
+                        Log.d("TESTING", "got LocationResult...")
+                        if (location.accuracy <= ACCURACY_THRESHOLD) {
+                            Log.d("TESTING", "processing LocationResult...")
+                            enoughAccuracyForTracking = true
+                            if (location.hasBearing()) {
+                                updateBearing(location.bearing)
+                            }
+                            if (startTime == null) {
+                                startTime = location.time
+                                startTimer()
+                            }
+                            repository.addTrackPoint(buildTrackPoint(location))
+                            Log.d("TESTING", "LocationCallback Processed!")
+                        } else {
+                            Log.d("TESTING", "DISCARDED; lacking accuracy...")
+                            enoughAccuracyForTracking = false
+                        }
+                    }
                 }
-                Log.d("LocationTest","LocationCallback Processed!")
             }
         }
 
@@ -110,21 +158,68 @@ class TrackingService : Service(), SensorEventListener {
         fusedLocationClient.requestLocationUpdates(locationRequest,
             locationCallback,
             Looper.getMainLooper())
-        Log.d("LocationTest","requestLocationUpdates() executed ")
+            Log.d("TESTING","requestLocationUpdates() executed "
+        )
     }
 
+    fun pauseTracking() {
+        isPaused = true
+    }
+    fun resumeTracking() {
+        isPaused = false
+    }
+
+    // CURRENT BEARING
+    private val bearingLiveData = MutableLiveData<Float>()
+    private fun updateBearing(bearing: Float) {
+        bearingLiveData.postValue(bearing)
+    }
+
+    fun getBearingLiveData(): LiveData<Float> = bearingLiveData
+
+    // TRACKPOINTS BUILDING
+    private val repository = TrackDataRepository.sharedInstance
     private fun buildTrackPoint(location: Location): TrackPoint {
         // TODO merge data with other sensors here?
 
         return TrackPoint(
-            location.time,
-            location.latitude,
-            location.longitude,
-            location.altitude,
-            location.speed
+            timestamp = location.time,
+            latitude =  location.latitude,
+            longitude = location.longitude,
+            altitude = location.altitude,
+            speed = location.speed,
+            bearing = location.bearing
         )
     }
 
+    // TIMER SYSTEM
+    private var startTime: Long? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var runnable: Runnable
+    fun startTimer() {
+        runnable = object : Runnable {
+            override fun run() {
+                val elapsedMillis = System.currentTimeMillis() - startTime!!
+                repository.updateElapsedTime(elapsedMillis)
+                updateNotification(elapsedMillis)
+                handler.postDelayed(this, 1000L) // Schedule the runnable to run again after 1 second
+            }
+        }
+        handler.post(runnable)
+    }
+    private fun updateNotification(elapsedTime: Long) {
+        val updatedNotification = notificationBuilder
+            ?.setContentText("Elapsed time: ${formatTime(elapsedTime)}")
+            ?.build()
+        startForeground(1, updatedNotification)
+    }
+    private fun stopTimer() {
+        handler.removeCallbacks(runnable)
+        startTime = null
+    }
+
+    // TODO SENSOR SYSTEM
+    private lateinit var sensorManager: SensorManager
     private fun startSensorUpdates() {
         TODO("Not yet implemented")
         // sensor listeners init
@@ -138,18 +233,5 @@ class TrackingService : Service(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         TODO("Not yet implemented")
         // if needed
-    }
-
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        // stops location updates
-        fusedLocationClient.removeLocationUpdates(locationCallback)
-        // sensorManager.unregisterListener(this)
-        Log.d("TrackingService/"," onDestroy()")
     }
 }

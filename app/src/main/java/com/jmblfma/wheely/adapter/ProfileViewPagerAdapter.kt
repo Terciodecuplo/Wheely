@@ -5,12 +5,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.jmblfma.wheely.fragment.TrackHistoryFragment
 import com.jmblfma.wheely.fragment.VehicleFragment
-import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.TrackTest
 import com.jmblfma.wheely.model.Vehicle
 
 class ProfileViewPagerAdapter (
     fragmentActivity: FragmentActivity,
-    private val trackHistoryList: ArrayList<Track>,
+    private val trackHistoryList: ArrayList<TrackTest>,
     private val vehicleList: ArrayList<Vehicle>
 ) : FragmentStateAdapter(fragmentActivity) {
 
