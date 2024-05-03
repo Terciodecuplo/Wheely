@@ -55,9 +55,11 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
+
         setSupportActionBar(binding.toolbarProfile)
         setupImagePickerLauncher()
         setupTakePictureLauncher()
+
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
         binding.editBannerProfile.setOnClickListener {
@@ -101,11 +103,15 @@ class ProfilePageActivity : NavigationMenuActivity() {
         return true
     }
 
+
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_profile
     }
 
+
     private fun profileUserMainDataSetup() {
+        Log.d("TESTING","ProfilePageActivity/ binding.userName.text ${binding.userName.text}")
+
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
         setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)

@@ -11,7 +11,7 @@ import com.jmblfma.wheely.repository.VehicleDataRepository
 import kotlinx.coroutines.launch
 
 class NewVehicleDataViewModel : ViewModel() {
-    private val vehicleDao: VehicleDao = RoomDatabaseBuilder.database.vehicleDao()
+    private val vehicleDao: VehicleDao = RoomDatabaseBuilder.sharedInstance.vehicleDao()
     private val repository = VehicleDataRepository.sharedInstance
 
     private val _vehiclePostStatus = MutableLiveData<String?>()

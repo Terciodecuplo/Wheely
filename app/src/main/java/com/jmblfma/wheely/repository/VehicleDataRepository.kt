@@ -5,7 +5,7 @@ import com.jmblfma.wheely.data.VehicleDao
 import com.jmblfma.wheely.model.Vehicle
 
 class VehicleDataRepository {
-    private val roomsDB = RoomDatabaseBuilder.database
+    private val roomsDB = RoomDatabaseBuilder.sharedInstance
     private val vehicleDao: VehicleDao = roomsDB.vehicleDao()
 
     companion object {

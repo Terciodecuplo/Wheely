@@ -2,6 +2,7 @@ package com.jmblfma.wheely
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
+            Log.d("TESTING", "MainActivity/ loginButton ${email}")
             attemptToLogin(email)
 
         }
@@ -55,10 +57,13 @@ class MainActivity : AppCompatActivity() {
     private fun attemptToLogin(email: String) {
         lifecycleScope.launch {
             repository.getUserByEmail(email) { user ->
+                Log.d("TESTING","MainActivity/ attemptToLogin() executed")
                 if (user != null) {
+                    Log.d("TESTING","MainActivity/ USER EXISTS")
                     UserSessionManager.loginUser(user)
                     navigateToHomePage()
                 } else {
+                    Log.d("TESTING","MainActivity/ USER DOES NOT EXIST")
                     showSnackbar("The user doesn't exist")
                 }
             }

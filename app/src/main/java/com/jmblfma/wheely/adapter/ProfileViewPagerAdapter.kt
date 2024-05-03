@@ -9,7 +9,9 @@ import com.jmblfma.wheely.model.Track
 
 class ProfileViewPagerAdapter(
     fragmentActivity: FragmentActivity,
-    private val trackHistoryList: ArrayList<Track>,
+
+    private val trackHistoryList: ArrayList<Track>
+
 ) : FragmentStateAdapter(fragmentActivity) {
 
     private val TAB_TITLES = arrayOf("History", "Vehicles")

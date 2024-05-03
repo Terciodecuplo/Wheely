@@ -1,11 +1,12 @@
 package com.jmblfma.wheely.repository
 
+import android.util.Log
 import com.jmblfma.wheely.data.RoomDatabaseBuilder
 import com.jmblfma.wheely.data.UserDao
 import com.jmblfma.wheely.model.User
 
 class UserDataRepository {
-    private val roomsDB = RoomDatabaseBuilder.database
+    private val roomsDB = RoomDatabaseBuilder.sharedInstance
     private val userDao: UserDao = roomsDB.userDao()
 
     companion object {
@@ -31,6 +32,7 @@ class UserDataRepository {
     suspend fun getUserByEmail(email: String, onResult: (User?) -> Unit) {
         try {
             val user = userDao.getUserByEmail(email)
+            Log.d("TESTING", "UserRepo/ ${user} $email")
             onResult(user)
         } catch (e: Exception) {
             throw Exception("Database error: ${e.message}")
