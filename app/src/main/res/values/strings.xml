@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Wheely</string>
+    <string name="post_layout_title">Posts</string>
+    <string name="profile_layout_title">Profile</string>
+    <string name="stats_layout_title">Stats</string>
+    <string name="add_vehicle_layout_title">New Vehicle</string>
+    <string name="signup_layout_title">Sign Up</string>
     <string name="login_email_hint">Login with your email</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>

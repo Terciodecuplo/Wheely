@@ -55,8 +55,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
-
         setSupportActionBar(binding.toolbarProfile)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.profile_layout_title)
         setupImagePickerLauncher()
         setupTakePictureLauncher()
 

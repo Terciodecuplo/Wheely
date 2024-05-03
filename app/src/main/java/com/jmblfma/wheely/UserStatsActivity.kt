@@ -15,6 +15,10 @@ class UserStatsActivity : AppCompatActivity() {
         binding = UserStatsLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbarUserStats)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.stats_layout_title)
         getUserData()
     }
 

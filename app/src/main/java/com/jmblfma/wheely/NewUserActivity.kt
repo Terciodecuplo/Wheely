@@ -63,6 +63,8 @@ class NewUserActivity : AppCompatActivity() {
         setupTakePictureLauncher()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.signup_layout_title)
         binding.toolbarNewUser.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
