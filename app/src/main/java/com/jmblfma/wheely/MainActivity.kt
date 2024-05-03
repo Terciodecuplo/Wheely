@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.ActivityMainBinding
+import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.UserSessionManager
@@ -42,8 +43,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.signupButton.setOnClickListener {
-            val intent = Intent(applicationContext, NewUserActivity::class.java)
-            this.startActivity(intent)
+            val user = User(0)
+            viewModel.addUser(user)
         }
     }
 

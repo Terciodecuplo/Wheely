@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/new_vehicle_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/new_vehicle_layout">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_new_vehicle"
@@ -13,161 +13,127 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_back_arrow" />
+        app:navigationIcon="@drawable/ic_back_arrow"/>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ImageView
+        android:id="@+id/vehicle_preview_image"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_margin="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pic_vehicle_template"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_new_vehicle">
+        app:layout_constraintTop_toBottomOf="@id/toolbar_new_vehicle" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/add_vehicle_preview_image"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_menu_compass"
+        app:layout_constraintBottom_toBottomOf="@+id/vehicle_preview_image"
+        app:layout_constraintEnd_toEndOf="@+id/vehicle_preview_image" />
 
-            <ImageView
-                android:id="@+id/vehicle_preview_image"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_margin="20dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/pic_vehicle_template"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/add_vehicle_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ADD NEW VEHICLE"
+        app:layout_constraintBottom_toTopOf="@+id/new_vehicle_name_textview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_new_vehicle" />
 
-            <ImageView
-                android:id="@+id/add_vehicle_preview_image"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintBottom_toBottomOf="@+id/vehicle_preview_image"
-                app:layout_constraintEnd_toEndOf="@+id/vehicle_preview_image" />
+    <TextView
+        android:id="@+id/new_vehicle_name_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/new_vehicle_name"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@id/vehicle_preview_image" />
 
-            <Button
-                android:id="@+id/add_vehicle_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ADD NEW VEHICLE"
-                app:layout_constraintBottom_toTopOf="@+id/new_vehicle_name_textview"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toTopOf="parent" />
+    <EditText
+        android:id="@+id/new_vehicle_name_edittext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:hint="@string/new_vehicle_name_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_name_textview" />
 
-            <TextView
-                android:id="@+id/new_vehicle_name_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/new_vehicle_name"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@id/vehicle_preview_image" />
+    <TextView
+        android:id="@+id/new_vehicle_brand_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/new_vehicle_brand"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_name_edittext" />
 
-            <EditText
-                android:id="@+id/new_vehicle_name_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:hint="@string/new_vehicle_name_hint"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_name_textview" />
+    <EditText
+        android:id="@+id/new_vehicle_brand_edittext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_vehicle_brand_hint"
+        app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_brand_textview" />
 
-            <TextView
-                android:id="@+id/new_vehicle_brand_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/new_vehicle_brand"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_name_edittext" />
+    <TextView
+        android:id="@+id/new_vehicle_model_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/new_vehicle_model"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_brand_edittext" />
 
-            <EditText
-                android:id="@+id/new_vehicle_brand_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:hint="@string/new_vehicle_brand_hint"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_brand_textview" />
+    <EditText
+        android:id="@+id/new_vehicle_model_edittext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:hint="@string/new_vehicle_model_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_model_textview" />
 
-            <TextView
-                android:id="@+id/new_vehicle_model_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/new_vehicle_model"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_brand_edittext" />
+    <TextView
+        android:id="@+id/new_vehicle_hp_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/new_vehicle_horsepower"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_model_edittext" />
 
-            <EditText
-                android:id="@+id/new_vehicle_model_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:hint="@string/new_vehicle_model_hint"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_model_textview" />
+    <EditText
+        android:id="@+id/new_vehicle_horsepower_edittext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_vehicle_horsepower_hint"
+        app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_hp_textview" />
 
-            <TextView
-                android:id="@+id/new_vehicle_hp_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/new_vehicle_horsepower"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_model_edittext" />
+    <TextView
+        android:id="@+id/new_vehicle_year_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/new_vehicle_year"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_horsepower_edittext" />
 
-            <EditText
-                android:id="@+id/new_vehicle_horsepower_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:hint="@string/new_vehicle_horsepower_hint"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_hp_textview" />
+    <EditText
+        android:id="@+id/new_vehicle_year_edittext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/new_vehicle_year_hint"
+        app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
+        app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+        app:layout_constraintTop_toBottomOf="@+id/new_vehicle_year_textview" />
 
-            <TextView
-                android:id="@+id/new_vehicle_year_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/new_vehicle_year"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_horsepower_edittext" />
-
-            <EditText
-                android:id="@+id/new_vehicle_year_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:imeOptions="actionDone"
-                android:hint="@string/new_vehicle_year_hint"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_year_textview" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

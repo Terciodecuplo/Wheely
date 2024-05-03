@@ -14,10 +14,6 @@ object UserSessionManager {
         LoginStateManager.setLoggedIn(false)
     }
 
-    fun updateLoggedUser(user: User?) {
-        LoginStateManager.saveCurrentUser(user)
-    }
-
     fun getCurrentUser(): User? = LoginStateManager.getCurrentUser()
     fun isLoggedIn(): Boolean = LoginStateManager.isLoggedIn()
 }

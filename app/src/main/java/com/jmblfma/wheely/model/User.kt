@@ -7,11 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "users", indices = [Index(value = ["email"], unique = true)])
 data class User(
     @PrimaryKey(autoGenerate = true) val userId: Int,
-    val nickname: String,
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val dateOfBirth: String,
-    val profileImage: String?,
-    val profileBanner: String?
+    val nickname: String = "Yabadabadú",
+    val firstName: String = "Pedro",
+    val lastName: String = "Picapiedra",
+    val email: String = "flintstones@stoneage.bc",
+    val dateOfBirth: String = "01/01/00"
 )
