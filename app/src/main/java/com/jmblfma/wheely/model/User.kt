@@ -1,15 +1,17 @@
 package com.jmblfma.wheely.model
 
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "users", indices = [Index(value = ["email"], unique = true)])
 data class User(
-    val userId: Int = 0,
-    val userName:String = "DefaultUser",
-    val firstName:String = "-",
-    val lastName: String = "-",
-    val email:String = "-",
-    val dateOfBirth:String = "-",
-    val drivenTracks: ArrayList<TrackTest>? = null,
-    val ownedVehicles: ArrayList<Vehicle>? = null
-){
-
-}
+    @PrimaryKey(autoGenerate = true) val userId: Int,
+    val nickname: String,
+    val firstName: String,
+    val lastName: String,
+    val email: String,
+    val dateOfBirth: String,
+    val profileImage: String?,
+    val profileBanner: String?
+)

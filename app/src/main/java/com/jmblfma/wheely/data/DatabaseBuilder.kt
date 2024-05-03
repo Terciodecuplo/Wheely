@@ -9,8 +9,7 @@ object RoomDatabaseBuilder {
         Room.databaseBuilder(
             MyApp.applicationContext(),
             AppDatabase::class.java,
-            "wheely_rooms_db"
-        ).addMigrations(MIGRATION_1_2).build()
+            "wheely_rooms_db2"
+        ).build()
     }
 }
-

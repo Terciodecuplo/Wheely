@@ -8,6 +8,7 @@ import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.repository.TrackDataRepository
 import kotlinx.coroutines.launch
+
 class TrackDataViewModel : ViewModel() {
     private val repository = TrackDataRepository.sharedInstance
 

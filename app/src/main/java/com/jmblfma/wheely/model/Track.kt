@@ -7,17 +7,17 @@ import androidx.room.PrimaryKey
 import com.jmblfma.wheely.utils.computeDuration
 import java.time.ZonedDateTime
 
-@Entity(tableName = "Tracks")
+@Entity(tableName = "tracks")
 data class Track(
     @PrimaryKey(autoGenerate = true) val trackId: Int = 0,
-    val name: String = "DefaultTrack",
+    val name: String = "DefaultTrack"
 ) {
     @Ignore
     lateinit var trackData: List<TrackPoint>
     @Ignore
-    val drivenBy: User = User()
+    val userId: Int = 1
     @Ignore
-    val vehicleUsed: Vehicle? = null
+    val vehicleId: Int = 1
     @Ignore
     val generalLocation: String = "-"
     @Ignore
