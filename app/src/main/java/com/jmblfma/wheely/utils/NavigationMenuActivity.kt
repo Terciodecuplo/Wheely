@@ -26,7 +26,7 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
                     finish()*/
 
                     startActivityIfNeeded(Intent(this, TrackRecordingActivity::class.java), 0)
-
+                    finish()
                     true
                 }
 
@@ -38,6 +38,7 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
 
                 R.id.nav_viewer -> {
                     startActivityIfNeeded(Intent(this, TrackViewerActivity::class.java), 0)
+                    finish()
                     true
                 }
 
