@@ -145,7 +145,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+        Log.d("SAVING USER","imagePath: $imagePath")
+        if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(R.drawable.user_default_pic) // Your placeholder drawable
                 .into(imageView)
