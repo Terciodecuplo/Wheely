@@ -18,6 +18,27 @@ interface UserDao {
     suspend fun getUserByEmail(email: String): User?
 
     @Query("UPDATE users SET profileBanner = COALESCE(:profileBanner, profileBanner) WHERE userId = :userId")
-    suspend fun updateUserBanner(userId: Int, profileBanner: String) : Int
+    suspend fun updateUserBanner(userId: Int, profileBanner: String): Int
+
+    @Query("DELETE FROM users WHERE email = :email")
+    suspend fun deleteUser(email: String): Int?
+
+    @Query(
+        "UPDATE users SET " +
+                "nickname = COALESCE(:newNickname, nickname), " +
+                "firstName = COALESCE(:newFirstName, firstName), " +
+                "lastName = COALESCE(:newLastName, lastName), " +
+                "dateOfBirth = COALESCE(:newdateOfBirth, dateOfBirth), " +
+                "profileImage = COALESCE(:newProfileImage, profileImage) " +
+                "WHERE userId = :userId"
+    )
+    suspend fun updateUserPersonalInfo(
+        userId: Int,
+        newNickname: String?,
+        newFirstName: String?,
+        newLastName: String?,
+        newdateOfBirth: String?,
+        newProfileImage: String?
+    ): Int
 
 }

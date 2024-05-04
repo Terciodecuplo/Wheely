@@ -21,6 +21,8 @@ class HomePageActivity : NavigationMenuActivity() {
         binding = HomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbarHome)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.post_layout_title)
         postList = ArrayList()
 
         postsAdapter = PostsAdapter(postList, this)

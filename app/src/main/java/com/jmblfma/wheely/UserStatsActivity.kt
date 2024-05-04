@@ -1,21 +1,155 @@
 package com.jmblfma.wheely
 
+import android.Manifest
+import android.app.DatePickerDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.UserStatsLayoutBinding
+import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.LoginStateManager
+import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
+import com.jmblfma.wheely.viewmodels.UserDataViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.util.Calendar
+import java.util.Locale
+import java.util.UUID
 
 class UserStatsActivity : AppCompatActivity() {
     private lateinit var binding: UserStatsLayoutBinding
+    private val calendar = Calendar.getInstance()
+    private val viewModel: UserDataViewModel by viewModels()
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private var photoURI: Uri? = null
+    private var savedPath: String? = null
+
+    companion object {
+        private const val CAMERA_REQUEST_CODE = 101
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserStatsLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupImagePickerLauncher()
+        setupTakePictureLauncher()
         setSupportActionBar(binding.toolbarUserStats)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.stats_layout_title)
+        binding.toolbarUserStats.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         getUserData()
+        binding.submitChangesButton.setOnClickListener {
+            submitChangesDialog()
+        }
+        binding.userBirthdayEdittext.setOnClickListener {
+            showDatePicker()
+        }
+        binding.editUserImgage.setOnClickListener {
+            showImageSourceDialog()
+        }
+
+    }
+
+    private fun submitChanges() {
+        if (!formHasErrors(findViewById(R.id.statsLayout))) {
+            updateUser()
+        }
+        blockDataEdition()
+    }
+
+    private fun updateUser() {
+        UserSessionManager.getCurrentUser()?.let {
+            viewModel.updateUserPersonalInfo(
+                it.userId,
+                binding.userNicknameEdittext.text.toString(),
+                binding.userFirstnameEdittext.text.toString(),
+                binding.userLastnameEdittext.text.toString(),
+                binding.userBirthdayEdittext.text.toString(),
+                savedPath
+            )
+        }
+        viewModel.fetchUser(binding.userEmailEdittext.text.toString())
+        viewModel.fetchedUser.observe(this) {
+            UserSessionManager.updateLoggedUser(it)
+        }
+    }
+
+    private fun submitChangesDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Confirm Changes")
+            .setMessage("Are you sure you want to submit these changes?")
+            .setPositiveButton("Confirm") { dialog, which ->
+                Toast.makeText(this, "User data submitted!", Toast.LENGTH_SHORT).show()
+                submitChanges()
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                blockDataEdition()
+                Toast.makeText(this, "Edition cancelled", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun removeUserDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Remove User")
+            .setMessage("This action cannot be undone. Are you sure that do you want to remove the current user?")
+            .setPositiveButton("Confirm") { dialog, which ->
+                Toast.makeText(this, "Current user deleted!", Toast.LENGTH_SHORT).show()
+                removeUserFromDataBase()
+            }
+            .setNegativeButton("Cancel") { dialog, which ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun removeUserFromDataBase(){
+        viewModel.deleteUser(UserSessionManager.getCurrentUser()!!.email)
+        UserSessionManager.logoutUser()
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+    private fun manageFields(editText: EditText, isEditable: Boolean) {
+        if (isEditable) {
+            editText.isClickable = true
+            editText.isFocusable = true
+            editText.isFocusableInTouchMode = true
+            editText.isCursorVisible = true
+        } else {
+            editText.isClickable = false
+            editText.isFocusable = false
+            editText.isFocusableInTouchMode = false
+            editText.isCursorVisible = false
+        }
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
@@ -30,7 +164,7 @@ class UserStatsActivity : AppCompatActivity() {
         }
     }
 
-    private fun getUserData(){
+    private fun getUserData() {
         setProfileImage(binding.userImage, UserSessionManager.getCurrentUser()?.profileImage)
         binding.userNicknameEdittext.setText(UserSessionManager.getCurrentUser()?.nickname)
         binding.userFirstnameEdittext.setText(UserSessionManager.getCurrentUser()?.firstName)
@@ -39,5 +173,210 @@ class UserStatsActivity : AppCompatActivity() {
         binding.userBirthdayEdittext.setText(UserSessionManager.getCurrentUser()?.dateOfBirth)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.user_stats_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.edit_user_menu_option -> {
+                editUserData()
+            }
+
+            R.id.remove_user_menu_option -> {
+                removeUserDialog()
+            }
+        }
+        return true
+    }
+
+    private fun editUserData() {
+        val isEditable = true
+        manageFields(binding.userNicknameEdittext, isEditable)
+        manageFields(binding.userFirstnameEdittext, isEditable)
+        manageFields(binding.userLastnameEdittext, isEditable)
+        binding.userEmailEdittext.setTextColor(getColor(R.color.subtext_grey))
+        binding.userBirthdayEdittext.isClickable = true
+        binding.editUserImgage.visibility = View.VISIBLE
+        binding.submitChangesButton.visibility = View.VISIBLE
+    }
+
+    private fun blockDataEdition() {
+        val isEditable = false
+        manageFields(binding.userNicknameEdittext, isEditable)
+        manageFields(binding.userFirstnameEdittext, isEditable)
+        manageFields(binding.userLastnameEdittext, isEditable)
+        binding.userEmailEdittext.setTextColor(getColor(R.color.black))
+        binding.userBirthdayEdittext.isClickable = false
+        binding.editUserImgage.visibility = View.INVISIBLE
+        binding.submitChangesButton.visibility = View.INVISIBLE
+    }
+
+    private fun showDatePicker() {
+        val datePickerDialog = DatePickerDialog(
+            this,
+            { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(year, monthOfYear, dayOfMonth)
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val formattedDate = dateFormat.format(selectedDate.time)
+                binding.userBirthdayEdittext.setText(formattedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        datePickerDialog.show()
+    }
+
+    private fun showImageSourceDialog() {
+        val options = arrayOf("Take Photo", "Choose from Gallery")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Select Image")
+        builder.setItems(options) { _, which ->
+            when (which) {
+                0 -> checkCameraPermission()
+                1 -> chooseImageFromGallery()
+            }
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun setupImagePickerLauncher() {
+        val currentProfileImagePath = UserSessionManager.getCurrentUser()?.profileImage
+        Log.d("UPDATE PIC", "Current: $currentProfileImagePath")
+        val imageId = UUID.randomUUID().toString()
+        imagePickerLauncher =
+            registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                uri?.let { receivedUri ->
+                    // Use Glide to load and display the image without delays
+                    Glide
+                        .with(this@UserStatsActivity)
+                        .load(receivedUri)
+                        .into(binding.userImage)
+                    val bitmap = ImagePicker.fixImageOrientation(this, uri)
+                    // Save the image asynchronously
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        bitmap?.let { it ->
+                            currentProfileImagePath?.let { path ->
+                                val file = File(path)
+                                if (file.exists()) {
+                                    file.delete()
+                                }
+                            }
+                            savedPath = ImagePicker.saveImageToInternalStorage(
+                                this@UserStatsActivity, it, "profile-pic-$imageId.jpg"
+                            )
+                        }
+                        Log.d("UPDATE PIC", "Saved path from storage: $savedPath")
+                    }
+                }
+            }
+    }
+
+    private fun setupTakePictureLauncher() {
+        val currentProfileImagePath = UserSessionManager.getCurrentUser()?.profileImage
+        val imageId = UUID.randomUUID().toString()
+        takePictureLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                if (success) {
+                    photoURI?.let { receivedUri ->
+                        binding.userImage.setImageURI(receivedUri)
+                        val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            bitmap?.let { it ->
+                                currentProfileImagePath?.let { path ->
+                                    val file = File(path)
+                                    if (file.exists()) {
+                                        file.delete()
+                                    }
+                                }
+                                savedPath = ImagePicker.saveImageToInternalStorage(
+                                    this@UserStatsActivity, it, "profile-pic-$imageId.jpg"
+                                )
+                            }
+                            Log.d("UPDATE PIC", "Saved path from camera: $savedPath")
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this, Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            takePicture()
+        } else {
+            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                takePicture()
+            } else {
+                // Permission is denied
+                showSnackbar("Camera permission is necessary to use the camera")
+            }
+        }
+    }
+
+    private fun takePicture() {
+        // Ensure the device has a camera
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            photoURI =
+                ImagePicker.createImageFile(this)
+            takePictureLauncher.launch(photoURI)
+        } else {
+            showSnackbar("This device does not have a camera")
+        }
+    }
+
+    private fun chooseImageFromGallery() {
+        // MIME type for image/* to select any image type
+        imagePickerLauncher.launch("image/*")
+    }
+
+    private fun formHasErrors(view: View): Boolean {
+        var hasError = false
+
+        if (view is EditText) {
+
+            if (view.text.toString().trim().isEmpty()) {
+                view.error = getString(R.string.form_error_empty_field)
+                hasError = true
+            }
+
+            if (!hasError) {
+                view.error = null
+            }
+        }
+
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                if (formHasErrors(view.getChildAt(i))) {
+                    hasError = true
+                }
+            }
+        }
+
+        return hasError
+    }
+
+    private fun showSnackbar(message: String) {
+        Snackbar.make(findViewById(R.id.new_user_layout), message, Snackbar.LENGTH_LONG).show()
+    }
 
 }
+

@@ -57,6 +57,8 @@ class AddVehicleActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarNewVehicle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.add_vehicle_layout_title)
         binding.toolbarNewVehicle.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }

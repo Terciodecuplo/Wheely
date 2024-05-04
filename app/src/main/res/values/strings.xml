@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Wheely</string>
+    <string name="post_layout_title">Posts</string>
+    <string name="profile_layout_title">Profile</string>
+    <string name="stats_layout_title">Stats</string>
+    <string name="add_vehicle_layout_title">New Vehicle</string>
+    <string name="signup_layout_title">Sign Up</string>
     <string name="login_email_hint">Login with your email</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
@@ -26,6 +31,7 @@
     <string name="new_vehicle_model_hint">Which model is it?*</string>
     <string name="new_vehicle_year_hint">What year is it from?*</string>
     <string name="new_vehicle_horsepower_hint">How many HP does it have?*</string>
+    <string name="submit_changes_button">Submit changes</string>
     <string name="add_user_button">Add User</string>
     <string name="user_username">Username</string>
     <string name="user_username_hint">How do you want to be called?*</string>
