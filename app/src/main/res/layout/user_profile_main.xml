@@ -38,7 +38,6 @@
             android:id="@+id/banner_profile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="2dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_banner_placeholder" />
 

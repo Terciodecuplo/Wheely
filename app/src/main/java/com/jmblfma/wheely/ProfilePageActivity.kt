@@ -90,7 +90,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         super.onResume()
         profileUserMainDataSetup()
     }
-///data/user/0/com.jmblfma.wheely/files/UPDATE-38a810bc-1849-4d0b-aaf2-b0783f50b97b.jpg
+
     override fun onBackPressed() {
         super.onBackPressed()
         // Check if HomeActivity is in the back stack
