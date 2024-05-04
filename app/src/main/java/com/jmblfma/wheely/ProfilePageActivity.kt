@@ -86,6 +86,11 @@ class ProfilePageActivity : NavigationMenuActivity() {
         }.attach()
     }
 
+    override fun onResume() {
+        super.onResume()
+        profileUserMainDataSetup()
+    }
+///data/user/0/com.jmblfma.wheely/files/UPDATE-38a810bc-1849-4d0b-aaf2-b0783f50b97b.jpg
     override fun onBackPressed() {
         super.onBackPressed()
         // Check if HomeActivity is in the back stack
@@ -103,7 +108,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout_menu_option -> {
-                LoginStateManager.setLoggedIn(false)
+                UserSessionManager.logoutUser()
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -300,7 +305,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 it.email,
                 it.dateOfBirth,
                 it.profileImage,
-                savedPath.toString()
+                savedPath
             )
         }
         UserSessionManager.updateLoggedUser(updatedUser)

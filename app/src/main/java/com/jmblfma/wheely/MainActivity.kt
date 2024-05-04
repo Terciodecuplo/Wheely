@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.ActivityMainBinding
 import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -55,17 +53,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun attemptToLogin(email: String) {
-        lifecycleScope.launch {
-            repository.getUserByEmail(email) { user ->
-                Log.d("TESTING","MainActivity/ attemptToLogin() executed")
-                if (user != null) {
-                    Log.d("TESTING","MainActivity/ USER EXISTS")
-                    UserSessionManager.loginUser(user)
-                    navigateToHomePage()
-                } else {
-                    Log.d("TESTING","MainActivity/ USER DOES NOT EXIST")
-                    showSnackbar("The user doesn't exist")
-                }
+        viewModel.fetchUser(email)
+        viewModel.fetchedUser.observe(this) {
+            Log.d("TESTING", "MainActivity/ attemptToLogin() executed")
+            if (it != null) {
+                UserSessionManager.loginUser(it)
+                navigateToHomePage()
+                finish()
+            } else {
+                Log.d("TESTING", "MainActivity/ USER DOES NOT EXIST")
+                showSnackbar("The user doesn't exist")
+
             }
         }
     }

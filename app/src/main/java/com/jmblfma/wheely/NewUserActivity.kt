@@ -93,6 +93,12 @@ class NewUserActivity : AppCompatActivity() {
                 binding.userEmailEdittext.requestFocus()
             }
         }
+        viewModel.userUpdateStatus.observe(this) {status ->
+            status?.let {
+                showSnackbar(it)
+            }
+
+        }
         binding.userEmailEdittext.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -126,7 +132,7 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
-        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
+        val currentProfileImagePath = UserSessionManager.getCurrentUser()?.profileImage
         val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -140,7 +146,7 @@ class NewUserActivity : AppCompatActivity() {
                     // Save the image asynchronously
                     lifecycleScope.launch(Dispatchers.IO) {
                         bitmap?.let { it ->
-                            currentBannerImagePath?.let { path ->
+                            currentProfileImagePath?.let { path ->
                                 val file = File(path)
                                 if (file.exists()) {
                                     file.delete()
@@ -266,7 +272,7 @@ class NewUserActivity : AppCompatActivity() {
             binding.userLastnameEdittext.text.toString(),
             binding.userEmailEdittext.text.toString(),
             binding.userBirthdayEdittext.text.toString(),
-            savedPath.toString(),
+            savedPath,
             null
         )
         viewModel.addUser(newUser)

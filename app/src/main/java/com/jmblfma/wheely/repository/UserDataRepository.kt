@@ -29,31 +29,50 @@ class UserDataRepository {
         }
     }
 
-    suspend fun getUserByEmail(email: String, onResult: (User?) -> Unit) {
+    suspend fun getUserByEmail(email: String) :User? = userDao.getUserByEmail(email)
+
+    suspend fun deleteUser(email: String): Int? = userDao.deleteUser(email)
+
+    suspend fun updateUserBanner(userId: Int, bannerPath: String, onResult: (Int) -> Unit) {
         try {
-            val user = userDao.getUserByEmail(email)
-            Log.d("TESTING", "UserRepo/ ${user} $email")
-            onResult(user)
+            val result = userDao.updateUserBanner(userId, bannerPath)
+            onResult(result) // The result will be the number of rows affected by the UPDATE
         } catch (e: Exception) {
             throw Exception("Database error: ${e.message}")
         }
     }
 
-    suspend fun updateUserBanner(userId: Int, bannerPath: String, onResult: (Int) -> Unit){
+    suspend fun updateUserPersonalInfo(
+        userId: Int,
+        newNickname: String?,
+        newFirstName: String?,
+        newLastName: String?,
+        newDateOfBirth: String?,
+        newProfileImage: String?,
+        onResult: (Int) -> Unit
+    ) {
         try {
-            val result = userDao.updateUserBanner(userId, bannerPath)
-            onResult(result) // The result will be the number of rows affected by the UPDATE
-        }catch (e:Exception){
-            throw Exception("Database error: ${e.message}")
+            val result = userDao.updateUserPersonalInfo(
+                userId,
+                newNickname,
+                newFirstName,
+                newLastName,
+                newDateOfBirth,
+                newProfileImage
+            )
+            onResult(result)
+        } catch (e: Exception) {
+            throw Exception("Database error, can't update user personal info: ${e.message}")
         }
     }
+
     suspend fun checkUserExists(email: String, onResult: (Boolean) -> Unit) {
-        try{
+        try {
             val user = userDao.checkEmailExists(email)
             onResult(true)
-        }catch (e: Exception){
+        } catch (e: Exception) {
             onResult(false)
-            throw  Exception("Email exists error: ${e.message}")
+            throw Exception("Email exists error: ${e.message}")
         }
     }
 }
