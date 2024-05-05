@@ -28,11 +28,11 @@ class ProfileVehicleListAdapter(
         private val itemClickListener: OnVehicleItemClickListener
     ) : RecyclerView.ViewHolder(view), View.OnClickListener {
         val imageView: ImageView
-        val motoModel: TextView
+        val motoName: TextView
 
         init {
             imageView = view.findViewById(R.id.vehicle_preview_image)
-            motoModel = view.findViewById(R.id.motoModel)
+            motoName = view.findViewById(R.id.motoName)
             view.setOnClickListener(this)
         }
 
@@ -54,7 +54,7 @@ class ProfileVehicleListAdapter(
         val vehicle = vehicleList[position]
         Log.d("VehicleAdapter", "Binding vehicle: ${vehicle.model}")
         setVehicleImage(holder.imageView, vehicle.image)
-        holder.motoModel.text = vehicle.model
+        holder.motoName.text = vehicle.name
 
     }
 
@@ -81,8 +81,9 @@ class ProfileVehicleListAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun setVehicleImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+    private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
+        if (imagePath.isNullOrEmpty()) {
+            Log.d("VEHICLE","Image path = $imagePath")
             Glide.with(imageView.context)
                 .load(R.drawable.pic_vehicle_template) // Your placeholder drawable
                 .into(imageView)

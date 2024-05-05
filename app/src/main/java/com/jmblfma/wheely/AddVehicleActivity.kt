@@ -89,7 +89,7 @@ class AddVehicleActivity : AppCompatActivity() {
                     try {
                         val year = enteredText.toInt()
                         if (year < earliestYear || year > currentYear) {
-                            binding.newVehicleYearEdittext.error = getString(R.string.year_range_error)
+                            binding.newVehicleYearEdittext.error = getString(R.string.year_range_error,earliestYear,currentYear)
                             if(year<earliestYear){
                                 showSnackbar(getString(R.string.funny_info))
                             }
@@ -126,7 +126,7 @@ class AddVehicleActivity : AppCompatActivity() {
             binding.newVehicleYearEdittext.text.toString(),
             horsepower,
             LocalDate.now().toString(),
-            savedPath.toString()
+            savedPath
         )
     }
 
@@ -146,7 +146,6 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
-        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
         val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -159,13 +158,7 @@ class AddVehicleActivity : AppCompatActivity() {
                     val bitmap = ImagePicker.fixImageOrientation(this, uri)
                     // Save the image asynchronously
                     lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let { it ->
-                            currentBannerImagePath?.let { path ->
-                                val file = File(path)
-                                if (file.exists()) {
-                                    file.delete()
-                                }
-                            }
+                        bitmap?.let {
                             savedPath = ImagePicker.saveImageToInternalStorage(
                                 this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
                             )
@@ -176,7 +169,6 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun setupTakePictureLauncher() {
-        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
         val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
@@ -185,13 +177,7 @@ class AddVehicleActivity : AppCompatActivity() {
                         binding.vehiclePreviewImage.setImageURI(receivedUri)
                         val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
                         lifecycleScope.launch(Dispatchers.IO) {
-                            bitmap?.let { it ->
-                                currentBannerImagePath?.let { path ->
-                                    val file = File(path)
-                                    if (file.exists()) {
-                                        file.delete()
-                                    }
-                                }
+                            bitmap?.let {
                                 savedPath = ImagePicker.saveImageToInternalStorage(
                                     this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
                                 )
