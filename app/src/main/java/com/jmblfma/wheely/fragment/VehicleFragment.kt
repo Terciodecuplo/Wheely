@@ -2,6 +2,7 @@ package com.jmblfma.wheely.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,11 +64,9 @@ class VehicleFragment : Fragment(), ProfileVehicleListAdapter.OnVehicleItemClick
         gridRecyclerView.adapter = profileVehicleListAdapter
     }
     override fun onVehicleItemClick(vehicle: Vehicle) {
-        // Handle the click event here
-        // You have the clicked vehicle, do whatever you want with it
-        // For example, you can navigate to another activity to display vehicle details
         val intent = Intent(requireContext(), VehicleStatsActivity::class.java)
-        intent.putExtra("vehicle_id", vehicle.vehicleId)
+        intent.putExtra("vehicleId", vehicle.vehicleId)
+        Log.d("VEHICLE", "Vehicle selected = $vehicle")
         startActivity(intent)
     }
 

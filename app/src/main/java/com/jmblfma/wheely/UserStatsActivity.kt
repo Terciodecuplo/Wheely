@@ -120,7 +120,7 @@ class UserStatsActivity : AppCompatActivity() {
     private fun removeUserDialog() {
         AlertDialog.Builder(this)
             .setTitle("Remove User")
-            .setMessage("This action cannot be undone. Are you sure that do you want to remove the current user?")
+            .setMessage("This action cannot be undone. Are you sure you want to remove the current user?")
             .setPositiveButton("Confirm") { dialog, which ->
                 Toast.makeText(this, "Current user deleted!", Toast.LENGTH_SHORT).show()
                 removeUserFromDataBase()
@@ -153,7 +153,7 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+        if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(R.drawable.user_default_pic) // Your placeholder drawable
                 .into(imageView)

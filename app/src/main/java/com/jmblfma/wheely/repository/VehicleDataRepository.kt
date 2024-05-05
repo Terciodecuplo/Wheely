@@ -31,4 +31,6 @@ class VehicleDataRepository {
         }
 
     }
+    suspend fun fetchSingleVehicle(vehicleId: Int): Vehicle = vehicleDao.getSingleVehicle(vehicleId)
+    suspend fun deleteVehicle(vehicleId: Int): Int? = vehicleDao.deleteVehicle(vehicleId)
 }

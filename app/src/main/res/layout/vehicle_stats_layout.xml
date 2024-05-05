@@ -6,7 +6,7 @@
     android:id="@+id/vehicleStatsLayout">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_user_stats"
+        android:id="@+id/toolbar_vehicle_stats"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/design_default_color_primary"
@@ -34,7 +34,7 @@
         app:layout_constraintBottom_toTopOf="@id/submit_changes_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_user_stats">
+        app:layout_constraintTop_toBottomOf="@id/toolbar_vehicle_stats">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
