@@ -14,6 +14,8 @@ class UserDataRepository {
         val sharedInstance: UserDataRepository = instance
     }
 
+    suspend fun fetchUsers():List<User> = userDao.fetchUsers()
+
     suspend fun addUser(user: User, onResult: (Boolean) -> Unit) {
         if (userDao.checkEmailExists(user.email)) {
             onResult(false)

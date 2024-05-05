@@ -11,6 +11,9 @@ interface UserDao {
     @Query("SELECT EXISTS(SELECT 1 FROM users WHERE email = :email LIMIT 1)")
     suspend fun checkEmailExists(email: String): Boolean
 
+    @Query("SELECT * FROM users")
+    suspend fun fetchUsers():List<User>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun postUser(user: User): Long
 

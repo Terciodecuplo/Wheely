@@ -16,21 +16,29 @@ class UserDataViewModel : ViewModel() {
     private val repository = UserDataRepository.sharedInstance
     private val _fetchedUser = MutableLiveData<User?>()
     private val _userUpdateStatus = MutableLiveData<String?>()
-    private val _userAdditionStatus = MutableLiveData<String?>()
-    val userPostStatus: LiveData<String?>
+    private val _userAdditionStatus = MutableLiveData<String>()
+    private val _fetchAllUsers = MutableLiveData<List<User>>()
+    val fetchAllUsers: LiveData<List<User>>
+        get() = _fetchAllUsers
+    val userPostStatus: LiveData<String>
         get() = _userAdditionStatus
     val userUpdateStatus: LiveData<String?>
         get() = _userUpdateStatus
     val fetchedUser: LiveData<User?>
         get() = _fetchedUser
 
-    fun fetchUser(userEmail: String){
+    fun fetchAllUsers(){
         viewModelScope.launch {
-           _fetchedUser.postValue(repository.getUserByEmail(userEmail))
+            _fetchAllUsers.postValue(repository.fetchUsers())
+        }
+    }
+    fun fetchUser(userEmail: String) {
+        viewModelScope.launch {
+            _fetchedUser.postValue(repository.getUserByEmail(userEmail))
         }
     }
 
-    fun deleteUser(userEmail: String){
+    fun deleteUser(userEmail: String) {
         viewModelScope.launch {
             repository.deleteUser(userEmail)
         }

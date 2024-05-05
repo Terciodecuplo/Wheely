@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        checkUsersInDB()
         viewModel.userPostStatus.observe(this) { status ->
             status?.let {
                 showSnackbar(it)
@@ -44,6 +44,14 @@ class MainActivity : AppCompatActivity() {
         binding.signupButton.setOnClickListener {
             val intent = Intent(applicationContext, NewUserActivity::class.java)
             this.startActivity(intent)
+        }
+    }
+
+    private fun checkUsersInDB(){
+        viewModel.fetchAllUsers.observe(this){
+            if(it.isEmpty()){
+                UserSessionManager.logoutUser()
+            }
         }
     }
 
