@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Wheely</string>
+    <string name="missing_user">User does not exists</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="history_option">History</string>
+    <string name="vehicles_option">Vehicles</string>
     <string name="post_layout_title">Posts</string>
     <string name="profile_layout_title">Profile</string>
     <string name="stats_layout_title">Stats</string>
@@ -45,4 +50,16 @@
     <string name="user_birthday_hint">dd/mm/yyyy*</string>
     <string name="form_error_empty_field">This field cannot be empty</string>
     <string name="form_error_invalid_email_format">The email format is not correct</string>
+    <string name="remove_vehicle_dialog_title">Remove vehicle</string>
+    <string name="remove_vehicle_dialog_message">This action cannot be undone. Are you sure you want to remove the current vehicle?</string>
+    <string name="remove_vehicle_notification">Current vehicle deleted!"</string>
+    <string name="take_picture_dialog">Take picture</string>
+    <string name="gallery_picture_dialog">Choose from gallery</string>
+    <string name="select_image_dialog_title">Select Image</string>
+    <string name="camera_permission_denied_message">Camera permission is necessary to use the camera</string>
+    <string name="no_camera_device_message">This device does not have a camera</string>
+    <string name="year_range_error">Year must be between %1$d and %2$d</string>
+    <string name="funny_info">Did you know the first motorcycle was invented in 1885?</string>
+
+
 </resources>

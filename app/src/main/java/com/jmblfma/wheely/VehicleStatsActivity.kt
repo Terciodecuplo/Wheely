@@ -82,13 +82,13 @@ class VehicleStatsActivity : AppCompatActivity() {
 
     private fun removeVehicleDialog() {
         AlertDialog.Builder(this)
-            .setTitle("Remove vehicle")
-            .setMessage("This action cannot be undone. Are you sure you want to remove the current vehicle?")
-            .setPositiveButton("Confirm") { dialog, which ->
-                Toast.makeText(this, "Current vehicle deleted!", Toast.LENGTH_SHORT).show()
+            .setTitle(getString(R.string.remove_vehicle_dialog_title))
+            .setMessage(getString(R.string.remove_vehicle_dialog_message))
+            .setPositiveButton(getString(R.string.confirm_button)) { dialog, which ->
+                Toast.makeText(this, getString(R.string.remove_vehicle_notification), Toast.LENGTH_SHORT).show()
                 removeVehicleFromDataBase()
             }
-            .setNegativeButton("Cancel") { dialog, which ->
+            .setNegativeButton(getString(R.string.cancel_button)) { dialog, which ->
                 dialog.dismiss()
             }
             .show()

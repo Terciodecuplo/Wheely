@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             } else {
                 Log.d("TESTING", "MainActivity/ USER DOES NOT EXIST")
-                showSnackbar("The user doesn't exist")
+                showSnackbar(getString(R.string.missing_user))
 
             }
         }

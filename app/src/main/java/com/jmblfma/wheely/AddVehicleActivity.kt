@@ -89,9 +89,9 @@ class AddVehicleActivity : AppCompatActivity() {
                     try {
                         val year = enteredText.toInt()
                         if (year < earliestYear || year > currentYear) {
-                            binding.newVehicleYearEdittext.error = "Year must be between $earliestYear and $currentYear"
+                            binding.newVehicleYearEdittext.error = getString(R.string.year_range_error)
                             if(year<earliestYear){
-                                showSnackbar("Did you know the first motorcycle was invented in 1885?")
+                                showSnackbar(getString(R.string.funny_info))
                             }
                             true
                         } else {
@@ -131,16 +131,16 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val options = arrayOf("Take Photo", "Choose from Gallery")
+        val options = arrayOf(getString(R.string.take_picture_dialog), getString(R.string.gallery_picture_dialog))
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Select Image")
+        builder.setTitle(getString(R.string.select_image_dialog_title))
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> checkCameraPermission()
                 1 -> chooseImageFromGallery()
             }
         }
-        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel_button)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
     }
@@ -223,7 +223,7 @@ class AddVehicleActivity : AppCompatActivity() {
                 takePicture()
             } else {
                 // Permission was denied
-                showSnackbar("Camera permission is necessary to use the camera")
+                showSnackbar(getString(R.string.camera_permission_denied_message))
             }
         }
     }
@@ -235,7 +235,7 @@ class AddVehicleActivity : AppCompatActivity() {
                 ImagePicker.createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
-            showSnackbar("This device does not have a camera")
+            showSnackbar(getString(R.string.no_camera_device_message))
         }
     }
 
