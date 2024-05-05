@@ -21,7 +21,7 @@ interface UserDao {
     suspend fun getUserByEmail(email: String): User?
 
     @Query("UPDATE users SET profileBanner = COALESCE(:profileBanner, profileBanner) WHERE userId = :userId")
-    suspend fun updateUserBanner(userId: Int, profileBanner: String): Int
+    suspend fun updateUserBanner(userId: Int, profileBanner: String?): Int
 
     @Query("DELETE FROM users WHERE email = :email")
     suspend fun deleteUser(email: String): Int?

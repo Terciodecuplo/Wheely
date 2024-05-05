@@ -5,6 +5,14 @@
         android:enabled="true"
         android:title="@string/new_vehicle_menu_item" />
     <item
+        android:id="@+id/edit_banner_menu_option"
+        android:enabled="true"
+        android:title="@string/edit_profile_banner"/>
+    <item
+        android:id="@+id/edit_highlights_menu_option"
+        android:enabled="true"
+        android:title="@string/select_highlights"/>
+    <item
         android:id="@+id/logout_menu_option"
         android:enabled="true"
         android:title="@string/logout_menu_item" />

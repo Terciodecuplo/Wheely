@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -39,28 +41,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_banner_placeholder" />
-
+            android:src="@drawable/ic_profile_banner"/>
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/edit_banner_profile"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:scaleType="centerCrop"
-        android:background="@color/white"
-        android:src="@drawable/ic_edit"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="@+id/cardView" />
-
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/profile_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="-25dp"
+        android:layout_marginTop="-50dp"
         android:src="@drawable/user_default_pic"
         app:civ_border_color="@color/white"
         app:civ_border_width="2dp"
@@ -73,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/profile_image"
         android:layout_alignParentEnd="true"
+        android:textStyle="bold"
         android:text="User Name"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -81,58 +73,47 @@
         app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
     <TextView
-        android:id="@+id/total_riding_time"
+        android:id="@+id/highlight_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/profile_image"
+        android:layout_marginTop="10dp"
+        android:textStyle="bold"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:text="Riding Time"
+        android:text="@string/your_highlight"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <TextView
-        android:id="@+id/total_riding_value"
+        android:id="@+id/selected_highlight_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/profile_image"
+        android:layout_marginTop="5dp"
         android:layout_alignParentEnd="true"
-        android:text="10:20"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintEnd_toEndOf="@+id/total_riding_time"
-        app:layout_constraintStart_toStartOf="@+id/total_riding_time"
-        app:layout_constraintTop_toBottomOf="@+id/total_riding_time" />
-
-    <TextView
-        android:id="@+id/total_distance_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profile_image"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
         android:text="Total Distance"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/total_riding_time"
-        app:layout_constraintTop_toTopOf="@+id/total_riding_time" />
+        app:layout_constraintStart_toEndOf="@+id/profile_image"
+        app:layout_constraintTop_toBottomOf="@+id/highlight_text" />
 
     <TextView
-        android:id="@+id/total_distance_value"
+        android:id="@+id/selected_highlight_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_alignStart="@+id/profile_image"
         android:layout_alignParentEnd="true"
         android:text="422"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintEnd_toEndOf="@+id/total_distance_text"
-        app:layout_constraintStart_toStartOf="@+id/total_distance_text"
-        app:layout_constraintTop_toBottomOf="@+id/total_riding_time" />
+        app:layout_constraintEnd_toEndOf="@+id/selected_highlight_text"
+        app:layout_constraintStart_toStartOf="@+id/selected_highlight_text"
+        app:layout_constraintTop_toBottomOf="@+id/selected_highlight_text" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"

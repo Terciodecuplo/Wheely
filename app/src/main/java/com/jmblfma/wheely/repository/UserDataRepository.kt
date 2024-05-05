@@ -35,7 +35,7 @@ class UserDataRepository {
 
     suspend fun deleteUser(email: String): Int? = userDao.deleteUser(email)
 
-    suspend fun updateUserBanner(userId: Int, bannerPath: String, onResult: (Int) -> Unit) {
+    suspend fun updateUserBanner(userId: Int, bannerPath: String?, onResult: (Int) -> Unit) {
         try {
             val result = userDao.updateUserBanner(userId, bannerPath)
             onResult(result) // The result will be the number of rows affected by the UPDATE

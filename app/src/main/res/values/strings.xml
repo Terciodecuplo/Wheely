@@ -60,6 +60,12 @@
     <string name="no_camera_device_message">This device does not have a camera</string>
     <string name="year_range_error">Year must be between %1$d and %2$d</string>
     <string name="funny_info">Did you know the first motorcycle was invented in 1885?</string>
-
-
+    <string name="edit_profile_banner">Edit banner</string>
+    <string name="your_highlight">Highlights</string>
+    <string name="select_highlights">Select highlights</string>
+    <string name="total_distance">Total Distance</string>
+    <string name="total_routes">Total Routes</string>
+    <string name="max_speed">Max Speed</string>
+    <string name="riding_time">Riding Time</string>
+    <string name="longest_route">Longest Route</string>
 </resources>

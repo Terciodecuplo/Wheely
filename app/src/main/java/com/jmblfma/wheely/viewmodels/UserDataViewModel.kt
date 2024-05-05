@@ -56,7 +56,7 @@ class UserDataViewModel : ViewModel() {
         }
     }
 
-    fun updateUserBanner(userId: Int, bannerPath: String) {
+    fun updateUserBanner(userId: Int, bannerPath: String?) {
         viewModelScope.launch {
             repository.updateUserBanner(userId, bannerPath) { rowsAffected ->
                 if (rowsAffected == 1) {
