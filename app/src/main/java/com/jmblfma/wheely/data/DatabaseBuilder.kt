@@ -9,7 +9,7 @@ object RoomDatabaseBuilder {
         Room.databaseBuilder(
             MyApp.applicationContext(),
             AppDatabase::class.java,
-            "wheely_new_20240504"
+            "wheely_db_20240506"
         ).build()
     }
 
