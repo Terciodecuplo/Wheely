@@ -16,8 +16,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -36,7 +34,7 @@ class TrackingService : Service(), SensorEventListener {
         const val CHANNEL_ID = "ForegroundServiceChannel"
         // Refresh rate for location requests in ms
         const val LOCATION_REFRESH_RATE = 1000
-        const val ACCURACY_THRESHOLD = 10
+        const val ACCURACY_THRESHOLD = 30
         @Volatile var isRunning = false
         @Volatile var enoughAccuracyForTracking = false
 
@@ -61,7 +59,6 @@ class TrackingService : Service(), SensorEventListener {
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForegroundService()
-        Log.d("TESTING"," onStartCommand()")
         return START_NOT_STICKY
     }
 
@@ -92,10 +89,10 @@ class TrackingService : Service(), SensorEventListener {
         // stops location updates
         fusedLocationClient.removeLocationUpdates(locationCallback)
         // sensorManager.unregisterListener(this)
-        Log.d("TESTING"," onDestroy()")
+        Log.d("TESTING","TrackingService/ onDestroy()")
     }
 
-    // BINDER SYSTEM TO CONTROL SERVICE STATES
+    // BINDER SYSTEM - CURRENTLY UNUSED
     private val binder = LocalBinder()
     inner class LocalBinder : Binder() {
         fun getService(): TrackingService = this@TrackingService
@@ -108,7 +105,7 @@ class TrackingService : Service(), SensorEventListener {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private var isPaused: Boolean = false
-    var isTrackingActive = false
+
     @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
         // gets default base location before starting periodic updates
@@ -131,21 +128,16 @@ class TrackingService : Service(), SensorEventListener {
                 locationResult ?: return
                 if (!isPaused) {
                     for (location in locationResult.locations) {
-                        Log.d("TESTING", "got LocationResult...")
                         if (location.accuracy <= ACCURACY_THRESHOLD) {
-                            Log.d("TESTING", "processing LocationResult...")
                             enoughAccuracyForTracking = true
-                            if (location.hasBearing()) {
-                                updateBearing(location.bearing)
-                            }
                             if (startTime == null) {
                                 startTime = location.time
                                 startTimer()
                             }
                             repository.addTrackPoint(buildTrackPoint(location))
-                            Log.d("TESTING", "LocationCallback Processed!")
+                            Log.d("TESTING", "TrackingService/ Location Processed!")
                         } else {
-                            Log.d("TESTING", "DISCARDED; lacking accuracy...")
+                            Log.d("TESTING", "TrackingService/ Location DISCARDED - LACKING ACCURACY")
                             enoughAccuracyForTracking = false
                         }
                     }
@@ -157,8 +149,7 @@ class TrackingService : Service(), SensorEventListener {
         // requests updates; when updates are available, uses the code in (2) to handle them
         fusedLocationClient.requestLocationUpdates(locationRequest,
             locationCallback,
-            Looper.getMainLooper())
-            Log.d("TESTING","requestLocationUpdates() executed "
+            Looper.getMainLooper()
         )
     }
 
@@ -169,27 +160,11 @@ class TrackingService : Service(), SensorEventListener {
         isPaused = false
     }
 
-    // CURRENT BEARING
-    private val bearingLiveData = MutableLiveData<Float>()
-    private fun updateBearing(bearing: Float) {
-        bearingLiveData.postValue(bearing)
-    }
-
-    fun getBearingLiveData(): LiveData<Float> = bearingLiveData
-
     // TRACKPOINTS BUILDING
     private val repository = TrackDataRepository.sharedInstance
     private fun buildTrackPoint(location: Location): TrackPoint {
         // TODO merge data with other sensors here?
-
-        return TrackPoint(
-            timestamp = location.time,
-            latitude =  location.latitude,
-            longitude = location.longitude,
-            altitude = location.altitude,
-            speed = location.speed,
-            bearing = location.bearing
-        )
+        return TrackPoint.mapToTrackPoint(location)
     }
 
     // TIMER SYSTEM

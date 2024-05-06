@@ -11,8 +11,13 @@ import com.jmblfma.wheely.model.TrackPoint
 
 @Dao
 interface TrackDao {
+    // TODO try/catch on repo... ?
+    // less required propagation of state till it gets to viewModel/UI
     @Query("SELECT COUNT(DISTINCT trackId) FROM Tracks")
     suspend fun countDistinctTracks(): Int
+
+    @Query("SELECT trackId FROM tracks")
+    suspend fun getAllTrackIds(): List<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrack(track: Track): Long
@@ -29,28 +34,36 @@ interface TrackDao {
     @Insert
     suspend fun insertTrackPoint(trackPoint: TrackPoint)
 
+    @Query("DELETE FROM tracks WHERE trackId = :trackId")
+    suspend fun deleteTrackById(trackId: Int): Int
+
     @Transaction
-    suspend fun insertTrackWithPoints(track: Track) {
-        Log.d("TESTING","TrackDao/ IN insertTrackWithPoints")
-        val trackId = insertTrack(track)
-        track.trackData.forEach {
-            insertTrackPoint(it.copy(trackId = trackId.toInt()))
+    suspend fun insertTrackWithPoints(track: Track): Boolean {
+        return try {
+            // TODO review ID logic
+            val trackId = insertTrack(track)
+            Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ trackId: $trackId")
+            track.trackData.forEach {
+                insertTrackPoint(it.copy(trackId = trackId.toInt()))
+            }
+            true
+        } catch (e: Exception) {
+            Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ failed", e)
+            false
         }
-        Log.d("TESTING","TrackDao/ DONE: insertTrackWithPoints")
     }
 
-    // TODO fix for when getTrackById is NULL etc use ?
     @Transaction
     suspend fun getTrackWithPoints(trackId: Int): Track? {
-        Log.d("TESTING","TrackDao/ IN: getTrackWithPoints")
-        val trackTemplate = getTrackById(trackId)
+        val candidateTrack = getTrackById(trackId)
         val trackPoints = getTrackPointsForTrack(trackId)
-        Log.d("TESTING","TrackDao/ DONE: getTrackWithPoints")
-        return if (trackTemplate != null) {
-            Track.build(trackTemplate.trackId, trackTemplate.name, trackData = trackPoints)
-        } else {
-            null
+        candidateTrack?.let {
+            if (trackPoints.isNotEmpty()) {
+                candidateTrack.trackData = trackPoints
+                return candidateTrack
+            }
         }
+        return null
     }
 
     @Transaction

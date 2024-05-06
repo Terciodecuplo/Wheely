@@ -30,7 +30,6 @@ class VehicleDataRepository {
         } catch (e: Exception) {
             throw Exception("No vehicles fetched for user ID $userId:: ${e.message}")
         }
-
     }
     suspend fun fetchSingleVehicle(vehicleId: Int): Vehicle = vehicleDao.getSingleVehicle(vehicleId)
     suspend fun deleteVehicle(vehicleId: Int): Int? = vehicleDao.deleteVehicle(vehicleId)
