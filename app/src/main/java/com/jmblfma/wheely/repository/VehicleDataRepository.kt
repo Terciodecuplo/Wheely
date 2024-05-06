@@ -29,6 +29,5 @@ class VehicleDataRepository {
         } catch (e: Exception) {
             throw Exception("No vehicles fetched for user ID $userId:: ${e.message}")
         }
-
     }
 }

@@ -13,59 +13,80 @@
         android:layout_rowWeight="1"
         android:layout_columnWeight="1"
         android:gravity="center"
-        android:textStyle="italic"
-        android:textColor="#FF0000"
-        android:text="WIP: TRACKING TESTING SCREEN"
+        android:textStyle="bold"
+        android:textColor="#0022FF"
+        android:text="WIP: TRACK VIEWER SCREEN"
         android:background="@color/white"/>
 
 
     <GridLayout
         android:id="@+id/statsGridLayout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="150dp"
         android:rowCount="2"
-        android:columnCount="4"
+        android:columnCount="5"
         app:layout_constraintTop_toBottomOf="@id/screenTitle">
 
         <TextView
+            android:id="@+id/trackName"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
+            android:layout_columnSpan="3"
             android:gravity="center"
+            android:text="@string/telemetry_standby_placeholder"
+            android:textColor="#000000"
             android:textStyle="bold"
-            android:text="Elapsed Time"
-            android:background="@android:color/holo_blue_bright"/>
-
+            android:background="@color/white"/>
         <TextView
+            android:id="@+id/trackDate"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
+            android:layout_columnSpan="2"
             android:gravity="center"
+            android:text="@string/telemetry_standby_placeholder"
+            android:textColor="#000000"
             android:textStyle="bold"
-            android:text="Speed"
-            android:background="@android:color/holo_blue_bright"/>
-
+            android:background="@color/white"/>
         <TextView
+            android:id="@+id/startTime"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
+            android:layout_columnSpan="2"
             android:gravity="center"
+            android:text="@string/telemetry_standby_placeholder"
+            android:textColor="#000000"
             android:textStyle="bold"
-            android:text="Distance"
-            android:background="@android:color/holo_blue_bright"/>
-
+            android:background="@color/white"/>
         <TextView
+            android:id="@+id/endTime"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_columnSpan="2"
+            android:gravity="center"
+            android:text="@string/telemetry_standby_placeholder"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:background="@color/white"/>
+        <TextView
+            android:id="@+id/numOfTracks"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
+            android:text="@string/telemetry_standby_placeholder"
+            android:textColor="#000000"
             android:textStyle="bold"
-            android:text="trackId"
-            android:background="@android:color/holo_blue_bright"/>
+            android:background="@color/white"/>
+
 
         <TextView
             android:id="@+id/elapsedTime"
@@ -74,7 +95,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="VAL_TIME"
+            android:text="@string/telemetry_standby_placeholder"
             android:textColor="#FFFA00"
             android:textStyle="bold"
             android:background="@color/black"/>
@@ -86,7 +107,7 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="VAL_SPEED"
+            android:text="@string/telemetry_standby_placeholder"
             android:textColor="#FFFA00"
             android:textStyle="bold"
             android:background="@color/black"/>
@@ -98,7 +119,19 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="VAL_DIST"
+            android:text="@string/telemetry_standby_placeholder"
+            android:textColor="#FFFA00"
+            android:textStyle="bold"
+            android:background="@color/black"/>
+
+        <TextView
+            android:id="@+id/maxSpeed"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:text="@string/telemetry_standby_placeholder"
             android:textColor="#FFFA00"
             android:textStyle="bold"
             android:background="@color/black"/>
@@ -110,10 +143,12 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="---"
+            android:text="@string/telemetry_standby_placeholder"
             android:textColor="#FFFA00"
             android:textStyle="bold"
             android:background="@color/subtext_grey"/>
+
+
     </GridLayout>
 
     <org.osmdroid.views.MapView
@@ -136,7 +171,6 @@
 
         <Button
             android:id="@+id/buttonLoadPrev"
-            android:backgroundTint="@color/black"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
@@ -146,7 +180,7 @@
 
         <Button
             android:id="@+id/buttonLoadNext"
-            android:backgroundTint="@color/black"
+
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
@@ -155,14 +189,14 @@
             android:text="NEXT" />
 
         <Button
-            android:id="@+id/buttonTest2"
-            android:backgroundTint="@color/black"
+            android:id="@+id/buttonDeleteLoadedTrack"
+            android:backgroundTint="@android:color/holo_red_light"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
-            android:text="-" />
+            android:text="DEL" />
 
         <Button
             android:id="@+id/buttonClearUI"
