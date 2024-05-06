@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -25,12 +26,10 @@ import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
-import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,24 +62,21 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
-        binding.editBannerProfile.setOnClickListener {
-            showImageSourceDialog()
-        }
         profileUserMainDataSetup()
         trackHistoryList = ArrayList()
 
         val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
 
         binding.viewPager.adapter = profileViewPagerAdapter
-        binding.profileImage.setOnClickListener{
+        binding.profileImage.setOnClickListener {
             val intent = Intent(applicationContext, UserStatsActivity::class.java)
             startActivity(intent)
         }
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
-                0 -> "History"
-                1 -> "Vehicles"
+                0 -> getString(R.string.history_option)
+                1 -> getString(R.string.vehicles_option)
                 else -> null
             }
         }.attach()
@@ -90,7 +86,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         super.onResume()
         profileUserMainDataSetup()
     }
-///data/user/0/com.jmblfma.wheely/files/UPDATE-38a810bc-1849-4d0b-aaf2-b0783f50b97b.jpg
+
     override fun onBackPressed() {
         super.onBackPressed()
         // Check if HomeActivity is in the back stack
@@ -114,12 +110,67 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 startActivity(intent)
             }
 
+            R.id.edit_highlights_menu_option -> {
+                showHighlightsDialog()
+            }
+
+            R.id.edit_banner_menu_option -> {
+                showImageSourceDialog()
+            }
+
             R.id.add_vehicle_menu_option -> {
                 val intent = Intent(applicationContext, AddVehicleActivity::class.java)
                 startActivity(intent)
             }
         }
         return true
+    }
+
+    private fun showHighlightsDialog() {
+        var selectedItem = 0
+        val options = arrayOf(
+            getString(R.string.total_routes),
+            getString(R.string.riding_time),
+            getString(R.string.max_speed),
+            getString(R.string.total_distance),
+            getString(R.string.longest_route)
+        )
+        MaterialAlertDialogBuilder(this)
+            .setTitle(getString(R.string.select_highlights))
+            .setPositiveButton("Ok") { _, _ ->
+                when (selectedItem) {
+                    0 -> getTotalRoutes()
+                    1 -> getRidingTime()
+                    2 -> getMaxSpeed()
+                    3 -> getTotalDistance()
+                    4 -> getLongestRoute()
+                }
+            }
+            .setSingleChoiceItems(options, selectedItem) { _, selectedItemIndex ->
+                selectedItem = selectedItemIndex
+            }
+            .setNegativeButton(getString(R.string.cancel_button)) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun getLongestRoute() {
+        binding.selectedHighlightText.text = getString(R.string.longest_route)
+    }
+
+    private fun getTotalDistance() {
+        binding.selectedHighlightText.text = getString(R.string.total_distance)
+    }
+
+    private fun getMaxSpeed() {
+        binding.selectedHighlightText.text = getString(R.string.max_speed)
+    }
+
+    private fun getRidingTime() {
+        binding.selectedHighlightText.text = getString(R.string.riding_time)
+    }
+
+    private fun getTotalRoutes() {
+        binding.selectedHighlightText.text = getString(R.string.total_routes)
     }
 
 
@@ -129,13 +180,13 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
 
     private fun profileUserMainDataSetup() {
-        Log.d("TESTING","ProfilePageActivity/ binding.userName.text ${binding.userName.text}")
+        Log.d("TESTING", "ProfilePageActivity/ binding.userName.text ${binding.userName.text}")
 
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
         setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
         if (UserSessionManager.getCurrentUser()?.profileBanner.isNullOrEmpty()) {
-            binding.bannerProfile.setImageResource(R.drawable.ic_banner_placeholder)
+            binding.bannerProfile.setImageResource(R.drawable.ic_profile_banner)
         } else {
             setBannerImage(
                 binding.bannerProfile,
@@ -145,9 +196,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+        Log.d("SAVING USER", "imagePath: $imagePath")
+        if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
-                .load(R.drawable.user_default_pic) // Your placeholder drawable
+                .load(R.drawable.user_default_pic)
                 .into(imageView)
         } else {
             Glide.with(imageView.context)
@@ -157,9 +209,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setBannerImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+        if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
-                .load(R.drawable.ic_banner_placeholder) // Your placeholder drawable
+                .load(R.drawable.ic_profile_banner)
                 .into(imageView)
         } else {
             Glide.with(imageView.context)
@@ -169,16 +221,19 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val options = arrayOf("Take Photo", "Choose from Gallery")
+        val options = arrayOf(
+            getString(R.string.take_picture_dialog),
+            getString(R.string.gallery_picture_dialog)
+        )
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Select Image")
+        builder.setTitle(getString(R.string.select_image_dialog_title))
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> checkCameraPermission()
                 1 -> chooseImageFromGallery()
             }
         }
-        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel_button)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
     }
@@ -267,7 +322,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 takePicture()
             } else {
                 // Permission is denied
-                showSnackbar("Camera permission is necessary to use the camera")
+                showSnackbar(getString(R.string.camera_permission_denied_message))
             }
         }
     }
@@ -279,7 +334,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 ImagePicker.createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
-            showSnackbar("This device does not have a camera")
+            showSnackbar(getString(R.string.no_camera_device_message))
         }
     }
 
@@ -293,7 +348,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         UserSessionManager.getCurrentUser()?.userId?.let {
             viewModel.updateUserBanner(
                 it,
-                savedPath.toString()
+                savedPath
             )
         }
         val updatedUser = UserSessionManager.getCurrentUser()?.let {

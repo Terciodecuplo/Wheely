@@ -15,30 +15,47 @@ import com.jmblfma.wheely.model.Vehicle
 
 class ProfileVehicleListAdapter(
     val vehicleList: ArrayList<Vehicle>,
-    var context: Context
+    var context: Context,
+    private val itemClickListener: OnVehicleItemClickListener
 ) : RecyclerView.Adapter<ProfileVehicleListAdapter.MyHolder>() {
+    interface OnVehicleItemClickListener {
+        fun onVehicleItemClick(vehicle: Vehicle)
+    }
 
-    class MyHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class MyHolder(
+        view: View,
+        private val vehicleList: List<Vehicle>,
+        private val itemClickListener: OnVehicleItemClickListener
+    ) : RecyclerView.ViewHolder(view), View.OnClickListener {
         val imageView: ImageView
-        val motoModel: TextView
+        val motoName: TextView
 
         init {
             imageView = view.findViewById(R.id.vehicle_preview_image)
-            motoModel = view.findViewById(R.id.motoModel)
+            motoName = view.findViewById(R.id.motoName)
+            view.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View?) {
+            // Get the clicked vehicle
+            val clickedVehicle = vehicleList[adapterPosition]
+            // Invoke the interface method to notify the click event
+            itemClickListener.onVehicleItemClick(clickedVehicle)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.vehicle_list_recycler, parent, false)
-        return MyHolder(view)
+        return MyHolder(view, vehicleList, itemClickListener)
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val vehicle = vehicleList[position]
         Log.d("VehicleAdapter", "Binding vehicle: ${vehicle.model}")
         setVehicleImage(holder.imageView, vehicle.image)
-        holder.motoModel.text = vehicle.model
+        holder.motoName.text = vehicle.name
+
     }
 
     override fun getItemCount() = vehicleList.size
@@ -63,8 +80,10 @@ class ProfileVehicleListAdapter(
         vehicleList.addAll(newVehicles)
         diffResult.dispatchUpdatesTo(this)
     }
-    fun setVehicleImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+
+    private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
+        if (imagePath.isNullOrEmpty()) {
+            Log.d("VEHICLE","Image path = $imagePath")
             Glide.with(imageView.context)
                 .load(R.drawable.pic_vehicle_template) // Your placeholder drawable
                 .into(imageView)

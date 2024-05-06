@@ -19,12 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel.userPostStatus.observe(this) { status ->
-            status?.let {
-                showSnackbar(it)
-            }
-        }
+        checkUsersInDB()
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
             showLoginScreen()
@@ -47,6 +42,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun checkUsersInDB(){
+        viewModel.fetchAllUsers()
+        viewModel.fetchAllUsers.observe(this){
+            if(it.isEmpty()){
+                UserSessionManager.logoutUser()
+            }
+        }
+    }
+
     private fun showLoginScreen() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -62,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                 finish()
             } else {
                 Log.d("TESTING", "MainActivity/ USER DOES NOT EXIST")
-                showSnackbar("The user doesn't exist")
+                showSnackbar(getString(R.string.missing_user))
 
             }
         }

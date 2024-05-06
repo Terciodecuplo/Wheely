@@ -26,6 +26,27 @@
             android:textColor="@android:color/white" />
     </androidx.appcompat.widget.Toolbar>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:max="2"
+        android:progress="1"
+        android:progressDrawable="@drawable/progress_bar_color"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_new_user"/>
+
+    <TextView
+        android:id="@+id/step_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/progress_bar"
+        android:textStyle="italic"
+        android:layout_marginEnd="5dp"
+        android:text="@string/step1of2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -33,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_new_user">
+        app:layout_constraintTop_toBottomOf="@id/progressBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,14 +62,14 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="20dp"
                 android:layout_marginTop="20dp"
                 android:src="@drawable/user_default_pic"
                 app:civ_border_color="@color/white"
                 app:civ_border_width="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,19 +86,20 @@
                 android:id="@+id/add_user_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add_user_button"
-                app:layout_constraintBottom_toTopOf="@+id/user_nickname_textview"
+                android:layout_marginTop="5dp"
+                android:text="@string/next"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/user_image"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_birthday_edittext" />
 
             <TextView
                 android:id="@+id/user_nickname_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
                 android:text="@string/user_username"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_image" />
 
             <EditText
@@ -91,7 +113,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_nickname_textview"
                 app:layout_constraintTop_toBottomOf="@+id/user_nickname_textview" />
 
             <TextView
@@ -100,7 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/user_firstname"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_nickname_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/user_nickname_edittext" />
 
             <EditText
@@ -113,7 +135,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_firstname_textview"
                 app:layout_constraintTop_toBottomOf="@+id/user_firstname_textview" />
 
             <TextView
@@ -122,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/user_lastname"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_firstname_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/user_firstname_edittext" />
 
             <EditText
@@ -136,7 +158,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_lastname_textview"
                 app:layout_constraintTop_toBottomOf="@+id/user_lastname_textview" />
 
             <TextView
@@ -145,7 +167,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/user_email"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_lastname_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/user_lastname_edittext" />
 
             <EditText
@@ -158,7 +180,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_email_textview"
                 app:layout_constraintTop_toBottomOf="@+id/user_email_textview" />
 
             <TextView
@@ -167,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/user_birthday"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_email_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/user_email_edittext" />
 
             <EditText
@@ -181,7 +203,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_image"
+                app:layout_constraintStart_toStartOf="@+id/user_birthday_textview"
                 app:layout_constraintTop_toBottomOf="@+id/user_birthday_textview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

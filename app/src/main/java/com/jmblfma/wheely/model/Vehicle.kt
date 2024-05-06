@@ -27,7 +27,9 @@ data class Vehicle(
     val year: String = "YEAR_HERE",
     val horsepower: Int = 0,
     val dateAdded: String = LocalDate.now().toString(),
-    val image: String = "IMG_URI"
+
+   // val image: String?
+    val image: String? = "IMG_URI"
 ) {
     override fun toString(): String {
         return name

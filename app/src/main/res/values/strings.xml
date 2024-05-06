@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Wheely</string>
+    <string name="missing_user">User does not exists</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="history_option">History</string>
+    <string name="vehicles_option">Vehicles</string>
     <string name="post_layout_title">Posts</string>
     <string name="profile_layout_title">Profile</string>
     <string name="stats_layout_title">Stats</string>
@@ -16,7 +21,7 @@
     <string name="vehicle_grid_link">Vehicles</string>
     <string name="track_history_link">History</string>
     <string name="logout_menu_item">Logout</string>
-    <string name="add_vehicle_button">Add Vehicle</string>
+    <string name="add_vehicle_button">ADD VEHICLE</string>
     <string name="new_vehicle_menu_item">Add vehicle</string>
     <string name="remove_vehicle_menu_item">Remove vehicle</string>
     <string name="edit_user_menu_item">Edit user</string>
@@ -31,8 +36,8 @@
     <string name="new_vehicle_model_hint">Which model is it?*</string>
     <string name="new_vehicle_year_hint">What year is it from?*</string>
     <string name="new_vehicle_horsepower_hint">How many HP does it have?*</string>
-    <string name="submit_changes_button">Submit changes</string>
-    <string name="add_user_button">Add User</string>
+    <string name="submit_changes_button">SUBMIT CHANGES</string>
+    <string name="add_user_button">ADD USER</string>
     <string name="user_username">Username</string>
     <string name="user_username_hint">How do you want to be called?*</string>
     <string name="user_firstname">Firstname</string>
@@ -45,7 +50,27 @@
     <string name="user_birthday_hint">dd/mm/yyyy*</string>
     <string name="form_error_empty_field">This field cannot be empty</string>
     <string name="form_error_invalid_email_format">The email format is not correct</string>
-
+    <string name="remove_vehicle_dialog_title">Remove vehicle</string>
+    <string name="remove_vehicle_dialog_message">This action cannot be undone. Are you sure you want to remove the current vehicle?</string>
+    <string name="remove_vehicle_notification">Current vehicle deleted!"</string>
+    <string name="take_picture_dialog">Take picture</string>
+    <string name="gallery_picture_dialog">Choose from gallery</string>
+    <string name="select_image_dialog_title">Select Image</string>
+    <string name="camera_permission_denied_message">Camera permission is necessary to use the camera</string>
+    <string name="no_camera_device_message">This device does not have a camera</string>
+    <string name="year_range_error">Year must be between %1$d and %2$d</string>
+    <string name="funny_info">Did you know the first motorcycle was invented in 1885?</string>
+    <string name="edit_profile_banner">Edit banner</string>
+    <string name="your_highlight">Highlights</string>
+    <string name="select_highlights">Select highlights</string>
+    <string name="total_distance">Total Distance</string>
+    <string name="total_routes">Total Routes</string>
+    <string name="max_speed">Max Speed</string>
+    <string name="riding_time">Riding Time</string>
+    <string name="longest_route">Longest Route</string>
+    <string name="step1of2">Step 1 of 2</string>
+    <string name="step2of2">Step 2 of 2</string>
+    <string name="next">NEXT</string>
     <string name="no_vehicles_available">No vehicles available</string>
     <string name="no_vehicle_assigned_option">No Vehicle</string>
     <string name="track_save_success">Track saved successfully!</string>
@@ -55,11 +80,12 @@
     <string name="track_load_success">Track loaded successfully!</string>
     <string name="track_load_failure">Track load FAILED</string>
     <string name="track_cant_cycle_load">No tracks available to cycle through</string>
-    <string name="vehicles_loaded">Vehicle list loaded...</string>
+    <string name="vehicles_loaded">Vehicle list loaded…</string>
     <string name="telemetry_standby_placeholder">---</string>
-    <string name="active_tracking_launching">Launching active tracking...</string>
-    <string name="active_tracking_ongoing">Tracking route...</string>
-    <string name="active_tracking_stopping">Stopping tracking...</string>
-    <string name="accuracy_threshold_waiting">Waiting for good GPS signal...</string>
+    <string name="active_tracking_launching">Launching active tracking…</string>
+    <string name="active_tracking_ongoing">Tracking route…</string>
+    <string name="active_tracking_stopping">Stopping tracking…</string>
+    <string name="accuracy_threshold_waiting">Waiting for good GPS signal…</string>
     <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
+
 </resources>

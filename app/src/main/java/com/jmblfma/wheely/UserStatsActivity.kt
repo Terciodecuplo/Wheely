@@ -120,7 +120,7 @@ class UserStatsActivity : AppCompatActivity() {
     private fun removeUserDialog() {
         AlertDialog.Builder(this)
             .setTitle("Remove User")
-            .setMessage("This action cannot be undone. Are you sure that do you want to remove the current user?")
+            .setMessage("This action cannot be undone. Are you sure you want to remove the current user?")
             .setPositiveButton("Confirm") { dialog, which ->
                 Toast.makeText(this, "Current user deleted!", Toast.LENGTH_SHORT).show()
                 removeUserFromDataBase()
@@ -153,7 +153,7 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        if (!imagePath!!.startsWith("/")) {
+        if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(R.drawable.user_default_pic) // Your placeholder drawable
                 .into(imageView)
@@ -232,16 +232,16 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val options = arrayOf("Take Photo", "Choose from Gallery")
+        val options = arrayOf(getString(R.string.take_picture_dialog), getString(R.string.gallery_picture_dialog))
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Select Image")
+        builder.setTitle(getString(R.string.select_image_dialog_title))
         builder.setItems(options) { _, which ->
             when (which) {
                 0 -> checkCameraPermission()
                 1 -> chooseImageFromGallery()
             }
         }
-        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+        builder.setNegativeButton(getString(R.string.cancel_button)) { dialog, _ -> dialog.dismiss() }
         val dialog = builder.create()
         dialog.show()
     }
@@ -327,7 +327,7 @@ class UserStatsActivity : AppCompatActivity() {
                 takePicture()
             } else {
                 // Permission is denied
-                showSnackbar("Camera permission is necessary to use the camera")
+                showSnackbar(getString(R.string.camera_permission_denied_message))
             }
         }
     }
@@ -339,7 +339,7 @@ class UserStatsActivity : AppCompatActivity() {
                 ImagePicker.createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
-            showSnackbar("This device does not have a camera")
+            showSnackbar(getString(R.string.no_camera_device_message))
         }
     }
 

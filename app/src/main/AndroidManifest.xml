@@ -52,6 +52,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".TrackViewerActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".VehicleStatsActivity"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".services.TrackingService"

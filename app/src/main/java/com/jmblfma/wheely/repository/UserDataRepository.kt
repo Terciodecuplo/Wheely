@@ -8,11 +8,21 @@ import com.jmblfma.wheely.model.User
 class UserDataRepository {
     private val roomsDB = RoomDatabaseBuilder.sharedInstance
     private val userDao: UserDao = roomsDB.userDao()
+    private var userCandidate: User? = null
 
     companion object {
         private val instance: UserDataRepository by lazy { UserDataRepository() }
         val sharedInstance: UserDataRepository = instance
     }
+
+    fun setUserCandidate(user: User){
+        userCandidate = user
+    }
+
+    fun getUserCandidate(): User?{
+        return userCandidate
+    }
+    suspend fun fetchUsers():List<User> = userDao.fetchUsers()
 
     suspend fun addUser(user: User, onResult: (Boolean) -> Unit) {
         if (userDao.checkEmailExists(user.email)) {
@@ -33,7 +43,7 @@ class UserDataRepository {
 
     suspend fun deleteUser(email: String): Int? = userDao.deleteUser(email)
 
-    suspend fun updateUserBanner(userId: Int, bannerPath: String, onResult: (Int) -> Unit) {
+    suspend fun updateUserBanner(userId: Int, bannerPath: String?, onResult: (Int) -> Unit) {
         try {
             val result = userDao.updateUserBanner(userId, bannerPath)
             onResult(result) // The result will be the number of rows affected by the UPDATE

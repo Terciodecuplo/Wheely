@@ -11,6 +11,9 @@ interface UserDao {
     @Query("SELECT EXISTS(SELECT 1 FROM users WHERE email = :email LIMIT 1)")
     suspend fun checkEmailExists(email: String): Boolean
 
+    @Query("SELECT * FROM users")
+    suspend fun fetchUsers():List<User>
+
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun postUser(user: User): Long
 
@@ -18,7 +21,7 @@ interface UserDao {
     suspend fun getUserByEmail(email: String): User?
 
     @Query("UPDATE users SET profileBanner = COALESCE(:profileBanner, profileBanner) WHERE userId = :userId")
-    suspend fun updateUserBanner(userId: Int, profileBanner: String): Int
+    suspend fun updateUserBanner(userId: Int, profileBanner: String?): Int
 
     @Query("DELETE FROM users WHERE email = :email")
     suspend fun deleteUser(email: String): Int?
