@@ -1,5 +1,6 @@
 package com.jmblfma.wheely.model
 
+import android.location.Location
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -27,6 +28,32 @@ data class TrackPoint(
 ) {
     fun hasBearing(): Boolean {
         return bearing != null
+    }
+
+    companion object {
+        fun mapToTrackPoint(location: Location): TrackPoint {
+            return TrackPoint(
+                timestamp = location.time,
+                latitude =  location.latitude,
+                longitude = location.longitude,
+                altitude = location.altitude,
+                speed = location.speed,
+                bearing = location.bearing
+            )
+        }
+
+        fun mapToLocation(trackPoint: TrackPoint): Location {
+            val location = Location("trackPoint_to_location_mapper")
+            location.time = trackPoint.timestamp
+            location.latitude = trackPoint.latitude
+            location.longitude = trackPoint.longitude
+            location.altitude = trackPoint.altitude
+            location.speed = trackPoint.speed
+            if (trackPoint.bearing != null) {
+                location.bearing = trackPoint.bearing
+            }
+            return location
+        }
     }
 }
 

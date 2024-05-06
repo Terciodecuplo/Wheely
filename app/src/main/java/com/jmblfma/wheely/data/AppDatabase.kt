@@ -2,8 +2,7 @@ package com.jmblfma.wheely.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.TypeConverters
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.model.User
@@ -17,6 +16,7 @@ import com.jmblfma.wheely.model.Vehicle
     ],
     version = 1
 )
+@TypeConverters(DifficultyConverters::class)
 
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

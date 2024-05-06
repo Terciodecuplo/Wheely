@@ -19,13 +19,17 @@ import java.time.LocalDate
     ]
 )
 data class Vehicle(
-    @PrimaryKey(autoGenerate = true) val vehicleId: Int,
-    @ColumnInfo(index = true) val ownerId: Int,
-    val name: String,
-    val brand: String,
-    val model: String,
-    val year: String,
-    val horsepower: Int,
+    @PrimaryKey(autoGenerate = true) val vehicleId: Int = 0,
+    @ColumnInfo(index = true) val ownerId: Int = 0,
+    val name: String = "NAME_HERE",
+    val brand: String = "BRAND_HERE",
+    val model: String = "MODEL_HERE",
+    val year: String = "YEAR_HERE",
+    val horsepower: Int = 0,
     val dateAdded: String = LocalDate.now().toString(),
-    val image: String
-)
+    val image: String = "IMG_URI"
+) {
+    override fun toString(): String {
+        return name
+    }
+}
