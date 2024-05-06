@@ -14,19 +14,20 @@ import kotlinx.coroutines.launch
 class UserDataViewModel : ViewModel() {
     private val userDao: UserDao = RoomDatabaseBuilder.sharedInstance.userDao()
     private val repository = UserDataRepository.sharedInstance
-    private val _fetchedUser = MutableLiveData<User?>()
-    private val _userUpdateStatus = MutableLiveData<String?>()
-    private val _userAdditionStatus = MutableLiveData<String>()
-    private val _fetchAllUsers = MutableLiveData<List<User>>()
-    val fetchAllUsers: LiveData<List<User>>
-        get() = _fetchAllUsers
-    val userPostStatus: LiveData<String>
-        get() = _userAdditionStatus
-    val userUpdateStatus: LiveData<String?>
-        get() = _userUpdateStatus
-    val fetchedUser: LiveData<User?>
-        get() = _fetchedUser
 
+
+    private val _fetchedUser = MutableLiveData<User?>()
+    val fetchedUser: LiveData<User?> = _fetchedUser
+    private val _userUpdateStatus = MutableLiveData<String?>()
+    val userUpdateStatus: LiveData<String?> = _userUpdateStatus
+    private val _fetchAllUsers = MutableLiveData<List<User>>()
+    val fetchAllUsers: LiveData<List<User>> = _fetchAllUsers
+
+    fun setUserCandidate(newUser: User){
+        viewModelScope.launch {
+            repository.setUserCandidate(newUser)
+        }
+    }
     fun fetchAllUsers(){
         viewModelScope.launch {
             _fetchAllUsers.postValue(repository.fetchUsers())
@@ -41,18 +42,6 @@ class UserDataViewModel : ViewModel() {
     fun deleteUser(userEmail: String) {
         viewModelScope.launch {
             repository.deleteUser(userEmail)
-        }
-    }
-
-    fun addUser(user: User) {
-        viewModelScope.launch {
-            repository.addUser(user) { isSuccess ->
-                if (isSuccess) {
-                    _userAdditionStatus.postValue("User added successfully")
-                } else {
-                    _userAdditionStatus.postValue("User with this email already exists")
-                }
-            }
         }
     }
 

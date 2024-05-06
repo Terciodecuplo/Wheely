@@ -2,6 +2,7 @@ package com.jmblfma.wheely.repository
 
 import com.jmblfma.wheely.data.RoomDatabaseBuilder
 import com.jmblfma.wheely.data.VehicleDao
+import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 
 class VehicleDataRepository {
@@ -22,7 +23,7 @@ class VehicleDataRepository {
             throw Exception("Database error posting vehicle: ${e.message}")
         }
     }
-
+    suspend fun insertVehicleWithNewUser(user: User, vehicle: Vehicle, onResult: (Boolean) -> Unit) = vehicleDao.insertVehicleWithNewUser(user, vehicle)
     suspend fun fetchVehicles(userId: Int): List<Vehicle> {
         return try {
             vehicleDao.getAllVehicles(userId)

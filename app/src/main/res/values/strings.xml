@@ -21,7 +21,7 @@
     <string name="vehicle_grid_link">Vehicles</string>
     <string name="track_history_link">History</string>
     <string name="logout_menu_item">Logout</string>
-    <string name="add_vehicle_button">Add Vehicle</string>
+    <string name="add_vehicle_button">ADD VEHICLE</string>
     <string name="new_vehicle_menu_item">Add vehicle</string>
     <string name="remove_vehicle_menu_item">Remove vehicle</string>
     <string name="edit_user_menu_item">Edit user</string>
@@ -36,8 +36,8 @@
     <string name="new_vehicle_model_hint">Which model is it?*</string>
     <string name="new_vehicle_year_hint">What year is it from?*</string>
     <string name="new_vehicle_horsepower_hint">How many HP does it have?*</string>
-    <string name="submit_changes_button">Submit changes</string>
-    <string name="add_user_button">Add User</string>
+    <string name="submit_changes_button">SUBMIT CHANGES</string>
+    <string name="add_user_button">ADD USER</string>
     <string name="user_username">Username</string>
     <string name="user_username_hint">How do you want to be called?*</string>
     <string name="user_firstname">Firstname</string>
@@ -68,4 +68,8 @@
     <string name="max_speed">Max Speed</string>
     <string name="riding_time">Riding Time</string>
     <string name="longest_route">Longest Route</string>
+    <string name="step1of2">Step 1 of 2</string>
+    <string name="step2of2">Step 2 of 2</string>
+    <string name="next">NEXT</string>
+
 </resources>

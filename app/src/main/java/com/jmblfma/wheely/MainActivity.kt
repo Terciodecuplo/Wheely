@@ -20,11 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkUsersInDB()
-        viewModel.userPostStatus.observe(this) { status ->
-            status?.let {
-                showSnackbar(it)
-            }
-        }
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
             showLoginScreen()
@@ -48,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkUsersInDB(){
+        viewModel.fetchAllUsers()
         viewModel.fetchAllUsers.observe(this){
             if(it.isEmpty()){
                 UserSessionManager.logoutUser()

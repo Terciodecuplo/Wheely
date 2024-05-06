@@ -5,8 +5,7 @@ import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -22,15 +21,14 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewVehicleLayoutBinding
+import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.File
 import java.time.LocalDate
 import java.util.UUID
 
@@ -42,6 +40,7 @@ class AddVehicleActivity : AppCompatActivity() {
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var photoURI: Uri? = null
     private var savedPath: String? = null
+    private lateinit var userCandidate: User
 
     companion object {
         private const val CAMERA_REQUEST_CODE = 101
@@ -62,14 +61,35 @@ class AddVehicleActivity : AppCompatActivity() {
         binding.toolbarNewVehicle.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+        val signUpState = intent.extras?.getBoolean("signUpState") ?: false
+        if (!signUpState) {
+            binding.progressBar.visibility = View.INVISIBLE
+            binding.stepTextview.visibility = View.INVISIBLE
+            binding.addVehicleButton.text = getString(R.string.add_vehicle_button)
+        } else {
+            binding.addVehicleButton.text = getString(R.string.signup_button)
+            viewModel.getUserCandidate()
+            viewModel.userCandidateData.observe(this) {
+                if (it != null) {
+                    Log.d("USERDATA", "user posted = $it")
+                    userCandidate = it
+                }
 
+            }
+        }
         binding.addVehiclePreviewImage.setOnClickListener {
             showImageSourceDialog()
         }
         binding.addVehicleButton.setOnClickListener {
             if (!formHasErrors(findViewById(R.id.new_vehicle_layout))) {
-                val newVehicle = setNewVehicleData()
-                viewModel.addVehicle(newVehicle)
+                val newVehicle = setNewVehicleData(signUpState)
+                viewModel.insertVehicleWithNewUser(userCandidate, newVehicle)
+                if (signUpState) {
+                    setResult(RESULT_OK) // Calls back the result to ParentActivity so it can finish
+                }
+                viewModel.userAdditionStatus.observe(this){
+                    showSnackbar(it)
+                }
                 finish()
             }
         }
@@ -89,8 +109,9 @@ class AddVehicleActivity : AppCompatActivity() {
                     try {
                         val year = enteredText.toInt()
                         if (year < earliestYear || year > currentYear) {
-                            binding.newVehicleYearEdittext.error = getString(R.string.year_range_error,earliestYear,currentYear)
-                            if(year<earliestYear){
+                            binding.newVehicleYearEdittext.error =
+                                getString(R.string.year_range_error, earliestYear, currentYear)
+                            if (year < earliestYear) {
                                 showSnackbar(getString(R.string.funny_info))
                             }
                             true
@@ -111,7 +132,13 @@ class AddVehicleActivity : AppCompatActivity() {
 
     }
 
-    private fun setNewVehicleData(): Vehicle {
+    private fun setNewVehicleData(signUpState: Boolean): Vehicle {
+        var userId = 0
+        if(!signUpState) {
+            userId = UserSessionManager.getCurrentUser()?.userId!!
+        }
+
+
         val horsepower: Int = try {
             Integer.parseInt(binding.newVehicleHorsepowerEdittext.text.toString())
         } catch (e: NumberFormatException) {
@@ -119,7 +146,7 @@ class AddVehicleActivity : AppCompatActivity() {
         }
         return Vehicle(
             0,
-            UserSessionManager.getCurrentUser()?.userId ?: -1,
+            userId,
             binding.newVehicleNameEdittext.text.toString(),
             binding.newVehicleBrandEdittext.text.toString(),
             binding.newVehicleModelEdittext.text.toString(),
@@ -131,7 +158,10 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val options = arrayOf(getString(R.string.take_picture_dialog), getString(R.string.gallery_picture_dialog))
+        val options = arrayOf(
+            getString(R.string.take_picture_dialog),
+            getString(R.string.gallery_picture_dialog)
+        )
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.select_image_dialog_title))
         builder.setItems(options) { _, which ->

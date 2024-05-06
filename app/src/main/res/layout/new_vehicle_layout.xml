@@ -25,6 +25,27 @@
             android:textColor="@android:color/white" />
     </androidx.appcompat.widget.Toolbar>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:max="2"
+        android:progress="2"
+        android:progressDrawable="@drawable/progress_bar_color"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_new_vehicle"/>
+
+    <TextView
+        android:id="@+id/step_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/progress_bar"
+        android:textStyle="italic"
+        android:layout_marginEnd="5dp"
+        android:text="@string/step2of2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -32,21 +53,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_new_vehicle">
+        app:layout_constraintTop_toBottomOf="@id/progressBar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/vehicle_preview_image"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_margin="20dp"
-                android:scaleType="centerCrop"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/pic_vehicle_template"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+
 
             <ImageView
                 android:id="@+id/add_vehicle_preview_image"
@@ -61,19 +87,21 @@
                 android:id="@+id/add_vehicle_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ADD NEW VEHICLE"
-                app:layout_constraintBottom_toTopOf="@+id/new_vehicle_name_textview"
+                android:layout_marginTop="10dp"
+                android:text="@string/add_vehicle_button"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/vehicle_preview_image"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/new_vehicle_year_edittext" />
 
             <TextView
                 android:id="@+id/new_vehicle_name_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
                 android:text="@string/new_vehicle_name"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/vehicle_preview_image" />
 
             <EditText
@@ -87,7 +115,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_name_textview"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_name_textview" />
 
             <TextView
@@ -96,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/new_vehicle_brand"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_name_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_name_edittext" />
 
             <EditText
@@ -109,7 +137,7 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_brand_textview"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_brand_textview" />
 
             <TextView
@@ -118,21 +146,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/new_vehicle_model"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_brand_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_brand_edittext" />
 
             <EditText
                 android:id="@+id/new_vehicle_model_edittext"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
                 android:hint="@string/new_vehicle_model_hint"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName|textCapSentences"
                 android:maxLines="1"
                 android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintEnd_toEndOf="@+id/new_vehicle_brand_edittext"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_model_textview"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_model_textview" />
 
             <TextView
@@ -141,7 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/new_vehicle_horsepower"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_model_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_model_edittext" />
 
             <EditText
@@ -150,11 +177,11 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/new_vehicle_horsepower_hint"
                 android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
+                android:inputType="number"
                 android:maxLines="1"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_hp_textview"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_hp_textview" />
 
             <TextView
@@ -163,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:text="@string/new_vehicle_year"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_horsepower_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_horsepower_edittext" />
 
             <EditText
@@ -175,7 +202,7 @@
                 android:inputType="number"
                 android:minHeight="48dp"
                 app:layout_constraintEnd_toEndOf="@+id/new_vehicle_name_edittext"
-                app:layout_constraintStart_toStartOf="@+id/vehicle_preview_image"
+                app:layout_constraintStart_toStartOf="@+id/new_vehicle_year_textview"
                 app:layout_constraintTop_toBottomOf="@+id/new_vehicle_year_textview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

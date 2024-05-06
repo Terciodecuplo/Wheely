@@ -2,7 +2,9 @@ package com.jmblfma.wheely
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
@@ -30,7 +32,6 @@ import com.jmblfma.wheely.utils.ImagePicker.fixImageOrientation
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -44,6 +45,7 @@ class NewUserActivity : AppCompatActivity() {
     private val viewModel: UserDataViewModel by viewModels()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var photoURI: Uri? = null
     private var savedPath: String? = null
 
@@ -71,29 +73,39 @@ class NewUserActivity : AppCompatActivity() {
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
         }
+        resultLauncher =
+                // Finish ParentActivity based on result from ChildActivity
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    finish()
+                }
+            }
         binding.addUserButton.setOnClickListener {
             if (!formHasErrors(findViewById(R.id.new_user_layout))) {
-                postUser()
-                finish()
-
+                viewModel.fetchUser(binding.userEmailEdittext.text.toString())
+                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
+                intent.putExtra("signUpState", true)
+                resultLauncher.launch(intent)
             }
         }
         binding.addUserImage.setOnClickListener {
             showImageSourceDialog()
         }
 
-        viewModel.userPostStatus.observe(this) { status ->
-            status?.let {
-                showSnackbar(it)
+        viewModel.fetchedUser.observe(this) {
+            if (it != null) {
+                showSnackbar("The mail is already in use")
                 binding.userEmailEdittext.setTextColor(
                     ContextCompat.getColor(
                         this, R.color.incorrect_field_data
                     )
                 )
                 binding.userEmailEdittext.requestFocus()
+            } else {
+                postUser()
             }
         }
-        viewModel.userUpdateStatus.observe(this) {status ->
+        viewModel.userUpdateStatus.observe(this) { status ->
             status?.let {
                 showSnackbar(it)
             }
@@ -117,7 +129,10 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val options = arrayOf(getString(R.string.take_picture_dialog), getString(R.string.gallery_picture_dialog))
+        val options = arrayOf(
+            getString(R.string.take_picture_dialog),
+            getString(R.string.gallery_picture_dialog)
+        )
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.select_image_dialog_title))
         builder.setItems(options) { _, which ->
@@ -265,17 +280,18 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun postUser() {
-        val newUser = User(
-            0,
-            binding.userNicknameEdittext.text.toString(),
-            binding.userFirstnameEdittext.text.toString(),
-            binding.userLastnameEdittext.text.toString(),
-            binding.userEmailEdittext.text.toString(),
-            binding.userBirthdayEdittext.text.toString(),
-            savedPath,
-            null
+        viewModel.setUserCandidate(
+            User(
+                0,
+                binding.userNicknameEdittext.text.toString(),
+                binding.userFirstnameEdittext.text.toString(),
+                binding.userLastnameEdittext.text.toString(),
+                binding.userEmailEdittext.text.toString(),
+                binding.userBirthdayEdittext.text.toString(),
+                savedPath,
+                null
+            )
         )
-        viewModel.addUser(newUser)
     }
 
     private fun showDatePicker() {

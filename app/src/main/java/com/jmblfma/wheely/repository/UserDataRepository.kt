@@ -8,12 +8,20 @@ import com.jmblfma.wheely.model.User
 class UserDataRepository {
     private val roomsDB = RoomDatabaseBuilder.sharedInstance
     private val userDao: UserDao = roomsDB.userDao()
+    private var userCandidate: User? = null
 
     companion object {
         private val instance: UserDataRepository by lazy { UserDataRepository() }
         val sharedInstance: UserDataRepository = instance
     }
 
+    fun setUserCandidate(user: User){
+        userCandidate = user
+    }
+
+    fun getUserCandidate(): User?{
+        return userCandidate
+    }
     suspend fun fetchUsers():List<User> = userDao.fetchUsers()
 
     suspend fun addUser(user: User, onResult: (Boolean) -> Unit) {
