@@ -71,7 +71,7 @@
     <string name="step1of2">Step 1 of 2</string>
     <string name="step2of2">Step 2 of 2</string>
     <string name="next">NEXT</string>
-    <string name="no_vehicles_available">No vehicles available</string>
+    <string name="no_vehicles_available">No vehicles available. Add one before trying to save the track.</string>
     <string name="no_vehicle_assigned_option">No Vehicle</string>
     <string name="track_save_success">Track saved successfully!</string>
     <string name="track_save_failure">Track saving FAILED</string>

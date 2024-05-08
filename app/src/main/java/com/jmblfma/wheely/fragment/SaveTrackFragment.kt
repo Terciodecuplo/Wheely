@@ -1,12 +1,12 @@
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.jmblfma.wheely.R
 import com.jmblfma.wheely.data.Difficulty
 import com.jmblfma.wheely.databinding.FragmentSaveTrackBinding
 import com.jmblfma.wheely.model.Vehicle
@@ -33,8 +33,12 @@ class SaveTrackFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val loadedVehicles = viewModel.loadedVehicles.value?.toMutableList() ?: mutableListOf()
-        // adds dummy vehicle to allow choosing none
-        loadedVehicles.add(Vehicle(vehicleId = 0, name = getString(R.string.no_vehicle_assigned_option)))
+        Log.d("TEST2","SaveTrackFragment/ copied list size: ${loadedVehicles.size}")
+        // DISABLED AT UI LEVEL 20240508; user MUST go and create a vehicle before saving the track
+        // we prevent the user from launching this dialog if there aren't any vehicles added
+        // track logic supports NO vehicle though and can be created after restoring the dummy one:
+        // Dummy 'No Vehicle' option to allow choosing none
+        // loadedVehicles.add(Vehicle(vehicleId = 0, name = getString(R.string.no_vehicle_assigned_option)))
         val vehicleAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, loadedVehicles)
         vehicleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerVehicles.adapter = vehicleAdapter

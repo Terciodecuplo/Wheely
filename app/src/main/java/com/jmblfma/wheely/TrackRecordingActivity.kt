@@ -24,6 +24,9 @@ import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.TrackRecordingState
 import com.jmblfma.wheely.utils.formatTime
 import com.jmblfma.wheely.viewmodels.TrackRecordingViewModel
+import org.osmdroid.events.MapListener
+import org.osmdroid.events.ScrollEvent
+import org.osmdroid.events.ZoomEvent
 
 class TrackRecordingActivity : NavigationMenuActivity() {
     private lateinit var binding: TrackRecordingBinding
@@ -36,18 +39,19 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         binding = TrackRecordingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
-        setupButtonListeners()
-
         MapUtils.setupMap(binding.mapView, this)
         setupUIManagement()
-
+        setupButtonAndMapsListeners()
         setupTrackRecordingLogic()
         setupTrackSavingLogic()
         autoDetectAndRestoreState()
     }
 
     // UI MGMT AND CONTROLS
-    private fun setupButtonListeners() {
+    // prevents auto center 'disabling' until map is set
+    var allowToggleAutoCenterUsingMap: Boolean = false
+    @SuppressLint("ClickableViewAccessibility") // applies to "binding.mapView.setOnTouchListener"
+    private fun setupButtonAndMapsListeners() {
         binding.buttonStartRec.setOnClickListener {
             startTracking()
         }
@@ -55,23 +59,38 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             stopTracking()
         }
         binding.buttonSaveTrack.setOnClickListener {
-            val dialog = SaveTrackFragment()
-            dialog.show(supportFragmentManager, "SaveTrackDialog")
             viewModel.fetchCurrentVehicleList()
+            // the saving screen will be on launch from the observer after the vehicles have been loaded
+            // see setupTrackSavingLogic()
         }
         binding.buttonDiscardTrack.setOnClickListener {
             viewModel.discardTrack()
             restartTrackingPostSaving()
         }
-        binding.toggleAutoCenter.isChecked = isAutoCenterEnabled
-        binding.toggleAutoCenter.setOnCheckedChangeListener { _, isChecked ->
-            isAutoCenterEnabled = isChecked
-            if (isAutoCenterEnabled) {
+        // disables auto center and zooming based on the user interacting with the map
+        binding.mapView.addMapListener(object : MapListener {
+            override fun onScroll(event: ScrollEvent?): Boolean {
+                if (allowToggleAutoCenterUsingMap) { isAutoCenterEnabled = false }
+                return false
+            }
+            override fun onZoom(event: ZoomEvent?): Boolean {
+                if (allowToggleAutoCenterUsingMap) { isAutoCenterEnabled = false }
+                return false
+            }
+        })
+        // restores it if there is an active location being provided
+        binding.buttonRestoreCenter.setOnClickListener {
+            isAutoCenterEnabled = true
+            if (viewModel.getUIState() == TrackRecordingState.SAVING_MODE) {
+                MapUtils.centerAndZoomOverCurrentRoute(binding.mapView)
+            } else {
                 lastTrackPoint?.let {
-                    MapUtils.updateLocationMarker(binding.mapView, it, true, isBearingEnabled)
+                    // forces immediate recenter
+                    MapUtils.centerAndZoom(binding.mapView, it)
                 }
             }
         }
+        // TODO add button to zoom out to current live track using MapUtils.centerAndZoomOverCurrentRoute?
         // binding.buttonTest2.setOnClickListener {}
     }
     private fun setupUIManagement() {
@@ -127,25 +146,37 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     }
     private fun autoDetectAndRestoreState() {
         val isTrackingServiceRunning = TrackingService.isRunning
-        if (!isTrackingServiceRunning) {
-            if (!viewModel.areThereTrackPointsInTheBuffer()) {
-                // INITIAL STATE:
-                // not currently tracking & tracking has not started yet (no trackpoints created)
-                viewModel.setUIState(TrackRecordingState.WAITING_FOR_ACCURACY, true)
+        val currentUiState = viewModel.getUIState()
+
+        // if a UIState already exists -> onDestroy() wasn't called -> we're here from onResume()
+        // from onResume(), the only case when is necessary to restore anything is when an active
+        // route is being tracked, to prevent liveRouteUpdate() jumping from the last drawn point
+        // to the most recent one without processing the trackPoints accumulated while onPause()
+        if (currentUiState == TrackRecordingState.ACTIVE_RECORDING) {
+            restoreLiveRoute()
+        } else if (currentUiState == null) { // everything else only is necessary after onDestroy() (UI mode not set)
+            if (!isTrackingServiceRunning) {
+                if (!viewModel.areThereTrackPointsInTheBuffer()) {
+                    // INITIAL STATE:
+                    // not currently tracking & tracking has not started yet (no trackpoints created)
+                    viewModel.setUIState(TrackRecordingState.WAITING_FOR_ACCURACY, true)
+                    restoreMapAfterMapViewIsLoaded(TrackRecordingState.WAITING_FOR_ACCURACY)
+                } else {
+                    // STATE: not currently tracking but with trackpoints in the buffer
+                    // this means that the user left the activity after
+                    // stopping the tracking but without saving -> restore saving mode
+                    viewModel.setUIState(TrackRecordingState.SAVING_MODE, true)
+                    restoreMapAfterMapViewIsLoaded(TrackRecordingState.SAVING_MODE)
+                }
             } else {
-                // STATE: not currently tracking but with trackpoints in the buffer
-                // this means that the user left the activity after
-                // stopping the tracking but without saving -> restore saving mode
-                viewModel.setUIState(TrackRecordingState.SAVING_MODE, true)
-                restoreMapState(TrackRecordingState.SAVING_MODE)
+                viewModel.setUIState(TrackRecordingState.ACTIVE_RECORDING, true)
+                restoreMapAfterMapViewIsLoaded(TrackRecordingState.ACTIVE_RECORDING)
             }
-        } else {
-            viewModel.setUIState(TrackRecordingState.ACTIVE_RECORDING, true)
-            restoreMapState(TrackRecordingState.ACTIVE_RECORDING)
         }
     }
     private var restoringPreviousState: Boolean = false
-    private fun restoreMapState(uiState: TrackRecordingState) {
+    // prevents crashes for certain uses of MapView when redrawing the different elements on the map
+    private fun restoreMapAfterMapViewIsLoaded(uiState: TrackRecordingState) {
         restoringPreviousState = true
         binding.mapView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -161,8 +192,21 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                     else -> {}
                 }
                 restoringPreviousState = false
+                // prevents user disable auto centering & zoom before route is loaded and centered
+                allowToggleAutoCenterUsingMap = true
             }
         })
+    }
+    private fun restoreLiveRoute() {
+        viewModel.getTrackPoints()?.let { trackPoints ->
+            restoringPreviousState = true // prevents active tracking to modify route while restore is taking place
+            //MapUtils.clearCurrentRoute(binding.mapView)
+            trackPoints.forEach {
+                MapUtils.liveRouteUpdate(binding.mapView, it, true)
+            }
+            restoringPreviousState = false
+            updateLiveTelemetry(trackPoints)
+        }
     }
 
     // GENERAL LOCATION CFG
@@ -205,11 +249,12 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     // ACTIVE TRACK RECORDING SERVICE AND SETUP
     private fun setupTrackRecordingLogic() {
         viewModel.trackPointsLiveData.observe(this) { trackPoints ->
-            if (trackPoints.isNotEmpty() && viewModel.getUIState() != TrackRecordingState.SAVING_MODE) {
+            // && !restoringPreviousState* see onResume()
+            if (trackPoints.isNotEmpty() && viewModel.getUIState() != TrackRecordingState.SAVING_MODE && !restoringPreviousState) {
                 viewModel.setUIState(TrackRecordingState.ACTIVE_RECORDING)
                 Log.d("TESTING","TrackRecording/ in LIVE ROUTE")
                 val lastNewTrackPoint = trackPoints.last()
-                MapUtils.liveRouteUpdate(binding.mapView, lastNewTrackPoint)
+                MapUtils.liveRouteUpdate(binding.mapView, lastNewTrackPoint, true)
                 MapUtils.updateLocationMarker(binding.mapView, lastNewTrackPoint, isAutoCenterEnabled, isBearingEnabled)
                 updateLiveTelemetry(trackPoints)
             }
@@ -237,15 +282,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         }
         Snackbar.make(binding.root, getString(R.string.active_tracking_stopping), Snackbar.LENGTH_SHORT).show()
     }
-    private fun restoreLiveRoute() {
-        viewModel.getTrackPoints()?.let { trackPoints ->
-            trackPoints.forEach {
-                MapUtils.liveRouteUpdate(binding.mapView, it)
-            }
-            updateLiveTelemetry(trackPoints)
-        }
-    }
-
     // TELEMETRY
     private fun updateLiveTelemetry(trackPoints: List<TrackPoint>) {
         val currentSpeedInMs = trackPoints.last().speed.toDouble()
@@ -264,13 +300,16 @@ class TrackRecordingActivity : NavigationMenuActivity() {
 
     // TRACK SAVING LOGIC
     private fun setupTrackSavingLogic() {
-        // prepares the vehicles so that SaveTrackFragment can populate the spinner
+        // launches the saving window after vehicles are fetch when clicking binding.buttonSaveTrack
+        // TODO might be moved to onCreate and always fetch this list beforehand?
         viewModel.loadedVehicles.observe(this) {
-            Log.d("TESTING", "TrackRecordingActivity/ loadedVehicles: ${it.isEmpty()}")
-            if (it.isEmpty()) {
-                Snackbar.make(binding.root, getString(R.string.no_vehicles_available), Snackbar.LENGTH_SHORT).show()
-            } else {
+            Log.d("TEST2", "TrackRecordingActivity/ loadedVehicles: ${it.isEmpty()} / Size: ${it.size}")
+            if (it.isNotEmpty()) {
                 Snackbar.make(binding.root, getString(R.string.vehicles_loaded), Snackbar.LENGTH_SHORT).show()
+                val dialog = SaveTrackFragment()
+                dialog.show(supportFragmentManager, "SaveTrackDialog")
+            } else {
+                Snackbar.make(binding.root, getString(R.string.no_vehicles_available), Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -306,13 +345,14 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     }
     override fun onResume() {
         super.onResume()
-        binding.mapView.onResume() // Ensures map tiles and other resources are refreshed
+        Log.d("TEST2","TrackRecordingActivity/ onResume() called")
+        binding.mapView.onResume() // ensures map tiles and other resources are refreshed
+        autoDetectAndRestoreState() // only applies when ACTIVE_RECORDING (more info. inside the function)
     }
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause() // Ensures any changes or state are paused
     }
-
     // LEGACY
     // TRACKING SERVICE BINDING (service connection setup) - UNUSED
     /*

@@ -31,8 +31,8 @@ class TrackRecordingViewModel : ViewModel() {
             _trackRecordingState.value = newState
         }
     }
-    fun getUIState(): TrackRecordingState {
-        return _trackRecordingState.value!!
+    fun getUIState(): TrackRecordingState? {
+        return _trackRecordingState.value
     }
 
     // TRACK DATA
