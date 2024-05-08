@@ -3,13 +3,14 @@ package com.jmblfma.wheely.data
 import androidx.room.Room
 import com.jmblfma.wheely.MyApp
 
+private const val DB_NAME = "wheely_db_20240508"
 object RoomDatabaseBuilder {
      val sharedInstance: AppDatabase by lazy {
         // Initialize and build the Room database
         Room.databaseBuilder(
             MyApp.applicationContext(),
             AppDatabase::class.java,
-            "wheely_db_20240506"
+            DB_NAME
         ).build()
     }
 

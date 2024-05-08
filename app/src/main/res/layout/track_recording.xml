@@ -120,7 +120,6 @@
 
         <Button
             android:id="@+id/buttonSaveTrack"
-            android:backgroundTint="#9C27B0"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
@@ -128,18 +127,15 @@
             android:layout_gravity="fill"
             android:text="Save" />
 
-        <ToggleButton
-            android:id="@+id/toggleAutoCenter"
-            android:textOn="Follow"
-            android:textOff="Free"
-            android:checked="true"
+        <Button
+            android:id="@+id/buttonRestoreCenter"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_rowSpan="2"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill" />
-
+            android:layout_gravity="fill"
+            android:text="Center" />
         <Button
             android:id="@+id/buttonDiscardTrack"
             android:backgroundTint="#3F51B5"
