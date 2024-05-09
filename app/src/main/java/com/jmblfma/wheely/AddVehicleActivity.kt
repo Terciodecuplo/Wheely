@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -83,19 +84,23 @@ class AddVehicleActivity : AppCompatActivity() {
         binding.addVehicleButton.setOnClickListener {
             if (!formHasErrors(findViewById(R.id.new_vehicle_layout))) {
                 val newVehicle = setNewVehicleData(signUpState)
-                viewModel.insertVehicleWithNewUser(userCandidate, newVehicle)
                 if (signUpState) {
+                    viewModel.insertVehicleWithNewUser(userCandidate, newVehicle)
+                    viewModel.userAdditionStatus.observe(this) {
+                        showSnackbar(it)
+                    }
                     setResult(RESULT_OK) // Calls back the result to ParentActivity so it can finish
-                }
-                viewModel.userAdditionStatus.observe(this){
-                    showSnackbar(it)
+                } else{
+                    viewModel.addVehicle(newVehicle)
+                    viewModel.vehiclePostStatus.observe(this){
+                        if (it == true){
+                            Toast.makeText(this, getString(R.string.new_vehicle_notification), Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this, getString(R.string.add_vehicle_error), Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
                 finish()
-            }
-        }
-        viewModel.vehiclePostStatus.observe(this) { status ->
-            status?.let {
-                showSnackbar(it)
             }
         }
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)

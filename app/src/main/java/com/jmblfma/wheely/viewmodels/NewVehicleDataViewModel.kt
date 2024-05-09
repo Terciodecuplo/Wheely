@@ -24,8 +24,8 @@ class NewVehicleDataViewModel : ViewModel() {
     val vehicleData: LiveData<Vehicle>
         get() = _vehicleData
 
-    private val _vehiclePostStatus = MutableLiveData<String?>()
-    var vehiclePostStatus: LiveData<String?> = _vehiclePostStatus
+    private val _vehiclePostStatus = MutableLiveData<Boolean?>()
+    var vehiclePostStatus: LiveData<Boolean?> = _vehiclePostStatus
 
     private val _userAdditionStatus = MutableLiveData<String>()
     val userAdditionStatus: LiveData<String> = _userAdditionStatus
@@ -54,9 +54,9 @@ class NewVehicleDataViewModel : ViewModel() {
         viewModelScope.launch {
             repository.postVehicle(vehicle) { isSuccess ->
                 if (isSuccess) {
-                    _vehiclePostStatus.postValue("Vehicle added successfully")
+                    _vehiclePostStatus.postValue(true)
                 } else {
-                    _vehiclePostStatus.postValue("Vehicle cannot be added.")
+                    _vehiclePostStatus.postValue(false)
                 }
             }
         }
@@ -68,9 +68,9 @@ class NewVehicleDataViewModel : ViewModel() {
         }
     }
 
-    fun deleteVehicle(vehicleId: Int) {
+    fun deleteVehicle(vehicleId: Int, userId: Int) {
         viewModelScope.launch {
-            _removeVehicleStatus.postValue(repository.deleteVehicle(vehicleId))
+            _removeVehicleStatus.postValue(repository.deleteVehicle(vehicleId, userId))
         }
     }
 }

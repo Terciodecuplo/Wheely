@@ -94,7 +94,7 @@ class VehicleStatsActivity : AppCompatActivity() {
     }
 
     private fun removeVehicleFromDataBase(){
-        viewModel.deleteVehicle(vehicleId)
+        UserSessionManager.getCurrentUser()?.userId?.let { viewModel.deleteVehicle(vehicleId, it) }
         viewModel.removeVehicleStatus.observe(this){
             if(it!=0){
                 Toast.makeText(this, getString(R.string.remove_vehicle_notification), Toast.LENGTH_SHORT).show()
