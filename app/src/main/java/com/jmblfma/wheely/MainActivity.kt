@@ -14,21 +14,19 @@ import com.jmblfma.wheely.viewmodels.UserDataViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val repository = UserDataRepository.sharedInstance
     private val viewModel: UserDataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        Log.d("TESTING","Main Activity / OnCreate")
+        checkUsersInDB()
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
             showLoginScreen()
         } else if (!UserSessionManager.isLoggedIn()) {
             showLoginScreen()
         } else {
-            viewModel.fetchAllUsers()
-            checkUsersInDB()
-
+            navigateToHomePage()
         }
 
         binding.loginButton.setOnClickListener {
@@ -45,12 +43,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkUsersInDB(){
+        viewModel.fetchAllUsers()
         viewModel.fetchAllUsers.observe(this){
             if(it.isEmpty()){
                 UserSessionManager.logoutUser()
-                showLoginScreen()
-            } else {
-                navigateToHomePage()
             }
         }
     }
