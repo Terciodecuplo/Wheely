@@ -22,7 +22,9 @@ interface VehicleDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun postVehicle(vehicle: Vehicle): Long
 
-    @Query("DELETE FROM vehicles WHERE vehicleId = :vehicleId")
+    @Query("DELETE FROM vehicles WHERE " +
+            "vehicleId = :vehicleId " +
+            "AND (SELECT COUNT(*) FROM vehicles) > 1")
     suspend fun deleteVehicle(vehicleId: Int): Int?
     @Transaction
     suspend fun insertVehicleWithNewUser(user: User, vehicle: Vehicle) {
