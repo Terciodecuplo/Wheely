@@ -30,8 +30,8 @@ class NewVehicleDataViewModel : ViewModel() {
     private val _userAdditionStatus = MutableLiveData<String>()
     val userAdditionStatus: LiveData<String> = _userAdditionStatus
 
-    private val _fetchedUser = MutableLiveData<User?>()
-    val fetchedUser: LiveData<User?> = _fetchedUser
+    private val _removeVehicleStatus = MutableLiveData<Int?>()
+    val removeVehicleStatus: LiveData<Int?> = _removeVehicleStatus
 
     fun getUserCandidate() {
         viewModelScope.launch {
@@ -40,40 +40,38 @@ class NewVehicleDataViewModel : ViewModel() {
     }
 
 
-
-
-        fun insertVehicleWithNewUser(user: User, vehicle: Vehicle){
-            viewModelScope.launch {
-                repository.insertVehicleWithNewUser(user, vehicle) { isSuccess ->
-                    if(isSuccess) {
-                        _userAdditionStatus.postValue("User has been signed up")
-                    }
+    fun insertVehicleWithNewUser(user: User, vehicle: Vehicle) {
+        viewModelScope.launch {
+            repository.insertVehicleWithNewUser(user, vehicle) { isSuccess ->
+                if (isSuccess) {
+                    _userAdditionStatus.postValue("User has been signed up")
                 }
             }
         }
-
-        fun addVehicle(vehicle: Vehicle) {
-            viewModelScope.launch {
-                repository.postVehicle(vehicle) { isSuccess ->
-                    if (isSuccess) {
-                        _vehiclePostStatus.postValue("Vehicle added successfully")
-                    } else {
-                        _vehiclePostStatus.postValue("Vehicle cannot be added.")
-                    }
-                }
-            }
-        }
-
-        fun fetchSingleVehicle(vehicleId: Int) {
-            viewModelScope.launch {
-                _vehicleData.postValue(repository.fetchSingleVehicle(vehicleId))
-            }
-        }
-
-        fun deleteVehicle(vehicleId: Int) {
-            viewModelScope.launch {
-                repository.deleteVehicle(vehicleId)
-            }
-        }
-
     }
+
+    fun addVehicle(vehicle: Vehicle) {
+        viewModelScope.launch {
+            repository.postVehicle(vehicle) { isSuccess ->
+                if (isSuccess) {
+                    _vehiclePostStatus.postValue("Vehicle added successfully")
+                } else {
+                    _vehiclePostStatus.postValue("Vehicle cannot be added.")
+                }
+            }
+        }
+    }
+
+    fun fetchSingleVehicle(vehicleId: Int) {
+        viewModelScope.launch {
+            _vehicleData.postValue(repository.fetchSingleVehicle(vehicleId))
+        }
+    }
+
+    fun deleteVehicle(vehicleId: Int) {
+        viewModelScope.launch {
+            _removeVehicleStatus.postValue(repository.deleteVehicle(vehicleId))
+        }
+    }
+}
+

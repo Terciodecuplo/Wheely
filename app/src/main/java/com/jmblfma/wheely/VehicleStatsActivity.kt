@@ -85,7 +85,6 @@ class VehicleStatsActivity : AppCompatActivity() {
             .setTitle(getString(R.string.remove_vehicle_dialog_title))
             .setMessage(getString(R.string.remove_vehicle_dialog_message))
             .setPositiveButton(getString(R.string.confirm_button)) { dialog, which ->
-                Toast.makeText(this, getString(R.string.remove_vehicle_notification), Toast.LENGTH_SHORT).show()
                 removeVehicleFromDataBase()
             }
             .setNegativeButton(getString(R.string.cancel_button)) { dialog, which ->
@@ -96,8 +95,16 @@ class VehicleStatsActivity : AppCompatActivity() {
 
     private fun removeVehicleFromDataBase(){
         viewModel.deleteVehicle(vehicleId)
-        val intent = Intent(applicationContext, ProfilePageActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
+        viewModel.removeVehicleStatus.observe(this){
+            if(it!=0){
+                Toast.makeText(this, getString(R.string.remove_vehicle_notification), Toast.LENGTH_SHORT).show()
+                val intent = Intent(applicationContext, ProfilePageActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, getString(R.string.remove_vehicle_error), Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 }
