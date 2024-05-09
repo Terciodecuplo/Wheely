@@ -24,8 +24,8 @@ interface VehicleDao {
 
     @Query("DELETE FROM vehicles WHERE " +
             "vehicleId = :vehicleId " +
-            "AND (SELECT COUNT(*) FROM vehicles) > 1")
-    suspend fun deleteVehicle(vehicleId: Int): Int?
+            "AND (SELECT COUNT(*) FROM vehicles WHERE ownerId = :userId) > 1")
+    suspend fun deleteVehicle(vehicleId: Int, userId: Int): Int?
     @Transaction
     suspend fun insertVehicleWithNewUser(user: User, vehicle: Vehicle) {
         Log.d("VEHICLE","Posting vehicle with new user")
