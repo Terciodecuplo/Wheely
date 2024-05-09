@@ -1,5 +1,6 @@
 package com.jmblfma.wheely.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,7 +22,12 @@ class UserDataViewModel : ViewModel() {
     private val _userUpdateStatus = MutableLiveData<String?>()
     val userUpdateStatus: LiveData<String?> = _userUpdateStatus
     private val _fetchAllUsers = MutableLiveData<List<User>>()
-    val fetchAllUsers: LiveData<List<User>> = _fetchAllUsers
+    val fetchAllUsers: LiveData<List<User>> get() = _fetchAllUsers
+
+    init {
+        Log.d("TESTING","Init executed")
+        fetchAllUsers()
+    }
 
     fun setUserCandidate(newUser: User){
         viewModelScope.launch {
