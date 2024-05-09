@@ -24,11 +24,6 @@ class UserDataViewModel : ViewModel() {
     private val _fetchAllUsers = MutableLiveData<List<User>>()
     val fetchAllUsers: LiveData<List<User>> get() = _fetchAllUsers
 
-    init {
-        Log.d("TESTING","Init executed")
-        fetchAllUsers()
-    }
-
     fun setUserCandidate(newUser: User){
         viewModelScope.launch {
             repository.setUserCandidate(newUser)
