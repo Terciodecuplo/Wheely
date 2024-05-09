@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             if(it.isEmpty()){
                 UserSessionManager.logoutUser()
                 showLoginScreen()
+
             } else {
                 navigateToHomePage()
             }
