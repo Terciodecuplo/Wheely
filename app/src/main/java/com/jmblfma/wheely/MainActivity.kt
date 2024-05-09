@@ -19,14 +19,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkUsersInDB()
+        binding = ActivityMainBinding.inflate(layoutInflater)
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
             showLoginScreen()
         } else if (!UserSessionManager.isLoggedIn()) {
             showLoginScreen()
         } else {
-            navigateToHomePage()
+            viewModel.fetchAllUsers()
+            checkUsersInDB()
         }
 
         binding.loginButton.setOnClickListener {
@@ -43,10 +44,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkUsersInDB(){
-        viewModel.fetchAllUsers()
         viewModel.fetchAllUsers.observe(this){
             if(it.isEmpty()){
                 UserSessionManager.logoutUser()
+                showLoginScreen()
+            } else {
+                navigateToHomePage()
             }
         }
     }
