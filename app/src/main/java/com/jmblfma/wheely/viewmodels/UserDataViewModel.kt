@@ -4,15 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jmblfma.wheely.data.RoomDatabaseBuilder
-import com.jmblfma.wheely.data.UserDao
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.utils.UserSessionManager
 import kotlinx.coroutines.launch
 
 class UserDataViewModel : ViewModel() {
-    private val userDao: UserDao = RoomDatabaseBuilder.sharedInstance.userDao()
     private val repository = UserDataRepository.sharedInstance
 
 
@@ -23,16 +20,18 @@ class UserDataViewModel : ViewModel() {
     private val _fetchAllUsers = MutableLiveData<List<User>>()
     val fetchAllUsers: LiveData<List<User>> = _fetchAllUsers
 
-    fun setUserCandidate(newUser: User){
+    fun setUserCandidate(newUser: User) {
         viewModelScope.launch {
             repository.setUserCandidate(newUser)
         }
     }
-    fun fetchAllUsers(){
+
+    fun fetchAllUsers() {
         viewModelScope.launch {
             _fetchAllUsers.postValue(repository.fetchUsers())
         }
     }
+
     fun fetchUser(userEmail: String) {
         viewModelScope.launch {
             _fetchedUser.postValue(repository.getUserByEmail(userEmail))

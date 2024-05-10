@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jmblfma.wheely.data.RoomDatabaseBuilder
-import com.jmblfma.wheely.data.VehicleDao
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.repository.UserDataRepository
@@ -13,7 +11,6 @@ import com.jmblfma.wheely.repository.VehicleDataRepository
 import kotlinx.coroutines.launch
 
 class NewVehicleDataViewModel : ViewModel() {
-    private val vehicleDao: VehicleDao = RoomDatabaseBuilder.sharedInstance.vehicleDao()
     private val repository = VehicleDataRepository.sharedInstance
     private val userRepository = UserDataRepository.sharedInstance
 

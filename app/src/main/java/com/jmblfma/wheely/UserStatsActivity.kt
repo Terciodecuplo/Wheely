@@ -26,7 +26,6 @@ import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.UserStatsLayoutBinding
 import com.jmblfma.wheely.utils.ImagePicker
-import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
@@ -105,11 +104,11 @@ class UserStatsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Confirm Changes")
             .setMessage("Are you sure you want to submit these changes?")
-            .setPositiveButton("Confirm") { dialog, which ->
+            .setPositiveButton("Confirm") { _, _ ->
                 Toast.makeText(this, "User data submitted!", Toast.LENGTH_SHORT).show()
                 submitChanges()
             }
-            .setNegativeButton("Cancel") { dialog, which ->
+            .setNegativeButton("Cancel") { dialog, _ ->
                 blockDataEdition()
                 Toast.makeText(this, "Edition cancelled", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
@@ -121,23 +120,24 @@ class UserStatsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Remove User")
             .setMessage("This action cannot be undone. Are you sure you want to remove the current user?")
-            .setPositiveButton("Confirm") { dialog, which ->
+            .setPositiveButton("Confirm") { _, _ ->
                 Toast.makeText(this, "Current user deleted!", Toast.LENGTH_SHORT).show()
                 removeUserFromDataBase()
             }
-            .setNegativeButton("Cancel") { dialog, which ->
+            .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
     }
 
-    private fun removeUserFromDataBase(){
+    private fun removeUserFromDataBase() {
         viewModel.deleteUser(UserSessionManager.getCurrentUser()!!.email)
         UserSessionManager.logoutUser()
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
+
     private fun manageFields(editText: EditText, isEditable: Boolean) {
         if (isEditable) {
             editText.isClickable = true
@@ -232,7 +232,10 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun showImageSourceDialog() {
-        val options = arrayOf(getString(R.string.take_picture_dialog), getString(R.string.gallery_picture_dialog))
+        val options = arrayOf(
+            getString(R.string.take_picture_dialog),
+            getString(R.string.gallery_picture_dialog)
+        )
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.select_image_dialog_title))
         builder.setItems(options) { _, which ->
@@ -261,7 +264,7 @@ class UserStatsActivity : AppCompatActivity() {
                     val bitmap = ImagePicker.fixImageOrientation(this, uri)
                     // Save the image asynchronously
                     lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let { it ->
+                        bitmap?.let { bitmap ->
                             currentProfileImagePath?.let { path ->
                                 val file = File(path)
                                 if (file.exists()) {
@@ -269,7 +272,7 @@ class UserStatsActivity : AppCompatActivity() {
                                 }
                             }
                             savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@UserStatsActivity, it, "profile-pic-$imageId.jpg"
+                                this@UserStatsActivity, bitmap, "profile-pic-$imageId.jpg"
                             )
                         }
                         Log.d("UPDATE PIC", "Saved path from storage: $savedPath")
@@ -288,7 +291,7 @@ class UserStatsActivity : AppCompatActivity() {
                         binding.userImage.setImageURI(receivedUri)
                         val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
                         lifecycleScope.launch(Dispatchers.IO) {
-                            bitmap?.let { it ->
+                            bitmap?.let { bitmap ->
                                 currentProfileImagePath?.let { path ->
                                     val file = File(path)
                                     if (file.exists()) {
@@ -296,7 +299,7 @@ class UserStatsActivity : AppCompatActivity() {
                                     }
                                 }
                                 savedPath = ImagePicker.saveImageToInternalStorage(
-                                    this@UserStatsActivity, it, "profile-pic-$imageId.jpg"
+                                    this@UserStatsActivity, bitmap, "profile-pic-$imageId.jpg"
                                 )
                             }
                             Log.d("UPDATE PIC", "Saved path from camera: $savedPath")

@@ -1,6 +1,5 @@
 package com.jmblfma.wheely.repository
 
-import android.util.Log
 import com.jmblfma.wheely.data.RoomDatabaseBuilder
 import com.jmblfma.wheely.data.UserDao
 import com.jmblfma.wheely.model.User
@@ -15,14 +14,15 @@ class UserDataRepository {
         val sharedInstance: UserDataRepository = instance
     }
 
-    fun setUserCandidate(user: User){
+    fun setUserCandidate(user: User) {
         userCandidate = user
     }
 
-    fun getUserCandidate(): User?{
+    fun getUserCandidate(): User? {
         return userCandidate
     }
-    suspend fun fetchUsers():List<User> = userDao.fetchUsers()
+
+    suspend fun fetchUsers(): List<User> = userDao.fetchUsers()
 
     suspend fun addUser(user: User, onResult: (Boolean) -> Unit) {
         if (userDao.checkEmailExists(user.email)) {
@@ -39,7 +39,7 @@ class UserDataRepository {
         }
     }
 
-    suspend fun getUserByEmail(email: String) :User? = userDao.getUserByEmail(email)
+    suspend fun getUserByEmail(email: String): User? = userDao.getUserByEmail(email)
 
     suspend fun deleteUser(email: String): Int? = userDao.deleteUser(email)
 

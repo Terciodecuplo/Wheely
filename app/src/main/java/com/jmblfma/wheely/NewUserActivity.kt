@@ -92,7 +92,7 @@ class NewUserActivity : AppCompatActivity() {
 
         viewModel.fetchedUser.observe(this) {
             if (it != null) {
-                showSnackbar("The mail is already in use")
+                showSnackbar(getString(R.string.email_in_use_error))
                 binding.userEmailEdittext.setTextColor(
                     ContextCompat.getColor(
                         this, R.color.incorrect_field_data

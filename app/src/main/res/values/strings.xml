@@ -13,6 +13,7 @@
     <string name="login_email_hint">Login with your email</string>
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
+    <string name="email_in_use_error">The mail is already in use</string>
     <string name="nav_posts">Posts</string>
     <string name="nav_record">Record</string>
     <string name="nav_profile">Profile</string>

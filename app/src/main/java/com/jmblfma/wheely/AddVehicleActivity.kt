@@ -51,7 +51,7 @@ class AddVehicleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = NewVehicleLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         setupImagePickerLauncher()
         setupTakePictureLauncher()
         setSupportActionBar(binding.toolbarNewVehicle)
