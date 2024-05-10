@@ -7,14 +7,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.ActivityMainBinding
-import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val repository = UserDataRepository.sharedInstance
     private val viewModel: UserDataViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,9 +41,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkUsersInDB(){
-        viewModel.fetchAllUsers.observe(this){
-            if(it.isEmpty()){
+    private fun checkUsersInDB() {
+        viewModel.fetchAllUsers.observe(this) {
+            if (it.isEmpty()) {
                 UserSessionManager.logoutUser()
                 showLoginScreen()
             } else {

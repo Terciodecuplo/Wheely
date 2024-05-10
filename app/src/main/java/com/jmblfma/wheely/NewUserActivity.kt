@@ -83,9 +83,7 @@ class NewUserActivity : AppCompatActivity() {
         binding.addUserButton.setOnClickListener {
             if (!formHasErrors(findViewById(R.id.new_user_layout))) {
                 viewModel.fetchUser(binding.userEmailEdittext.text.toString())
-                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
-                intent.putExtra("signUpState", true)
-                resultLauncher.launch(intent)
+
             }
         }
         binding.addUserImage.setOnClickListener {
@@ -103,6 +101,9 @@ class NewUserActivity : AppCompatActivity() {
                 binding.userEmailEdittext.requestFocus()
             } else {
                 postUser()
+                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
+                intent.putExtra("signUpState", true)
+                resultLauncher.launch(intent)
             }
         }
         viewModel.userUpdateStatus.observe(this) { status ->
