@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.ActivityMainBinding
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
@@ -27,7 +28,9 @@ class MainActivity : AppCompatActivity() {
             viewModel.fetchAllUsers()
             checkUsersInDB()
         }
-
+        binding.languageButton.setOnClickListener{
+            toggleLanguage()
+        }
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
             Log.d("TESTING", "MainActivity/ loginButton $email")
@@ -50,6 +53,14 @@ class MainActivity : AppCompatActivity() {
                 navigateToHomePage()
             }
         }
+    }
+
+    private fun toggleLanguage() {
+        val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+
+        LanguageSelector.saveLanguage(this, newLang)
+        LanguageSelector.updateLocale(this, newLang)
+        recreate() // Used to refresh te activity
     }
 
     private fun showLoginScreen() {

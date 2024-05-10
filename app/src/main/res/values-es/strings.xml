@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="empty_login">El campo de acceso no puede estar vacío</string>
+    <string name="missing_user">El usuario no existe</string>
     <string name="confirm_button">Confirmar</string>
     <string name="cancel_button">Cancelar</string>
     <string name="history_option">Historial</string>
