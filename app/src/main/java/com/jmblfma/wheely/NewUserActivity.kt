@@ -101,7 +101,7 @@ class NewUserActivity : AppCompatActivity() {
                 binding.userEmailEdittext.requestFocus()
             } else {
                 postUser()
-                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
+                val intent = Intent(this, AddVehicleActivity::class.java)
                 intent.putExtra("signUpState", true)
                 resultLauncher.launch(intent)
             }

@@ -41,7 +41,7 @@ class HomePageActivity : NavigationMenuActivity() {
         when (item.itemId) {
             R.id.logout_menu_option -> {
                 UserSessionManager.logoutUser()
-                val intent = Intent(applicationContext, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }

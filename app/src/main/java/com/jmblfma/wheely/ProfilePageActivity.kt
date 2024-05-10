@@ -69,7 +69,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
         binding.viewPager.adapter = profileViewPagerAdapter
         binding.profileImage.setOnClickListener {
-            val intent = Intent(applicationContext, UserStatsActivity::class.java)
+            val intent = Intent(this, UserStatsActivity::class.java)
             startActivity(intent)
         }
 
@@ -105,7 +105,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         when (item.itemId) {
             R.id.logout_menu_option -> {
                 UserSessionManager.logoutUser()
-                val intent = Intent(applicationContext, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
@@ -119,7 +119,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             }
 
             R.id.add_vehicle_menu_option -> {
-                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
+                val intent = Intent(this, AddVehicleActivity::class.java)
                 startActivity(intent)
             }
         }
