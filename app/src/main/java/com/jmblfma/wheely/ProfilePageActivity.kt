@@ -26,6 +26,7 @@ import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
@@ -121,6 +122,13 @@ class ProfilePageActivity : NavigationMenuActivity() {
             R.id.add_vehicle_menu_option -> {
                 val intent = Intent(this, AddVehicleActivity::class.java)
                 startActivity(intent)
+            }
+
+            R.id.change_lang_menu_option -> {
+                val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+                LanguageSelector.saveLanguage(this, newLang)
+                LanguageSelector.updateLocale(this, newLang)
+                recreate() // Used to refresh te activity
             }
         }
         return true

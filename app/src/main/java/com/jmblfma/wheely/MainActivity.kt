@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         binding = ActivityMainBinding.inflate(layoutInflater)
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.fetchAllUsers()
             checkUsersInDB()
         }
-        binding.languageButton.setOnClickListener{
+        binding.languageButton.setOnClickListener {
             toggleLanguage()
         }
         binding.loginButton.setOnClickListener {

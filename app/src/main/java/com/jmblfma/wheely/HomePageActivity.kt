@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
 import com.jmblfma.wheely.model.Post
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserSessionManager
 
@@ -44,6 +45,13 @@ class HomePageActivity : NavigationMenuActivity() {
                 val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
+            }
+
+            R.id.change_lang_menu_option -> {
+                val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+                LanguageSelector.saveLanguage(this, newLang)
+                LanguageSelector.updateLocale(this, newLang)
+                recreate() // Used to refresh te activity
             }
         }
         return true
