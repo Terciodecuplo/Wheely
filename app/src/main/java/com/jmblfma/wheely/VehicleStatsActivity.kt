@@ -10,10 +10,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LifecycleOwner
 import com.bumptech.glide.Glide
 import com.jmblfma.wheely.databinding.VehicleStatsLayoutBinding
-import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 
@@ -42,7 +40,7 @@ class VehicleStatsActivity : AppCompatActivity() {
 
     private fun getVehicleData(vehicleId: Int) {
         viewModel.fetchSingleVehicle(vehicleId)
-        viewModel.vehicleData.observe(this){
+        viewModel.vehicleData.observe(this) {
             Log.d("VEHICLE", "Observer says = ${it.name}")
             setVehicleImage(binding.vehicleImage, it.image)
             binding.vehicleNameEdittext.setText(it.name)
@@ -73,7 +71,7 @@ class VehicleStatsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.remove_vehicle_menu_option -> {
-                Log.d("VEHICLE","vehicle removed -> Show dialog")
+                Log.d("VEHICLE", "vehicle removed -> Show dialog")
                 removeVehicleDialog()
             }
         }
@@ -84,25 +82,30 @@ class VehicleStatsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.remove_vehicle_dialog_title))
             .setMessage(getString(R.string.remove_vehicle_dialog_message))
-            .setPositiveButton(getString(R.string.confirm_button)) { dialog, which ->
+            .setPositiveButton(getString(R.string.confirm_button)) { _, _ ->
                 removeVehicleFromDataBase()
             }
-            .setNegativeButton(getString(R.string.cancel_button)) { dialog, which ->
+            .setNegativeButton(getString(R.string.cancel_button)) { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
     }
 
-    private fun removeVehicleFromDataBase(){
+    private fun removeVehicleFromDataBase() {
         UserSessionManager.getCurrentUser()?.userId?.let { viewModel.deleteVehicle(vehicleId, it) }
-        viewModel.removeVehicleStatus.observe(this){
-            if(it!=0){
-                Toast.makeText(this, getString(R.string.remove_vehicle_notification), Toast.LENGTH_SHORT).show()
+        viewModel.removeVehicleStatus.observe(this) {
+            if (it != 0) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.remove_vehicle_notification),
+                    Toast.LENGTH_SHORT
+                ).show()
                 val intent = Intent(applicationContext, ProfilePageActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             } else {
-                Toast.makeText(this, getString(R.string.remove_vehicle_error), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.remove_vehicle_error), Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 

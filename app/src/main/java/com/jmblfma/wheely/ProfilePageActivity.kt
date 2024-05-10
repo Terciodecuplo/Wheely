@@ -252,7 +252,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                     val bitmap = ImagePicker.fixImageOrientation(this, uri)
                     // Save the image asynchronously
                     lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let { it ->
+                        bitmap?.let { bitmap ->
                             currentBannerImagePath?.let { path ->
                                 val file = File(path)
                                 if (file.exists()) {
@@ -260,7 +260,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                                 }
                             }
                             savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@ProfilePageActivity, it, "banner-pic-$imageId.jpg"
+                                this@ProfilePageActivity, bitmap, "banner-pic-$imageId.jpg"
                             )
                             runOnUiThread { // This waits until the I/O saving operation finishes to persist the path into the DB
                                 updateUserBanner()
@@ -281,7 +281,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                         binding.bannerProfile.setImageURI(receivedUri)
                         val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
                         lifecycleScope.launch(Dispatchers.IO) {
-                            bitmap?.let { it ->
+                            bitmap?.let { bitmap ->
                                 currentBannerImagePath?.let { path ->
                                     val file = File(path)
                                     if (file.exists()) {
@@ -289,7 +289,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
                                     }
                                 }
                                 savedPath = ImagePicker.saveImageToInternalStorage(
-                                    this@ProfilePageActivity, it, "banner-pic-$imageId.jpg"
+                                    this@ProfilePageActivity, bitmap, "banner-pic-$imageId.jpg"
                                 )
                                 withContext(Dispatchers.Main) { // This waits until the I/O saving operation finishes to persist the path into the DB
                                     updateUserBanner()

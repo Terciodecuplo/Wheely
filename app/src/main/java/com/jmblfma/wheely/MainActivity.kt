@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
-            Log.d("TESTING", "MainActivity/ loginButton ${email}")
+            Log.d("TESTING", "MainActivity/ loginButton $email")
             attemptToLogin(email)
 
         }

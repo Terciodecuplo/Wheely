@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.media.ExifInterface
+import androidx.exifinterface.media.ExifInterface
 import android.net.Uri
 import android.os.Environment
 import androidx.core.content.FileProvider
@@ -16,17 +16,6 @@ import java.util.Date
 import java.util.Locale
 
 object ImagePicker {
-    fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
-        return try {
-            context.contentResolver.openInputStream(uri)?.use {
-                BitmapFactory.decodeStream(it)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
     fun saveImageToInternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
         return try {
             val file = File(context.filesDir, fileName)
