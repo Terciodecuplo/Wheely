@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="missing_user">Wheely</string>
     <string name="confirm_button">Confirmar</string>
     <string name="cancel_button">Cancelar</string>
     <string name="history_option">Historial</string>
@@ -44,10 +43,8 @@
     <string name="user_firstname_hint">¿Cómo te llamas?*</string>
     <string name="user_lastname">Apellido</string>
     <string name="user_lastname_hint">¿Cuál es tu apellido?*</string>
-    <string name="user_lastname_hint">¿</string>
-    <string name="user_lastname_hint">¿</string>
     <string name="user_email">Correo electrónico</string>
-    <string name="user_email_hint">¿Cuál es tu correo electrónico?</string>
+    <string name="user_email_hint">¿Cuál es tu correo electrónico?*</string>
     <string name="user_birthday">Fecha de nacimiento</string>
     <string name="user_birthday_hint">dd/mm/aaaa*</string>
     <string name="form_error_empty_field">Este campo no puede estar vacío</string>
@@ -59,4 +56,34 @@
     <string name="take_picture_dialog">Hacer foto</string>
     <string name="gallery_picture_dialog">Elegir desde la galería</string>
     <string name="select_image_dialog_title">Seleccionar foto</string>
+    <string name="camera_permission_denied_message">Es necesario aceptar los permisos de cámara para usarla.</string>
+    <string name="no_camera_device_message">Este dispositivo no tiene cámara</string>
+    <string name="year_range_error">El año debe estár entre %1$d y %2$d</string>
+    <string name="funny_info">¿Sabías que la primera moto fue inventada en 1885?</string>
+    <string name="edit_profile_banner">Editar cabecera</string>
+    <string name="your_highlight">Destacados</string>
+    <string name="select_highlights">Seleccionar destacados</string>
+    <string name="total_distance">Distancia Total</string>
+    <string name="total_routes">Rutas Totales</string>
+    <string name="max_speed">Velocidad Máx</string>
+    <string name="riding_time">Tiempo de Ruta</string>
+    <string name="longest_route">Ruta más Larga</string>
+    <string name="step1of2">Paso 1 de 2</string>
+    <string name="step2of2">Paso 2 de 2</string>
+    <string name="next">SIGUIENTE</string>
+    <string name="no_vehicles_available">No hay vehículos disponibles. Añade uno antes de guardar la ruta.</string>
+    <string name="no_vehicle_assigned_option">Sin Vehículo</string>
+    <string name="track_save_success">¡Ruta guardada con éxito!</string>
+    <string name="track_save_failure">FALLO guardando ruta</string>
+    <string name="track_delete_success">¡Ruta borrada con éxito!</string>
+    <string name="track_delete_failure">FALLO borrando ruta</string>
+    <string name="track_load_success">¡Ruta cargada con éxito!</string>
+    <string name="track_load_failure">FALLO cargando ruta</string>
+    <string name="track_cant_cycle_load">No hay rutas disponibles que repasar</string>
+    <string name="vehicles_loaded">Lista de vehículos cargada…</string>
+    <string name="active_tracking_launching">Ejecutando posicionamiento activo…</string>
+    <string name="active_tracking_ongoing">Siguiendo ruta…</string>
+    <string name="active_tracking_stopping">Ruta detenida…</string>
+    <string name="accuracy_threshold_waiting">Esperando señal GPS…</string>
+    <string name="accuracy_threshold_reached">¡Señal GPS lista!</string>
 </resources>
