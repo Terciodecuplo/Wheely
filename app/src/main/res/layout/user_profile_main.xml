@@ -108,6 +108,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="36dp"
+        android:paddingBottom="5dp"
         android:text="422"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
