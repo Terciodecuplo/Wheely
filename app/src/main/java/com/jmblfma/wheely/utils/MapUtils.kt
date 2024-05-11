@@ -19,7 +19,7 @@ object MapUtils {
     // TODO zoom/ animate zoom changes between levels
     // CONFIG
     const val MIN_ZOOM_LEVEL = 5.0
-    const val MAX_ZOOM_LEVEL = 20.0
+    const val MAX_ZOOM_LEVEL = 30.0 // sensible: 20; switch to 30.0 for debugging and seeing route artifacts
     const val ACTIVE_ZOOM_LEVEL = 18.0
     const val DEFAULT_ZOOM_LEVEL = 19.0
     const val ROUTE_ACTIVE_COLOR = Color.RED
@@ -61,7 +61,7 @@ object MapUtils {
             if (addStartMarker) {
                 setUpRouteEndpointsMarker(mapView, GeoPoint(newTrackPoint.latitude, newTrackPoint.longitude), true)
             }
-            mapView.controller.setZoom(ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
+            setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
         }
 
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
@@ -111,18 +111,21 @@ object MapUtils {
 
     // LOCATION MARKER SETUP AND MGMT
     const val LOC_MARKER_TITLE = "CurrentLocationMarker" // TODO implement custom marker class to better filter by subtype
-    fun updateLocationMarker(mapView: MapView, trackPoint: TrackPoint, autoCenter: Boolean = true, enableBearing: Boolean = false) {
+    fun updateLocationMarker(mapView: MapView, trackPoint: TrackPoint, autoCenter: Boolean = true, isLiveRoute: Boolean = false) {
         if (mapView.overlays.none { it is Marker && it.title == LOC_MARKER_TITLE }) {
             // creates the marker if it doesn't exist
             Marker(mapView).apply {
-                if (enableBearing) {
+                if (isLiveRoute) {
                     icon = MyApp.applicationContext().getDrawable(R.drawable.ic_direction_arrow)
+                    setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
                 } else {
                     icon = MyApp.applicationContext().getDrawable(R.drawable.ic_location_pointer)
+                    setZoom(mapView, DEFAULT_ZOOM_LEVEL)
                 }
                 title = LOC_MARKER_TITLE
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 mapView.overlays.add(this)
+
             }
         }
 
@@ -130,20 +133,32 @@ object MapUtils {
         currentMarker?.let { marker ->
             val geoPoint = GeoPoint(trackPoint.latitude, trackPoint.longitude)
             marker.position = geoPoint
-            if (enableBearing && trackPoint.hasBearing()) {
-                // TODO (it was inverted) fixed by '-'; confirm it works properly now and delete todo
+            if (isLiveRoute && trackPoint.hasBearing()) {
                 marker.rotation = -trackPoint.bearing!!
             }
             mapView.invalidate()
             if (autoCenter) {
-                centerAndZoom(mapView, trackPoint, ACTIVE_ZOOM_LEVEL)
+                animateToLocation(mapView, trackPoint)
             }
         }
     }
-    fun centerAndZoom(mapView: MapView, where: TrackPoint, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
-        mapView.controller.animateTo(GeoPoint(where.latitude, where.longitude))
+
+    // TODO refine speed logic to prevent some weird response when:
+    // explicit call from centering button, autoCenter = true and then it gets called again from liveTracking before finishing the first animation
+    // 200L works well to hide the problem almost completely; but we might want to do it slower without the problem as well
+    // TODO animateTo also supports zooming so these functions can be merged
+    fun animateToLocation(mapView: MapView, where: TrackPoint, fast: Boolean = false) {
+        val pSpeed = if (fast) 200L else 500L
+        mapView.controller.animateTo(GeoPoint(where.latitude, where.longitude), mapView.zoomLevelDouble, 200L)
+    }
+    fun setZoom(mapView: MapView, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
         mapView.controller.setZoom(zoomLevel)
     }
+    fun centerAndZoom(mapView: MapView, where: TrackPoint, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
+        animateToLocation(mapView, where, )
+        setZoom(mapView, zoomLevel)
+    }
+
     fun centerAndZoomOverCurrentRoute(mapView: MapView) {
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
         currentRoute?.let {

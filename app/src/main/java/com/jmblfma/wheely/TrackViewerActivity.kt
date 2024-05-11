@@ -46,7 +46,9 @@ class TrackViewerActivity : NavigationMenuActivity() {
     }
 
     private fun showCycleError() {
-        Snackbar.make(binding.root, getString(R.string.track_cant_cycle_load), Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(binding.root, getString(R.string.track_cant_cycle_load), Snackbar.LENGTH_SHORT)
+            .setAction(getString(R.string.snackbar_dismiss)) { }
+            .show()
     }
 
     // TRACK LOAD MANAGEMENT
@@ -67,7 +69,9 @@ class TrackViewerActivity : NavigationMenuActivity() {
                 updateTelemetryFromTrack(track)
                 // Snackbar.make(binding.root, getString(R.string.track_load_success), Snackbar.LENGTH_SHORT).show()
             } else {
-                Snackbar.make(binding.root, getString(R.string.track_load_failure), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, getString(R.string.track_load_failure), Snackbar.LENGTH_SHORT)
+                    .setAction(getString(R.string.snackbar_dismiss)) { }
+                    .show()
                 MapUtils.clearMapAndRefresh(binding.mapView)
                 clearTelemetry()
             }
@@ -76,9 +80,13 @@ class TrackViewerActivity : NavigationMenuActivity() {
             success?.let {
                 if (it) {
                     viewModel.fetchLastTrack()
-                    Snackbar.make(binding.root, getString(R.string.track_delete_success), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, getString(R.string.track_delete_success), Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.snackbar_dismiss)) { }
+                        .show()
                 } else {
-                    Snackbar.make(binding.root, getString(R.string.track_delete_failure), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(binding.root, getString(R.string.track_delete_failure), Snackbar.LENGTH_SHORT)
+                        .setAction(getString(R.string.snackbar_dismiss)) { }
+                        .show()
                 }
             }
         }
