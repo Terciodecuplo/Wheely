@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.ActivityMainBinding
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.LoginStateManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         binding = ActivityMainBinding.inflate(layoutInflater)
         if (LoginStateManager.isFirstLaunch) {
             LoginStateManager.isFirstLaunch = false
@@ -27,7 +29,9 @@ class MainActivity : AppCompatActivity() {
             viewModel.fetchAllUsers()
             checkUsersInDB()
         }
-
+        binding.languageButton.setOnClickListener {
+            toggleLanguage()
+        }
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
             Log.d("TESTING", "MainActivity/ loginButton $email")
@@ -36,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.signupButton.setOnClickListener {
-            val intent = Intent(applicationContext, NewUserActivity::class.java)
+            val intent = Intent(this, NewUserActivity::class.java)
             this.startActivity(intent)
         }
     }
@@ -50,6 +54,18 @@ class MainActivity : AppCompatActivity() {
                 navigateToHomePage()
             }
         }
+    }
+
+    private fun toggleLanguage() {
+        val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+
+        LanguageSelector.saveLanguage(this, newLang)
+        LanguageSelector.updateLocale(this, newLang)
+        //recreate() // Used to refresh te activity
+
+        startActivity(Intent(this, MainActivity::class.java))
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
     }
 
     private fun showLoginScreen() {

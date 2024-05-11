@@ -26,6 +26,7 @@ import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.UserSessionManager
@@ -53,6 +54,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setupBottomNavigation()
         setSupportActionBar(binding.toolbarProfile)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -69,7 +71,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
         binding.viewPager.adapter = profileViewPagerAdapter
         binding.profileImage.setOnClickListener {
-            val intent = Intent(applicationContext, UserStatsActivity::class.java)
+            val intent = Intent(this, UserStatsActivity::class.java)
             startActivity(intent)
         }
 
@@ -105,7 +107,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         when (item.itemId) {
             R.id.logout_menu_option -> {
                 UserSessionManager.logoutUser()
-                val intent = Intent(applicationContext, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             }
@@ -119,8 +121,23 @@ class ProfilePageActivity : NavigationMenuActivity() {
             }
 
             R.id.add_vehicle_menu_option -> {
-                val intent = Intent(applicationContext, AddVehicleActivity::class.java)
+                val intent = Intent(this, AddVehicleActivity::class.java)
                 startActivity(intent)
+            }
+
+            R.id.change_lang_menu_option -> {
+                val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+                Log.d("LANGUAGE","NEW LANG: ${newLang}")
+
+                LanguageSelector.saveLanguage(this, newLang)
+                Log.d("LANGUAGE","CURRENT LANGUAGE SAVE: ${LanguageSelector.getCurrentLanguage()}")
+
+                LanguageSelector.updateLocale(this, newLang)
+                Log.d("LANGUAGE","CURRENT LANGUAGE UPDATE: ${LanguageSelector.getCurrentLanguage()}")
+
+                startActivity(Intent(this, ProfilePageActivity::class.java))
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                finish()
             }
         }
         return true

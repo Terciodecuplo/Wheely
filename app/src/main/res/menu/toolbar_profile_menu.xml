@@ -13,6 +13,10 @@
         android:enabled="true"
         android:title="@string/select_highlights"/>
     <item
+        android:id="@+id/change_lang_menu_option"
+        android:enabled="true"
+        android:title="@string/change_lang_menu_item" />
+    <item
         android:id="@+id/logout_menu_option"
         android:enabled="true"
         android:title="@string/logout_menu_item" />

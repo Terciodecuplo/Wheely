@@ -1,11 +1,13 @@
 <resources>
-    <string name="app_name">Wheely</string>
+    <string name="wheely" translatable="false">WHEELY</string>
+    <string name="change_lang_menu_item">Change language</string>
+    <string name="empty_login">Login field cannot be empty</string>
     <string name="missing_user">User does not exists</string>
     <string name="confirm_button">Confirm</string>
     <string name="cancel_button">Cancel</string>
     <string name="history_option">History</string>
     <string name="vehicles_option">Vehicles</string>
-    <string name="post_layout_title">Posts</string>
+    <string name="post_layout_title" translatable="false">Posts</string>
     <string name="profile_layout_title">Profile</string>
     <string name="stats_layout_title">Stats</string>
     <string name="add_vehicle_layout_title">New Vehicle</string>
@@ -14,11 +16,11 @@
     <string name="login_button">Login</string>
     <string name="signup_button">Sign Up</string>
     <string name="email_in_use_error">The mail is already in use</string>
-    <string name="nav_posts">Posts</string>
+    <string name="nav_posts" translatable="false">Posts</string>
     <string name="nav_record">Record</string>
     <string name="nav_profile">Profile</string>
     <string name="nav_viewer">Viewer</string>
-    <string name="vehicle_display_format">%1$s %2$s</string>
+    <string name="vehicle_display_format" translatable="false">%1$s %2$s</string>
     <string name="vehicle_grid_link">Vehicles</string>
     <string name="track_history_link">History</string>
     <string name="logout_menu_item">Logout</string>
@@ -85,7 +87,7 @@
     <string name="track_load_failure">Track load FAILED</string>
     <string name="track_cant_cycle_load">No tracks available to cycle through</string>
     <string name="vehicles_loaded">Vehicle list loaded…</string>
-    <string name="telemetry_standby_placeholder">---</string>
+    <string name="telemetry_standby_placeholder" translatable="false">---</string>
     <string name="active_tracking_launching">Launching active tracking…</string>
     <string name="active_tracking_ongoing">Tracking route…</string>
     <string name="active_tracking_stopping">Stopping tracking…</string>

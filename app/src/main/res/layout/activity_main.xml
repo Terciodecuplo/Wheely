@@ -7,12 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/language_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_language"
+        android:layout_margin="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WHEELY"
-        android:textSize="70dp"
+        android:text="@string/wheely"
+        android:textSize="70sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,11 +40,13 @@
         android:id="@+id/login_email"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:maxLines="1"
-        android:imeOptions="actionDone"
         android:layout_marginBottom="30dp"
         android:hint="@string/login_email_hint"
+        android:imeOptions="actionDone"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:minHeight="48dp"
+        android:textColorHint="#546E7A"
         app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

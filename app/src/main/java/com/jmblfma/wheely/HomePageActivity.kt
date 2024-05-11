@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
 import com.jmblfma.wheely.model.Post
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserSessionManager
 
@@ -20,6 +21,7 @@ class HomePageActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setSupportActionBar(binding.toolbarHome)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbarTitle.text = getString(R.string.post_layout_title)
@@ -41,9 +43,18 @@ class HomePageActivity : NavigationMenuActivity() {
         when (item.itemId) {
             R.id.logout_menu_option -> {
                 UserSessionManager.logoutUser()
-                val intent = Intent(applicationContext, MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
+            }
+
+            R.id.change_lang_menu_option -> {
+                val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+                LanguageSelector.saveLanguage(this, newLang)
+                LanguageSelector.updateLocale(this, newLang)
+                startActivity(Intent(this, HomePageActivity::class.java))
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                finish()
             }
         }
         return true
