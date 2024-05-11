@@ -56,12 +56,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
         setContentView(binding.root)
         LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setupBottomNavigation()
-        setSupportActionBar(binding.toolbarProfile)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.toolbarTitle.text = getString(R.string.profile_layout_title)
+        setupToolbar()
         setupImagePickerLauncher()
         setupTakePictureLauncher()
-
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
         profileUserMainDataSetup()
@@ -96,6 +93,12 @@ class ProfilePageActivity : NavigationMenuActivity() {
         startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(startMain)
         finish()
+    }
+
+    private fun setupToolbar(){
+        setSupportActionBar(binding.toolbarProfile)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding.toolbarTitle.text = getString(R.string.profile_layout_title)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -1,5 +1,6 @@
 package com.jmblfma.wheely
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -27,6 +28,15 @@ class TrackViewerActivity : NavigationMenuActivity() {
 
         // Forces auto load last
         viewModel.fetchLastTrack()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Check if HomeActivity is in the back stack
+        val startMain = Intent(this, HomePageActivity::class.java)
+        startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(startMain)
+        finish()
     }
 
     // CONTROLS

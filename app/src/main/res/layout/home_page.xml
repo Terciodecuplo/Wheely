@@ -7,7 +7,7 @@
         android:id="@+id/toolbar_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_primary"
+        android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -45,11 +45,13 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:itemIconSize="20dp"
+        app:itemIconSize="22dp"
         app:itemPaddingBottom="10dp"
         app:itemPaddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/bottom_navigation_menu"
+        style="@style/MyBottomNavigation"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline6"

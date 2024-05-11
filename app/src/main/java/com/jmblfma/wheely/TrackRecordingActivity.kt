@@ -62,6 +62,15 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         binding.mapView.onPause() // Ensures any changes or state are paused
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Check if HomeActivity is in the back stack
+        val startMain = Intent(this, HomePageActivity::class.java)
+        startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(startMain)
+        finish()
+    }
+
     // UI MGMT AND CONTROLS
     @SuppressLint("ClickableViewAccessibility") // applies to "binding.mapView.setOnTouchListener"
     private fun setupButtonAndMapsListeners() {

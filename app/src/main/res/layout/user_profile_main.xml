@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -11,7 +10,7 @@
         android:id="@+id/toolbar_profile"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_primary"
+        android:background="@color/colorPrimary"
         android:theme="@style/ToolbarStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -107,10 +106,13 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/profile_image"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="36dp"
+        android:paddingBottom="5dp"
         android:text="422"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toEndOf="@+id/selected_highlight_text"
         app:layout_constraintStart_toStartOf="@+id/selected_highlight_text"
         app:layout_constraintTop_toBottomOf="@+id/selected_highlight_text" />
@@ -126,11 +128,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@color/tab_layout_background"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="@+id/view_pager"
         app:layout_constraintStart_toStartOf="@+id/view_pager"
-        app:layout_constraintTop_toBottomOf="@+id/user_name" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        style="@style/MyTabLayout"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
@@ -147,11 +149,13 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:itemIconSize="20dp"
+        app:itemIconSize="22dp"
         app:itemPaddingBottom="10dp"
         app:itemPaddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_navigation_menu" />
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/bottom_navigation_menu"
+        style="@style/MyBottomNavigation"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline8"
