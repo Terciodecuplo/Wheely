@@ -2,14 +2,51 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Wheely" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" >@color/colorPrimaryDark</item>
+
+        <!-- Bottom Navigation specific style -->
+
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
         <item name="toolbarStyle">@style/ToolbarStyle</item>
     </style>
 
     <style name="Theme.Wheely" parent="Base.Theme.Wheely" />
     <style name="ToolbarStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:backgroundTint">@color/colorPrimary</item>
         <item name="tint">@color/white</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
+    </style>
+    <style name="CommonButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="autoSizeMinTextSize">8sp</item>
+        <item name="autoSizeMaxTextSize">24sp</item>
+        <item name="android:autoSizeStepGranularity">1sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:backgroundTint">@color/colorPrimary</item>
+        <item name="android:padding">12dp</item>
+        <item name="cornerRadius">4dp</item>
+    </style>
+    <style name="MyBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="itemIconTint">@drawable/bottom_navigation_selector</item>
+        <item name="backgroundTint">@color/bottomNavBackgroundColor</item>
+    </style>
+    <style name="MyTabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+        <item name="tabIndicatorColor">@color/colorAccent</item>
+        <item name="tabSelectedTextColor">@color/colorAccent</item>
+        <item name="tabTextColor">@color/colorOnPrimary</item>
+        <item name="tabBackground">@color/colorPrimary</item>
     </style>
 </resources>

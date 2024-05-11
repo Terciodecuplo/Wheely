@@ -220,6 +220,7 @@
         app:itemPaddingTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_navigation_menu"/>
+        app:menu="@menu/bottom_navigation_menu"
+        style="@style/MyBottomNavigation"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

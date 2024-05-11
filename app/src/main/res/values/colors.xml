@@ -9,4 +9,32 @@
     <color name="progress_bar">#3586DA</color>
 
 
+    <color name="colorPrimary">#1375DF</color>
+    <color name="colorPrimaryDark">#1245AE</color>
+    <color name="colorPrimaryVariant">#5FB6FF</color>
+
+    <!-- Secondary color used for accents -->
+    <color name="colorAccent">#e9961b</color>
+    <color name="colorSecondary">#df7c13</color>
+    <color name="colorSecondaryVariant">#f3ca83</color>
+
+    <!-- Other colors -->
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+
+    <!-- Colors for text, backgrounds, etc -->
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="textColor">#000000</color>
+    <color name="colorSurface">#FFFFFF</color>
+
+    <!-- Bottom Nav Bar and TabLayout Colors -->
+    <color name="bottomNavBackgroundColor">@color/colorPrimary</color>
+    <color name="bottomNavActiveColor">@color/colorAccent</color>
+    <color name="bottomNavInactiveColor">@color/colorOnPrimary</color>
+
+    <color name="tabBackgroundColor">#FFFFFF</color>
+    <color name="tabActiveColor">#FF5722</color>
+    <color name="tabInactiveColor">#9E9E9E</color>
+
+
 </resources>
