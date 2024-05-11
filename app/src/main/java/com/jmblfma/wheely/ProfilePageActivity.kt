@@ -54,6 +54,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setupBottomNavigation()
         setSupportActionBar(binding.toolbarProfile)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -126,9 +127,17 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
             R.id.change_lang_menu_option -> {
                 val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
+                Log.d("LANGUAGE","NEW LANG: ${newLang}")
+
                 LanguageSelector.saveLanguage(this, newLang)
+                Log.d("LANGUAGE","CURRENT LANGUAGE SAVE: ${LanguageSelector.getCurrentLanguage()}")
+
                 LanguageSelector.updateLocale(this, newLang)
-                recreate() // Used to refresh te activity
+                Log.d("LANGUAGE","CURRENT LANGUAGE UPDATE: ${LanguageSelector.getCurrentLanguage()}")
+
+                startActivity(Intent(this, ProfilePageActivity::class.java))
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                finish()
             }
         }
         return true

@@ -61,7 +61,11 @@ class MainActivity : AppCompatActivity() {
 
         LanguageSelector.saveLanguage(this, newLang)
         LanguageSelector.updateLocale(this, newLang)
-        recreate() // Used to refresh te activity
+        //recreate() // Used to refresh te activity
+
+        startActivity(Intent(this, MainActivity::class.java))
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
     }
 
     private fun showLoginScreen() {

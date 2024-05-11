@@ -1,6 +1,7 @@
 package com.jmblfma.wheely.utils
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import java.util.Locale
 

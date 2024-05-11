@@ -21,6 +21,7 @@ class HomePageActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = HomePageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setSupportActionBar(binding.toolbarHome)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbarTitle.text = getString(R.string.post_layout_title)
@@ -51,7 +52,9 @@ class HomePageActivity : NavigationMenuActivity() {
                 val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
                 LanguageSelector.saveLanguage(this, newLang)
                 LanguageSelector.updateLocale(this, newLang)
-                recreate() // Used to refresh te activity
+                startActivity(Intent(this, HomePageActivity::class.java))
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                finish()
             }
         }
         return true
