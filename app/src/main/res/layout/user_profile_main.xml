@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -108,9 +107,11 @@
         android:layout_alignStart="@+id/profile_image"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
+        android:layout_marginBottom="36dp"
         android:text="422"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
         app:layout_constraintEnd_toEndOf="@+id/selected_highlight_text"
         app:layout_constraintStart_toStartOf="@+id/selected_highlight_text"
         app:layout_constraintTop_toBottomOf="@+id/selected_highlight_text" />
