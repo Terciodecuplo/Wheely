@@ -55,7 +55,7 @@ class TrackingService : Service(), SensorEventListener {
         isRunning = true
         // sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         // startSensorUpdates()
-        Log.d("TESTING"," onCreate()")
+        Log.d("TrackingService"," onCreate()")
     }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startForegroundService()
@@ -75,6 +75,7 @@ class TrackingService : Service(), SensorEventListener {
 
     private fun startForegroundService() {
         notificationBuilder = Notification.Builder(this, CHANNEL_ID)
+            // TODO move to strings
             .setContentTitle("Wheely - Route in progress")
             .setContentText("Location is being tracked")
             .setSmallIcon(R.drawable.ic_tracker)
@@ -89,7 +90,7 @@ class TrackingService : Service(), SensorEventListener {
         // stops location updates
         fusedLocationClient.removeLocationUpdates(locationCallback)
         // sensorManager.unregisterListener(this)
-        Log.d("TESTING","TrackingService/ onDestroy()")
+        Log.d("TrackingService"," onDestroy()")
     }
 
     // BINDER SYSTEM - CURRENTLY UNUSED
@@ -135,9 +136,9 @@ class TrackingService : Service(), SensorEventListener {
                                 startTimer()
                             }
                             repository.addTrackPoint(buildTrackPoint(location))
-                            Log.d("TESTING", "TrackingService/ Location Processed!")
+                            Log.d("TrackingService", "TrackingService/ Location Processed!")
                         } else {
-                            Log.d("TESTING", "TrackingService/ Location DISCARDED - LACKING ACCURACY")
+                            Log.d("TrackingService", "TrackingService/ Location DISCARDED - LACKING ACCURACY")
                             enoughAccuracyForTracking = false
                         }
                     }

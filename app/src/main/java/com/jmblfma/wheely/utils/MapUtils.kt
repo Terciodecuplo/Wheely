@@ -19,7 +19,7 @@ object MapUtils {
     // TODO zoom/ animate zoom changes between levels
     // CONFIG
     const val MIN_ZOOM_LEVEL = 5.0
-    const val MAX_ZOOM_LEVEL = 30.0 // sensible: 20; switch to 30.0 for debugging and seeing route artifacts
+    const val MAX_ZOOM_LEVEL = 21.0 // sensible: 20; switch to 30.0 for debugging (might generate crashes)
     const val ACTIVE_ZOOM_LEVEL = 18.0
     const val DEFAULT_ZOOM_LEVEL = 19.0
     const val ROUTE_ACTIVE_COLOR = Color.RED
@@ -93,7 +93,6 @@ object MapUtils {
     }
     fun loadCompleteRoute(mapView: MapView, trackPoints: List<TrackPoint>, unsaved: Boolean = false) {
         clearMapAndRefresh(mapView)
-
         val completeTrackRoute = Polyline()
         if (!unsaved) {
             completeTrackRoute.color = ROUTE_LOAD_COLOR
@@ -138,7 +137,7 @@ object MapUtils {
             }
             mapView.invalidate()
             if (autoCenter) {
-                animateToLocation(mapView, trackPoint)
+                animateToLocation(mapView, trackPoint, false, true)
             }
         }
     }
@@ -146,17 +145,14 @@ object MapUtils {
     // TODO refine speed logic to prevent some weird response when:
     // explicit call from centering button, autoCenter = true and then it gets called again from liveTracking before finishing the first animation
     // 200L works well to hide the problem almost completely; but we might want to do it slower without the problem as well
-    // TODO animateTo also supports zooming so these functions can be merged
-    fun animateToLocation(mapView: MapView, where: TrackPoint, fast: Boolean = false) {
-        val pSpeed = if (fast) 200L else 500L
-        mapView.controller.animateTo(GeoPoint(where.latitude, where.longitude), mapView.zoomLevelDouble, 200L)
+    const val ANIMATION_TIME_FAST = 200L
+    fun animateToLocation(mapView: MapView, where: TrackPoint, restoreZoom: Boolean = false, fastAnimation: Boolean = false, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
+        val pSpeed = if (fastAnimation) ANIMATION_TIME_FAST else null // "null" sets the default animation speed (see Implementation)
+        val pZoom = if (restoreZoom) zoomLevel else mapView.zoomLevelDouble // applies current zoom value
+        mapView.controller.animateTo(GeoPoint(where.latitude, where.longitude), pZoom, pSpeed)
     }
     fun setZoom(mapView: MapView, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
         mapView.controller.setZoom(zoomLevel)
-    }
-    fun centerAndZoom(mapView: MapView, where: TrackPoint, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
-        animateToLocation(mapView, where, )
-        setZoom(mapView, zoomLevel)
     }
 
     fun centerAndZoomOverCurrentRoute(mapView: MapView) {

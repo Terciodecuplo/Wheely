@@ -112,8 +112,8 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             } else { // restores it only if there is an active location being provided
                 lastTrackPoint?.let {
                     // forces immediate recenter & sets zoom to default mode
-                    MapUtils.animateToLocation(binding.mapView, it, true)
-                    MapUtils.setZoom(binding.mapView)
+                    MapUtils.animateToLocation(binding.mapView, it, true, true)
+                    Log.d("MapDebug","button(restoreAndFollow) executed")
                 }
             }
         }
@@ -124,7 +124,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             // disabled in SAVING MODE
             lastTrackPoint?.let {
                 // forces immediate recenter but doesn't change the zoom level
-                MapUtils.animateToLocation(binding.mapView, it, true)
+                MapUtils.animateToLocation(binding.mapView, it, false, true)
             }
         }
         // TODO add button to zoom out to current live track using MapUtils.centerAndZoomOverCurrentRoute?
