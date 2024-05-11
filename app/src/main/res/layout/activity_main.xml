@@ -14,11 +14,13 @@
         android:src="@drawable/ic_language"
         android:layout_margin="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/colorPrimaryVariant"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAllCaps="true"
         android:text="@string/wheely"
         android:textSize="70sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
