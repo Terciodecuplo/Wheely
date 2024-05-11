@@ -47,6 +47,15 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         autoDetectAndRestoreState()
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Check if HomeActivity is in the back stack
+        val startMain = Intent(this, HomePageActivity::class.java)
+        startMain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(startMain)
+        finish()
+    }
+
     // UI MGMT AND CONTROLS
     // prevents auto center 'disabling' until map is set
     var allowToggleAutoCenterUsingMap: Boolean = false
