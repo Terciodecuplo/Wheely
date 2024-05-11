@@ -22,13 +22,13 @@ class TrackRecordingViewModel : ViewModel() {
     }
 
     // UI MANAGEMENT
-    private val _trackRecordingState = MutableLiveData<TrackRecordingState>()
-    val trackRecordingState: LiveData<TrackRecordingState> = _trackRecordingState
-    fun setUIState(newState: TrackRecordingState, forceUpdate: Boolean = false) {
+    private val _trackRecordingState = MutableLiveData<TrackRecordingState?>()
+    val trackRecordingState: LiveData<TrackRecordingState?> = _trackRecordingState
+    fun setUIState(newState: TrackRecordingState?, forceUpdate: Boolean = false) {
         // only updates the state if it has changed
         // prevents unnecessary repeated calls to UI elements
         if (_trackRecordingState.value != newState || forceUpdate) {
-            _trackRecordingState.value = newState
+            _trackRecordingState.postValue(newState)
         }
     }
     fun getUIState(): TrackRecordingState? {
@@ -80,6 +80,7 @@ class TrackRecordingViewModel : ViewModel() {
     }
 
     override fun onCleared() {
+        _trackRecordingState.value = null
         super.onCleared()
     }
 }

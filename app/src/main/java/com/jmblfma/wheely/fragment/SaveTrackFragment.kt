@@ -1,6 +1,5 @@
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +32,6 @@ class SaveTrackFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val loadedVehicles = viewModel.loadedVehicles.value?.toMutableList() ?: mutableListOf()
-        Log.d("TEST2","SaveTrackFragment/ copied list size: ${loadedVehicles.size}")
         // DISABLED AT UI LEVEL 20240508; user MUST go and create a vehicle before saving the track
         // we prevent the user from launching this dialog if there aren't any vehicles added
         // track logic supports NO vehicle though and can be created after restoring the dummy one:

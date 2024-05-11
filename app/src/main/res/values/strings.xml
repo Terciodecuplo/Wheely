@@ -91,5 +91,5 @@
     <string name="active_tracking_stopping">Stopping tracking…</string>
     <string name="accuracy_threshold_waiting">Waiting for good GPS signal…</string>
     <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
-
+    <string name="snackbar_dismiss">Dismiss</string>
 </resources>

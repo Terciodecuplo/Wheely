@@ -5,19 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/screenTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="25dp"
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_rowWeight="1"
-        android:layout_columnWeight="1"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="#FF0000"
-        android:text="WIP: TRACK RECORDING SCREEN"
-        android:background="@color/white"/>
-
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
     <GridLayout
         android:id="@+id/statsGridLayout"
@@ -25,7 +19,9 @@
         android:layout_height="60dp"
         android:rowCount="2"
         android:columnCount="4"
-        app:layout_constraintTop_toBottomOf="@id/screenTitle">
+        android:background="#5BFFFFFF"
+        app:layout_constraintTop_toTopOf="parent">
+
 
         <TextView
             android:id="@+id/elapsedTime"
@@ -34,10 +30,8 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
+            android:text="TIME"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/speed"
@@ -46,10 +40,8 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
+            android:text="SPEED"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/distance"
@@ -58,10 +50,8 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
+            android:text="DIST."
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/accuracyThreshold"
@@ -70,29 +60,19 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#00FFB5"
-            android:textStyle="bold"
-            android:background="@color/subtext_grey"/>
+            android:text="ACC."
+            android:textStyle="bold"/>
     </GridLayout>
-
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/testButtonGrid"
-        app:layout_constraintTop_toBottomOf="@id/statsGridLayout"
-        tools:layout_editor_absoluteX="0dp" />
 
     <GridLayout
         android:visibility="visible"
         android:id="@+id/testButtonGrid"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="100dp"
         android:rowCount="2"
         android:columnCount="4"
-
-        app:layout_constraintTop_toBottomOf="@id/mapView"
+        android:background="#00FFFFFF"
+        android:padding="2dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <Button
@@ -105,6 +85,11 @@
             android:layout_columnWeight="1"
             android:layout_rowSpan="2"
             android:backgroundTint="#FF0000"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
             android:text="REC." />
 
         <Button
@@ -116,6 +101,11 @@
             android:layout_columnWeight="1"
             android:layout_rowSpan="2"
             android:layout_gravity="fill"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
             android:text="STOP" />
 
         <Button
@@ -125,17 +115,26 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
             android:text="Save" />
-
         <Button
-            android:id="@+id/buttonRestoreCenter"
+            android:id="@+id/buttonCenterAndFollow"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_rowWeight="1"
-            android:layout_rowSpan="2"
+            android:layout_rowSpan="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
-            android:text="Center" />
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
+            android:text="Center &amp; Follow" />
+
         <Button
             android:id="@+id/buttonDiscardTrack"
             android:backgroundTint="#3F51B5"
@@ -144,8 +143,26 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_gravity="fill"
-            android:textSize="10sp"
+            android:maxLines="1"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
             android:text="Discard" />
+
+        <Button
+            android:id="@+id/restoreAndFollow"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_rowSpan="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeStepGranularity="1sp"
+            android:text="Restore &amp; Follow" />
     </GridLayout>
 
 
