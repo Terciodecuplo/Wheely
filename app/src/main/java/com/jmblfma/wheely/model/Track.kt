@@ -1,13 +1,11 @@
 package com.jmblfma.wheely.model
 
-import android.location.Location
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.jmblfma.wheely.data.Difficulty
-import com.jmblfma.wheely.utils.computeDuration
-import java.time.ZonedDateTime
+import com.jmblfma.wheely.utils.TrackAnalysis
 
 @Entity(
     tableName = "tracks",
@@ -35,85 +33,51 @@ data class Track(
     val difficultyValue: Difficulty = Difficulty.UNKNOWN
 ) {
     @Ignore
-    lateinit var trackData: List<TrackPoint>
-    @Ignore // TODO look at Geocoder implementation
-    val generalLocation: String = "-"
-    @Ignore
-    // TODO delete (likely redundant as this can be provided with a getter and startTime)
-    val creationTimestamp: ZonedDateTime = ZonedDateTime.now()
+    var trackData: List<TrackPoint>? = null
+    var startTime: Long? = null
+    var endTime: Long? = null
+    var averageSpeed: Double? = null
+    var totalDistance: Double? = null
+    var maxAltitude: Double? = null
+    var maxSpeed: Double? = null
+    var generalLocation: String? = null // TODO look at Geocoder implementation
+    var routePreviewImageURI: String? = null
 
-    var averageSpeed: Double = 0.0
-    var startTime: Long = 0
-    var endTime: Long = 0
-
-    fun computeTrackData(trackData: List<TrackPoint> = this.trackData) {
+    fun computeTrackData(trackData: List<TrackPoint>) {
         this.trackData = trackData
-        this.averageSpeed = computeAverageSpeed(this.trackData)
         this.startTime = trackData.first().timestamp
         this.endTime = trackData.last().timestamp
+        this.averageSpeed = TrackAnalysis.computeAverageSpeed(trackData)
+        this.totalDistance = TrackAnalysis.calculateTotalDistanceInMeters(trackData)
+        this.maxAltitude = TrackAnalysis.getMaxAltitudeInMeters(trackData)
+        this.maxSpeed = TrackAnalysis.getMaxSpeedInMs(trackData)
     }
 
-    companion object {
-        fun computeAverageSpeed(trackData: List<TrackPoint>): Double {
-            return trackData.map { it.speed }.average()
-        }
-
-        fun convertSpeedToKmh(speedInMs: Double): Double {
-            // m / s * 3600s / 1000 m km / h
-            return speedInMs * 3600f/1000
-        }
-
-        fun calculateTotalDistanceInMeters(trackData: List<TrackPoint>): Float {
-            var totalDistance = 0f
-            for (i in 1 until trackData.size) {
-                totalDistance += calculateDistanceBetweenPoints(trackData[i - 1], trackData[i])
-            }
-            return totalDistance
-        }
-        fun calculateDistanceBetweenPoints(origin: TrackPoint, destination: TrackPoint): Float {
-            val results = FloatArray(1)
-            Location.distanceBetween(
-                origin.latitude, origin.longitude,
-                destination.latitude, destination.longitude,
-                results
-            )
-            return results[0]  // Distance in meters
-        }
-
-        fun convertDistanceToKm(distance: Float): Float {
-            return distance / 1000
-        }
-
-        fun formatDistanceInKm(distanceInMeters: Float): String {
-            val distanceInKm = convertDistanceToKm(distanceInMeters)
-            return String.format("%.2f km", distanceInKm)
-        }
-
-        fun formatSpeedInKmh(speedInMs: Double): String {
-            val speedInKmh = convertSpeedToKmh(speedInMs)
-            return String.format("%.2f km/h", speedInKmh)
-        }
+    // FORMATTED STATS METHODS
+    fun getFormattedDate(): String {
+        return TrackAnalysis.convertTimestampToDate(this.startTime)
     }
-
     fun getFormattedDuration(): String {
-        return computeDuration(this.startTime, this.endTime)
+        return TrackAnalysis.formatDurationBetweenTimestamps(this.startTime, this.endTime)
     }
-
+    fun getFormattedTime(isStart: Boolean): String {
+        return if (isStart) {
+            TrackAnalysis.convertTimestampToTime(this.startTime)
+        } else {
+            TrackAnalysis.convertTimestampToTime(this.endTime)
+        }
+    }
     fun getFormattedAverageSpeedInKmh(): String {
-        return formatSpeedInKmh(computeAverageSpeed(this.trackData))
+        return TrackAnalysis.formatSpeedInKmh(this.averageSpeed)
     }
-
     fun getFormattedDistanceInKm(): String {
-        return formatDistanceInKm(calculateTotalDistanceInMeters(this.trackData))
+        return TrackAnalysis.formatDistanceInKm(this.totalDistance)
     }
-
-    override fun toString(): String {
-        return "Track(trackId=$trackId, name=$name, drivenByUserId=$drivenByUserId, vehicleUsedId=$vehicleUsedId, " +
-                "description=$description, difficultyValue=$difficultyValue, averageSpeed=${getFormattedAverageSpeedInKmh()}, " +
-                "duration=${getFormattedDuration()}, distance=${getFormattedDistanceInKm()}, generalLocation=$generalLocation)"
+    fun getFormattedMaxAltitudInMeters(): String {
+        return TrackAnalysis.formatAltitudeInMeters(this.maxAltitude)
     }
-
-    // TODO velocidad media total, velocidad maxima, duración total, número de rutas
-
+    fun getFormattedMaxSpeedInKmh(): String {
+        return TrackAnalysis.formatSpeedInKmh(this.maxSpeed)
+    }
 }
 

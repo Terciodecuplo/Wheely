@@ -5,19 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/screenTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_height="25dp"
+    <org.osmdroid.views.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_rowWeight="1"
-        android:layout_columnWeight="1"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textColor="#0022FF"
-        android:text="WIP: TRACK VIEWER SCREEN"
-        android:background="@color/white"/>
-
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
 
     <GridLayout
         android:id="@+id/statsGridLayout"
@@ -25,210 +19,147 @@
         android:layout_height="150dp"
         android:rowCount="2"
         android:columnCount="5"
-        app:layout_constraintTop_toBottomOf="@id/screenTitle">
+        android:background="@color/semitransparentWhite"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/trackName"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_columnSpan="3"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:background="@color/white"/>
+            android:text="VAL_NAME"/>
         <TextView
             android:id="@+id/trackDate"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_columnSpan="2"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:background="@color/white"/>
+            android:text="VAL_DATE" />
         <TextView
             android:id="@+id/startTime"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_columnSpan="2"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:background="@color/white"/>
+            android:text="VAL_START_TIME"/>
         <TextView
             android:id="@+id/endTime"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_columnSpan="2"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:background="@color/white"/>
+            android:text="VAL_END_TIME"/>
         <TextView
             android:id="@+id/numOfTracks"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#000000"
-            android:textStyle="bold"
-            android:background="@color/white"/>
-
-
+            android:text="T_TRACKS"/>
         <TextView
             android:id="@+id/elapsedTime"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
-
+            android:text="VAL_DUR"/>
         <TextView
             android:id="@+id/speed"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
-
+            android:text="VAL_AVESP"/>
         <TextView
             android:id="@+id/distance"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
-
+            android:text="VAL_DIST"/>
         <TextView
             android:id="@+id/maxSpeed"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/black"/>
+            android:text="VAL_MAX_SPEED"/>
 
         <TextView
             android:id="@+id/trackID"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="VAL_ID"/>
+    </GridLayout>
+
+    <GridLayout
+        android:id="@+id/allTrackStats"
+        android:background="@color/semitransparentWhite"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:rowCount="1"
+        android:columnCount="4"
+        app:layout_constraintTop_toBottomOf="@id/statsGridLayout">
+
+        <TextView
+            android:id="@+id/all_tracks_distance"
+            style="@style/TestTextFieldStyleForStats"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="T_DIST"/>
+        <TextView
+            android:id="@+id/all_tracks_duration"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="@string/telemetry_standby_placeholder"
-            android:textColor="#FFFA00"
-            android:textStyle="bold"
-            android:background="@color/subtext_grey"/>
-
-
+            android:text="T_DUR"/>
+        <TextView
+            android:id="@+id/all_tracks_average_speed"
+            style="@style/TestTextFieldStyleForStats"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="T_aveSp" />
+        <TextView
+            android:id="@+id/all_tracks_max_speed"
+            style="@style/TestTextFieldStyleForStats"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:text="T_maxSp" />
     </GridLayout>
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/testButtonGrid"
-        app:layout_constraintTop_toBottomOf="@id/statsGridLayout" />
-
     <GridLayout
-        android:visibility="visible"
-        android:id="@+id/testButtonGrid"
+        style="@style/TestMapButtonGridLayout"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:id="@+id/testButtonGrid"
         android:rowCount="2"
         android:columnCount="4"
-
-        app:layout_constraintTop_toBottomOf="@id/mapView"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <Button
             android:id="@+id/buttonLoadPrev"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestMapButtonGenericFeatures"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
             android:text="PREV" />
-
         <Button
             android:id="@+id/buttonLoadNext"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestMapButtonGenericFeatures"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
             android:text="NEXT" />
-
         <Button
             android:id="@+id/buttonDeleteLoadedTrack"
+            style="@style/TestMapButtonGenericFeatures"
             android:backgroundTint="@android:color/holo_red_light"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
             android:text="DEL" />
-
         <Button
             android:id="@+id/buttonClearUI"
-            android:backgroundTint="#3F51B5"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestMapButtonGenericFeatures"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
             android:text="Clear" />
-
     </GridLayout>
-
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

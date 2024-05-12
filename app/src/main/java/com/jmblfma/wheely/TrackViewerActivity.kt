@@ -9,6 +9,7 @@ import com.jmblfma.wheely.databinding.TrackViewerBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.utils.MapUtils
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.viewmodels.TrackViewerViewModel
 
 class TrackViewerActivity : NavigationMenuActivity() {
@@ -26,8 +27,13 @@ class TrackViewerActivity : NavigationMenuActivity() {
         MapUtils.setupMap(binding.mapView, this)
         setupTrackManagement()
 
-        // Forces auto load last
+        // forces auto load last
         viewModel.fetchLastTrack()
+
+
+        setupAllTracksStats()
+        // TODO maybe only testing:
+        viewModel.fetchTrackList()
     }
 
     override fun onBackPressed() {
@@ -75,7 +81,7 @@ class TrackViewerActivity : NavigationMenuActivity() {
         viewModel.trackLoader.observe(this) { track ->
             if (track != null) {
                 Log.d("TESTING", "UI/TrackViewer/ TRACK LOADED: $track.trackId")
-                MapUtils.loadCompleteRoute(binding.mapView, track.trackData)
+                track.trackData?.let { MapUtils.loadCompleteRoute(binding.mapView, it) }
                 updateTelemetryFromTrack(track)
                 // Snackbar.make(binding.root, getString(R.string.track_load_success), Snackbar.LENGTH_SHORT).show()
             } else {
@@ -90,6 +96,7 @@ class TrackViewerActivity : NavigationMenuActivity() {
             success?.let {
                 if (it) {
                     viewModel.fetchLastTrack()
+                    viewModel.fetchTrackList()
                     Snackbar.make(binding.root, getString(R.string.track_delete_success), Snackbar.LENGTH_SHORT)
                         .setAction(getString(R.string.snackbar_dismiss)) { }
                         .show()
@@ -101,15 +108,25 @@ class TrackViewerActivity : NavigationMenuActivity() {
             }
         }
     }
+    private fun setupAllTracksStats() {
+        viewModel.trackListLoader.observe(this) { trackList ->
+            if (trackList.isNotEmpty()) {
+                binding.allTracksDistance.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
+                binding.allTracksDuration.text = TrackAnalysis.getTracksTotalDuration(trackList)
+                binding.allTracksAverageSpeed.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
+                binding.allTracksMaxSpeed.text = TrackAnalysis.getTracksMaxSpeed(trackList)
+            }
+        }
+    }
 
     private fun updateTelemetryFromTrack(loadedTrack: Track) {
         binding.trackName.text = loadedTrack.name
-        binding.trackDate.text = "<IMPLEMENT>"
-        binding.startTime.text = "<startTime>"
-        binding.endTime.text = "<endTime>"
+        binding.trackDate.text = loadedTrack.getFormattedDate()
+        binding.startTime.text = loadedTrack.getFormattedTime(true)
+        binding.endTime.text = loadedTrack.getFormattedTime(false)
         binding.elapsedTime.text = loadedTrack.getFormattedDuration()
         binding.speed.text = loadedTrack.getFormattedAverageSpeedInKmh()
-        binding.maxSpeed.text = "<maxSp>"
+        binding.maxSpeed.text = loadedTrack.getFormattedMaxSpeedInKmh()
         binding.distance.text = loadedTrack.getFormattedDistanceInKm()
         binding.trackID.text = String.format("ID_%d", loadedTrack.trackId)
     }
