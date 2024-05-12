@@ -15,9 +15,10 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
         bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_posts -> {
-                    startActivityIfNeeded(Intent(this, HomePageActivity::class.java), 0)
-                    finish()
-                    true
+                        startActivityIfNeeded(Intent(this, HomePageActivity::class.java), 0)
+                        finish()
+                        true
+
                 }
 
                 R.id.nav_record -> {
@@ -45,7 +46,7 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
+        bottomNavigation.setOnItemReselectedListener {}
         val menu = bottomNavigation.menu
         val menuItemId = getBottomNavigationMenuItemId()
         val menuItem = menu.findItem(menuItemId)

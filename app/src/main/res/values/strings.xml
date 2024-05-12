@@ -1,5 +1,5 @@
 <resources>
-    <string name="wheely" translatable="false">WHEELY</string>
+    <string name="wheely" translatable="false">Wheely</string>
     <string name="change_lang_menu_item">Change language</string>
     <string name="empty_login">Login field cannot be empty</string>
     <string name="missing_user">User does not exists</string>
@@ -67,7 +67,7 @@
     <string name="year_range_error">Year must be between %1$d and %2$d</string>
     <string name="funny_info">Did you know the first motorcycle was invented in 1885?</string>
     <string name="edit_profile_banner">Edit banner</string>
-    <string name="your_highlight">Highlights</string>
+    <string name="your_highlight">HIGHLIGHTS</string>
     <string name="select_highlights">Select highlights</string>
     <string name="total_distance">Total Distance</string>
     <string name="total_routes">Total Routes</string>
@@ -94,5 +94,5 @@
     <string name="accuracy_threshold_waiting">Waiting for good GPS signal…</string>
     <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
     <string name="snackbar_dismiss">Dismiss</string>
-    <string name="track_parser_error">NaN</string>
+    <string name="user_stats_menu_item">User stats</string>
 </resources>
