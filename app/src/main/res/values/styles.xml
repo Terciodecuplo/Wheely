@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="TestTextFieldStyleForStats">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">@dimen/test_text_field_margin_for_stats</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/textColor</item>
+        <!-- AutoSize Text Attributes -->
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">8sp</item>
+        <item name="autoSizeMaxTextSize">20sp</item>
+        <item name="autoSizeStepGranularity">1sp</item>
+    </style>
+    <style name="TestMapButtonGridLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:background">#00FFFFFF</item> <!-- Transparent background -->
+        <item name="android:padding">2dp</item>
+    </style>
+    <style name="TestMapButtonGenericFeatures">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_margin">@dimen/test_text_field_margin_for_stats</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">center</item>
+        <!-- AutoSize Text Attributes -->
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMinTextSize">8sp</item>
+        <item name="autoSizeMaxTextSize">20sp</item>
+        <item name="autoSizeStepGranularity">1sp</item>
+    </style>
+</resources>

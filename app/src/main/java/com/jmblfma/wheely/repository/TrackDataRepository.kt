@@ -77,4 +77,5 @@ class TrackDataRepository() {
     }
     suspend fun fetchTrackCount(): Int = trackDao.countDistinctTracks()
     suspend fun fetchTrackIDList(): List<Int> = trackDao.getAllTrackIds()
+    suspend fun fetchAllTracks(): List<Track> = trackDao.getAllTracks()
 }

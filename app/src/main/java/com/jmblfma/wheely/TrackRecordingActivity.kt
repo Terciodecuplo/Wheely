@@ -16,13 +16,12 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.TrackRecordingBinding
-import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.services.TrackingService
 import com.jmblfma.wheely.utils.MapUtils
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.TrackRecordingState
-import com.jmblfma.wheely.utils.formatTime
 import com.jmblfma.wheely.viewmodels.TrackRecordingViewModel
 import org.osmdroid.events.MapListener
 import org.osmdroid.events.ScrollEvent
@@ -311,7 +310,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         // updates time counter only when the track recording actually starts
         // when the service gets its first location update
         viewModel.elapsedTime.observe(this) { elapsedTime ->
-            binding.elapsedTime.text = formatTime(elapsedTime)
+            binding.elapsedTime.text = TrackAnalysis.formatDurationFromMillis(elapsedTime)
         }
     }
     private fun startTracking() {
@@ -334,10 +333,9 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     }
     // TELEMETRY
     private fun updateLiveTelemetry(trackPoints: List<TrackPoint>) {
-        val currentSpeedInMs = trackPoints.last().speed.toDouble()
-        val currentDistanceInMeters = Track.calculateTotalDistanceInMeters(trackPoints)
-        binding.speed.text = Track.formatSpeedInKmh(currentSpeedInMs)
-        binding.distance.text = Track.formatDistanceInKm(currentDistanceInMeters)
+        binding.speed.text = TrackAnalysis.formatSpeedInKmh(trackPoints.last().speed.toDouble())
+        val currentDistanceInMeters = TrackAnalysis.calculateTotalDistanceInMeters(trackPoints)
+        binding.distance.text = TrackAnalysis.formatDistanceInKm(currentDistanceInMeters)
         binding.accuracyThreshold.text = TrackingService.enoughAccuracyForTracking.toString()
     }
     private fun clearTelemetry() {

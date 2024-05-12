@@ -19,149 +19,72 @@
         android:layout_height="60dp"
         android:rowCount="2"
         android:columnCount="4"
-        android:background="#5BFFFFFF"
+        android:background="@color/semitransparentWhite"
         app:layout_constraintTop_toTopOf="parent">
-
 
         <TextView
             android:id="@+id/elapsedTime"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="TIME"
-            android:textStyle="bold"/>
-
+            android:text="VAL_TIME"/>
         <TextView
             android:id="@+id/speed"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="SPEED"
-            android:textStyle="bold"/>
-
+            android:text="VAL_SPEED"/>
         <TextView
             android:id="@+id/distance"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="DIST."
-            android:textStyle="bold"/>
-
+            android:text="VAL_DIST"/>
         <TextView
             android:id="@+id/accuracyThreshold"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            style="@style/TestTextFieldStyleForStats"
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="ACC."
-            android:textStyle="bold"/>
+            android:text="ACC.?"/>
     </GridLayout>
 
     <GridLayout
-        android:visibility="visible"
+        style="@style/TestMapButtonGridLayout"
         android:id="@+id/testButtonGrid"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
         android:rowCount="2"
         android:columnCount="4"
-        android:background="#00FFFFFF"
-        android:padding="2dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
 
         <Button
             android:id="@+id/buttonStartRec"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_row="0"
-            android:layout_rowWeight="1"
-            android:layout_column="0"
-            android:layout_columnWeight="1"
+            style="@style/TestMapButtonGenericFeatures"
             android:layout_rowSpan="2"
             android:backgroundTint="#FF0000"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
             android:text="REC." />
-
         <Button
             android:id="@+id/buttonStopRec"
+            style="@style/TestMapButtonGenericFeatures"
             android:backgroundTint="#625B5B"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
             android:layout_rowSpan="2"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
             android:text="STOP" />
-
         <Button
             android:id="@+id/buttonSaveTrack"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
+            style="@style/TestMapButtonGenericFeatures"
             android:text="Save" />
         <Button
             android:id="@+id/buttonCenterAndFollow"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_rowWeight="1"
-            android:layout_rowSpan="1"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
+            style="@style/TestMapButtonGenericFeatures"
+            android:maxLines="3"
             android:text="Center &amp; Follow" />
-
         <Button
             android:id="@+id/buttonDiscardTrack"
-            android:backgroundTint="#3F51B5"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            android:maxLines="1"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
+            style="@style/TestMapButtonGenericFeatures"
             android:text="Discard" />
-
         <Button
             android:id="@+id/restoreAndFollow"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_rowWeight="1"
-            android:layout_rowSpan="1"
-            android:layout_columnWeight="1"
-            android:layout_gravity="fill"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="8sp"
-            app:autoSizeMaxTextSize="20sp"
-            app:autoSizeStepGranularity="1sp"
+            style="@style/TestMapButtonGenericFeatures"
+            android:maxLines="3"
             android:text="Restore &amp; Follow" />
     </GridLayout>
 

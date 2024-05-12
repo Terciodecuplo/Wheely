@@ -25,7 +25,7 @@ import com.google.android.gms.location.Priority
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.repository.TrackDataRepository
-import com.jmblfma.wheely.utils.formatTime
+import com.jmblfma.wheely.utils.TrackAnalysis
 
 // https://developer.android.com/develop/sensors-and-location/location/request-updates
 
@@ -185,7 +185,7 @@ class TrackingService : Service(), SensorEventListener {
     }
     private fun updateNotification(elapsedTime: Long) {
         val updatedNotification = notificationBuilder
-            ?.setContentText("Elapsed time: ${formatTime(elapsedTime)}")
+            ?.setContentText("Elapsed time: ${TrackAnalysis.formatDurationFromMillis(elapsedTime)}")
             ?.build()
         startForeground(1, updatedNotification)
     }

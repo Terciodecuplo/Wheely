@@ -36,5 +36,8 @@
     <color name="tabActiveColor">#FF5722</color>
     <color name="tabInactiveColor">#9E9E9E</color>
 
-
+    <!-- TESTING -->
+    <color name="transparent">#00FFFFFF</color>
+    <color name="semitransparentWhite">#95FFFFFF</color>
+    <color name="semitransparentPrimary">#8B5FB6FF</color>
 </resources>

@@ -25,6 +25,15 @@ class TrackViewerViewModel : ViewModel() {
         }
     }
 
+    private val _trackListLoader = MutableLiveData<List<Track>>()
+    val trackListLoader: LiveData<List<Track>> = _trackListLoader
+    fun fetchTrackList() {
+        viewModelScope.launch {
+            val trackList = repository.fetchAllTracks()
+            _trackListLoader.postValue(trackList)
+        }
+    }
+
     fun fetchCycle(forward: Boolean): Boolean {
         val trackIDs = trackIds.value?.toList() ?: emptyList()
         if (trackIDs.isNotEmpty()) {

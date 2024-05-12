@@ -54,7 +54,7 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
         var history = trackHistoryList[position]
         holder.trackTitle.text = history.name
         holder.trackLocation.text = history.generalLocation
-        holder.trackDate.text = history.creationTimestamp.format(dateFormatter)
+        holder.trackDate.text = "DELETED_PROPERTY"
         /*holder.trackDuration.text = history.trackSummary.elapsedTime.toString()
         holder.trackDistance.text = history.trackSummary.distanceTraveled.toString()
         holder.trackAvgSpeed.text = history.trackSummary.averageSpeed.toString()

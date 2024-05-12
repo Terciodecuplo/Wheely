@@ -27,6 +27,10 @@ interface TrackDao {
 
     @Query("SELECT * FROM tracks")
     suspend fun getAllTracks(): List<Track>
+    @Query("SELECT * FROM tracks WHERE drivenByUserId = :userId")
+    suspend fun getAllTracksForUser(userId: Int): List<Track>
+    @Query("SELECT * FROM tracks WHERE vehicleUsedId = :vehicleId")
+    suspend fun getAllTracksForVehicle(vehicleId: Int): List<Track>
 
     @Query("SELECT * FROM tracks ORDER BY trackId DESC LIMIT 1")
     suspend fun getLastTrack(): Track?
@@ -43,7 +47,7 @@ interface TrackDao {
             // TODO review ID logic
             val trackId = insertTrack(track)
             Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ trackId: $trackId")
-            track.trackData.forEach {
+            track.trackData!!.forEach {
                 insertTrackPoint(it.copy(trackId = trackId.toInt()))
             }
             true
