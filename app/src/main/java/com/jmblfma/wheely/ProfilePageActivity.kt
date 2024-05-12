@@ -69,10 +69,6 @@ class ProfilePageActivity : NavigationMenuActivity() {
         val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
 
         binding.viewPager.adapter = profileViewPagerAdapter
-        binding.profileImage.setOnClickListener {
-            val intent = Intent(this, UserStatsActivity::class.java)
-            startActivity(intent)
-        }
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = when (position) {
@@ -80,12 +76,12 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 1 -> getString(R.string.vehicles_option)
                 else -> null
             }
- /*           tab.icon = when (position) {
-                0 -> R.drawable.ic_history
-                1 -> R.drawable.ic_vehicles
-                else -> null
-            }?.let { ContextCompat.getDrawable(this, it )}
-            tab.icon?.setTintList(ContextCompat.getColorStateList(this, R.color.tab_icon_selector))*/
+            /*           tab.icon = when (position) {
+                           0 -> R.drawable.ic_history
+                           1 -> R.drawable.ic_vehicles
+                           else -> null
+                       }?.let { ContextCompat.getDrawable(this, it )}
+                       tab.icon?.setTintList(ContextCompat.getColorStateList(this, R.color.tab_icon_selector))*/
         }.attach()
     }
 
@@ -116,6 +112,11 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.user_stats_menu_option -> {
+                val intent = Intent(this, UserStatsActivity::class.java)
+                startActivity(intent)
+            }
+
             R.id.logout_menu_option -> {
                 UserSessionManager.logoutUser()
                 val intent = Intent(this, MainActivity::class.java)

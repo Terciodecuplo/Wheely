@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/user_stats_menu_option"
+        android:enabled="true"
+        android:title="@string/user_stats_menu_item"/>
+    <item
         android:id="@+id/add_vehicle_menu_option"
         android:enabled="true"
         android:title="@string/new_vehicle_menu_item" />

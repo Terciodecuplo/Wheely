@@ -83,7 +83,7 @@ class ProfileVehicleListAdapter(
         if (imagePath.isNullOrEmpty()) {
             Log.d("VEHICLE","Image path = $imagePath")
             Glide.with(imageView.context)
-                .load(R.drawable.pic_vehicle_template) // Your placeholder drawable
+                .load(R.drawable.vehicle_placeholder) // Your placeholder drawable
                 .into(imageView)
         } else {
             Glide.with(imageView.context)

@@ -54,7 +54,7 @@ class VehicleStatsActivity : AppCompatActivity() {
     private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
         if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
-                .load(R.drawable.pic_vehicle_template) // Your placeholder drawable
+                .load(R.drawable.vehicle_placeholder)
                 .into(imageView)
         } else {
             Glide.with(imageView.context)
