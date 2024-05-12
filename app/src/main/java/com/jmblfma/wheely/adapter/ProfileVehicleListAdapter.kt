@@ -37,9 +37,7 @@ class ProfileVehicleListAdapter(
         }
 
         override fun onClick(view: View?) {
-            // Get the clicked vehicle
             val clickedVehicle = vehicleList[adapterPosition]
-            // Invoke the interface method to notify the click event
             itemClickListener.onVehicleItemClick(clickedVehicle)
         }
     }

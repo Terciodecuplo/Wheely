@@ -1,6 +1,7 @@
 package com.jmblfma.wheely
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -50,6 +51,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         private const val CAMERA_REQUEST_CODE = 101
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables", "ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserProfileMainBinding.inflate(layoutInflater)
@@ -78,6 +80,12 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 1 -> getString(R.string.vehicles_option)
                 else -> null
             }
+ /*           tab.icon = when (position) {
+                0 -> R.drawable.ic_history
+                1 -> R.drawable.ic_vehicles
+                else -> null
+            }?.let { ContextCompat.getDrawable(this, it )}
+            tab.icon?.setTintList(ContextCompat.getColorStateList(this, R.color.tab_icon_selector))*/
         }.attach()
     }
 
@@ -95,7 +103,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         finish()
     }
 
-    private fun setupToolbar(){
+    private fun setupToolbar() {
         setSupportActionBar(binding.toolbarProfile)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbarTitle.text = getString(R.string.profile_layout_title)
@@ -130,13 +138,16 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
             R.id.change_lang_menu_option -> {
                 val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
-                Log.d("LANGUAGE","NEW LANG: ${newLang}")
+                Log.d("LANGUAGE", "NEW LANG: ${newLang}")
 
                 LanguageSelector.saveLanguage(this, newLang)
-                Log.d("LANGUAGE","CURRENT LANGUAGE SAVE: ${LanguageSelector.getCurrentLanguage()}")
+                Log.d("LANGUAGE", "CURRENT LANGUAGE SAVE: ${LanguageSelector.getCurrentLanguage()}")
 
                 LanguageSelector.updateLocale(this, newLang)
-                Log.d("LANGUAGE","CURRENT LANGUAGE UPDATE: ${LanguageSelector.getCurrentLanguage()}")
+                Log.d(
+                    "LANGUAGE",
+                    "CURRENT LANGUAGE UPDATE: ${LanguageSelector.getCurrentLanguage()}"
+                )
 
                 startActivity(Intent(this, ProfilePageActivity::class.java))
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

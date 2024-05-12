@@ -52,7 +52,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="-50dp"
         android:src="@drawable/user_default_pic"
-        app:civ_border_color="@color/white"
+        app:civ_border_color="@color/colorPrimaryDark"
         app:civ_border_width="2dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
@@ -71,51 +71,62 @@
         app:layout_constraintStart_toStartOf="@+id/profile_image"
         app:layout_constraintTop_toBottomOf="@+id/profile_image" />
 
-    <TextView
-        android:id="@+id/highlight_text"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profile_image"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:text="@string/your_highlight"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold"
+        android:layout_marginHorizontal="20dp"
+        app:cardElevation="0dp"
+
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView">
 
-    <TextView
-        android:id="@+id/selected_highlight_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profile_image"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:text="Total Distance"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profile_image"
-        app:layout_constraintTop_toBottomOf="@+id/highlight_text" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
 
-    <TextView
-        android:id="@+id/selected_highlight_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/profile_image"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="36dp"
-        android:paddingBottom="5dp"
-        android:text="422"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
-        app:layout_constraintEnd_toEndOf="@+id/selected_highlight_text"
-        app:layout_constraintStart_toStartOf="@+id/selected_highlight_text"
-        app:layout_constraintTop_toBottomOf="@+id/selected_highlight_text" />
+            <TextView
+                android:id="@+id/highlight_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/your_highlight"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/selected_highlight_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_marginVertical="5dp"
+                android:textSize="16sp"
+                android:text="Total Distance"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/highlight_text" />
+
+            <TextView
+                android:id="@+id/selected_highlight_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:textSize="16sp"
+                android:paddingBottom="5dp"
+                android:text="422"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@+id/selected_highlight_text"
+                app:layout_constraintStart_toStartOf="@+id/selected_highlight_text"
+                app:layout_constraintTop_toBottomOf="@+id/selected_highlight_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"
@@ -123,46 +134,117 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginVertical="10dp"
+        android:weightSum="6"
+        app:layout_constraintBottom_toTopOf="@+id/tab_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <ImageView
+            android:id="@+id/route_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_routes" />
+
+        <TextView
+            android:id="@+id/total_tracks_value"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@+id/profile_image"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:text="12"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="24sp" />
+
+        <ImageView
+            android:id="@+id/distance_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:src="@drawable/ic_distance" />
+
+        <TextView
+            android:id="@+id/total_distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@+id/profile_image"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:text="12000Km"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="24sp"
+            app:layout_constraintHorizontal_weight="33" />
+
+        <ImageView
+            android:id="@+id/timer_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:src="@drawable/ic_timer" />
+
+        <TextView
+            android:id="@+id/total_riding_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignStart="@+id/profile_image"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:text="650h"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        style="@style/MyTabLayout"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="@+id/view_pager"
         app:layout_constraintStart_toStartOf="@+id/view_pager"
-        app:layout_constraintTop_toBottomOf="@+id/user_name"
-        style="@style/MyTabLayout"/>
+        app:tabIconTint="@color/tab_icon_selector"
+        app:tabPaddingBottom="6dp"
+        app:tabPaddingTop="2dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="17dp"
-        android:layout_marginEnd="17dp"
         app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout" />
+        app:layout_constraintTop_toBottomOf="@id/tab_layout"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
+        style="@style/MyBottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:itemIconSize="22dp"
         app:itemPaddingBottom="10dp"
         app:itemPaddingTop="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:labelVisibilityMode="unlabeled"
-        app:menu="@menu/bottom_navigation_menu"
-        style="@style/MyBottomNavigation"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_navigation_menu" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.6" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
