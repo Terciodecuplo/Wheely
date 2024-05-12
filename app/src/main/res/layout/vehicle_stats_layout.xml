@@ -9,7 +9,7 @@
         android:id="@+id/toolbar_vehicle_stats"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/design_default_color_primary"
+        android:background="@color/colorPrimary"
         android:maxLines="1"
         android:theme="@style/ToolbarStyle"
         app:layout_constraintEnd_toEndOf="parent"

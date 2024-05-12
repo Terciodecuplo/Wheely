@@ -24,29 +24,46 @@
     </style>
 
     <style name="Theme.Wheely" parent="Base.Theme.Wheely" />
+
     <style name="ToolbarStyle" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:backgroundTint">@color/colorPrimary</item>
         <item name="tint">@color/white</item>
         <item name="android:paddingStart">0dp</item>
         <item name="android:paddingEnd">0dp</item>
+        <item name="android:textColor">@color/bottomNavInactiveColor</item>
+        <item name="popupMenuBackground">@color/colorPrimaryVariant</item>
     </style>
-    <style name="CommonButtonStyle" parent="Widget.MaterialComponents.Button">
-        <item name="autoSizeMinTextSize">8sp</item>
-        <item name="autoSizeMaxTextSize">24sp</item>
+
+    <style name="MyButtonStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:autoSizeMinTextSize">8sp</item>
+        <item name="android:autoSizeMaxTextSize">32sp</item>
         <item name="android:autoSizeStepGranularity">1sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:backgroundTint">@color/colorPrimary</item>
         <item name="android:padding">12dp</item>
         <item name="cornerRadius">4dp</item>
     </style>
-    <style name="MyBottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+
+    <style name="MyCustomNavIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/colorPrimaryVariant</item>
+    </style>
+    <style name="MyBottomNavigation" parent="Widget.Material3.BottomNavigationView">
         <item name="itemIconTint">@drawable/bottom_navigation_selector</item>
         <item name="backgroundTint">@color/bottomNavBackgroundColor</item>
+        <item name="itemActiveIndicatorStyle">@style/MyCustomNavIndicator</item>
     </style>
-    <style name="MyTabLayout" parent="Widget.MaterialComponents.TabLayout.Colored">
+
+
+    <style name="MyTabTextAppearance" parent="">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@drawable/tab_item_selector</item>
+    </style>
+    <style name="MyTabLayout" parent="Widget.Material3.TabLayout">
         <item name="tabIndicatorColor">@color/colorAccent</item>
         <item name="tabSelectedTextColor">@color/colorAccent</item>
-        <item name="tabTextColor">@color/colorOnPrimary</item>
-        <item name="tabBackground">@color/colorPrimary</item>
+        <item name="tabTextColor">@color/bottomNavInactiveColor</item>
+        <item name="tabTextAppearance">@style/MyTabTextAppearance</item>
+        <item name="tabBackground">@color/colorPrimaryDark</item>
     </style>
+
 </resources>
