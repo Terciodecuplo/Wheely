@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
+import com.jmblfma.wheely.utils.MapUtils
 import org.osmdroid.views.MapView
 
 class PostsAdapter(private val trackList: List<Track>, private val usersById: Map<Int, User>) :
@@ -20,7 +21,6 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         val trackDateAndLocation: TextView = view.findViewById(R.id.track_date_and_location)
         val trackName: TextView = view.findViewById(R.id.track_name)
         val trackStats: TextView = view.findViewById(R.id.track_stats)
-        val trackPreview: ImageView = view.findViewById(R.id.track_preview)
         val mapPreview: MapView = view.findViewById(R.id.map_preview)
     }
 
@@ -44,8 +44,9 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         val trackAveSpeed = currentTrack.getFormattedAverageSpeedInKmh()
         holder.trackStats.text = "Time: $trackDuration · Distance: $trackDistance · Speed: $trackAveSpeed"
 
-        holder.trackPreview.setImageResource(R.drawable.route_example)
-        // MapUtils.setupMap(holder.mapPreview, holder.itemView.context)
+        currentTrack.trackData?.let {
+            MapUtils.setupMapRoutePreview(holder.mapPreview, holder.itemView.context, it)
+        }
     }
 
     override fun getItemCount(): Int = trackList.size

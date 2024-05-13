@@ -51,7 +51,6 @@
         android:autoSizeMinTextSize="12dp"
         android:text="VAL_TRACK_NAME"
         app:layout_constraintTop_toBottomOf="@+id/header" />
-
     <TextView
         android:id="@+id/track_stats"
         style="@style/TestTextFieldStyleForStats"
@@ -60,16 +59,8 @@
         android:gravity="start"
         android:text="VAL_DURATION - VAL_DISTANCE - VAL_AVE_SPEED" />
 
-    <ImageView
-        android:id="@+id/track_preview"
-        android:visibility="visible"
-        app:layout_constraintTop_toBottomOf="@+id/track_stats"
-        android:layout_width="match_parent"
-        android:layout_height="180dp" />
-
     <org.osmdroid.views.MapView
         android:id="@+id/map_preview"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         app:layout_constraintTop_toBottomOf="@+id/track_stats"

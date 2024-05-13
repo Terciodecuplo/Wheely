@@ -78,4 +78,16 @@ interface TrackDao {
 
     @Query("SELECT * FROM trackpoints WHERE trackId = :trackId")
     suspend fun getTrackPointsForTrack(trackId: Int): List<TrackPoint>
+
+    @Transaction
+    suspend fun getAllTracksWithPoints(): List<Track> {
+        val tracks = getAllTracks()
+        tracks.forEach { track ->
+            val trackPoints = getTrackPointsForTrack(track.trackId)
+            if (trackPoints.isNotEmpty()) {
+                track.trackData = trackPoints
+            }
+        }
+        return tracks
+    }
 }

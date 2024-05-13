@@ -31,7 +31,7 @@ class HomePageViewModel : ViewModel() {
     }
     fun fetchTrackList() {
         viewModelScope.launch {
-            val trackList = trackRepository.fetchAllTracks()
+            val trackList = trackRepository.fetchAllTracksWithPoints()
             _trackListLoader.postValue(trackList)
         }
     }
