@@ -2,20 +2,21 @@ package com.jmblfma.wheely
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jmblfma.wheely.adapter.PostsAdapter
 import com.jmblfma.wheely.databinding.HomePageBinding
-import com.jmblfma.wheely.model.Post
 import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.UserSessionManager
+import com.jmblfma.wheely.viewmodels.HomePageViewModel
 
 class HomePageActivity : NavigationMenuActivity() {
     private lateinit var binding: HomePageBinding
-    private lateinit var postsAdapter: PostsAdapter
-    private lateinit var postList: ArrayList<Post>
+    private val viewModel: HomePageViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,13 +26,28 @@ class HomePageActivity : NavigationMenuActivity() {
         setSupportActionBar(binding.toolbarHome)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbarTitle.text = getString(R.string.post_layout_title)
-        postList = ArrayList()
 
-        postsAdapter = PostsAdapter(postList, this)
-        binding.postRecycler.adapter = postsAdapter
-        binding.postRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        setupFeedObservers()
         setupBottomNavigation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchTrackList()
+        viewModel.fetchUserList()
+        Log.d("Feed", "onResume()/ Executed fetches")
+    }
+
+    private fun setupFeedObservers() {
+        viewModel.combinedData.observe(this) { (trackList, userList) ->
+            if (trackList != null && userList != null) {
+                val usersById = userList.associateBy { it.userId }
+                Log.d("Feed", "combinedData OBSERVED/ preparing adapter...")
+                binding.postRecycler.adapter = PostsAdapter(trackList, usersById)
+                binding.postRecycler.layoutManager =
+                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,3 +80,4 @@ class HomePageActivity : NavigationMenuActivity() {
         return R.id.nav_posts // Return the ID of the bottom navigation menu item for HomePageActivity
     }
 }
+

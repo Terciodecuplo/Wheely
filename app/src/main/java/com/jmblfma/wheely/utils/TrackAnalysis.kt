@@ -82,8 +82,9 @@ object TrackAnalysis {
     }
 
     // DATE TIME UTILS
-    private const val DATE_FORMAT_PATTERN_SYS = "yyyy-MM-dd" // e.g. 2024-05-11"
+    private const val DATE_FORMAT_PATTERN_SYS = "yyyy-MM-dd" // e.g. 2024-05-11
     private const val TIME_FORMAT_PATTERN = "HH:mm" // e.g. 21:49
+    private const val DATE_AND_TIME_LONG_PATTERN = "MMM d, yyyy 'at' hh:mm a" // e.g. May 11, 2024 at 10:01 AM
     private fun convertTimestampToFormattedDateTime(timestamp: Long?, format: String): String {
         return timestamp?.let {
             val dateTime =  LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
@@ -95,6 +96,9 @@ object TrackAnalysis {
     }
     fun convertTimestampToDate(timestamp: Long?): String {
         return convertTimestampToFormattedDateTime(timestamp, DATE_FORMAT_PATTERN_SYS)
+    }
+    fun convertTimestampToDateTime(timestamp: Long?): String {
+        return convertTimestampToFormattedDateTime(timestamp, DATE_AND_TIME_LONG_PATTERN)
     }
     private fun computeDurationFromMillis(timeMillis: Long): Duration {
         return Duration.ofMillis(timeMillis)
