@@ -46,6 +46,7 @@ class HomePageActivity : NavigationMenuActivity() {
                 binding.postRecycler.adapter = PostsAdapter(trackList, usersById)
                 binding.postRecycler.layoutManager =
                     LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
+                binding.postRecycler.scrollToPosition(trackList.size - 1)
             }
         }
     }

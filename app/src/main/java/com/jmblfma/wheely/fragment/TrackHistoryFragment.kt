@@ -13,7 +13,7 @@ import com.jmblfma.wheely.model.Track
 
 class TrackHistoryFragment : Fragment() {
 
-    private var trackHistoryList: ArrayList<Track>? = null
+    private lateinit var trackHistoryList: ArrayList<Track>
     private lateinit var trackHistoryAdapter: TrackHistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
