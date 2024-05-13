@@ -4,6 +4,8 @@ import CustomAccuracyOverlay
 import android.content.Context
 import android.graphics.Color
 import android.location.Location
+import android.view.View
+import androidx.core.content.ContextCompat
 import com.jmblfma.wheely.MyApp
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.TrackPoint
@@ -22,9 +24,9 @@ object MapUtils {
     const val MAX_ZOOM_LEVEL = 21.0 // sensible: 20; switch to 30.0 for debugging (might generate crashes)
     const val ACTIVE_ZOOM_LEVEL = 18.0
     const val DEFAULT_ZOOM_LEVEL = 19.0
-    const val ROUTE_ACTIVE_COLOR = Color.RED
-    const val ROUTE_LOAD_COLOR = Color.BLUE
-    const val ROUTE_PENDING_SAVE_COLOR = Color.MAGENTA
+    val ROUTE_ACTIVE_COLOR = Color.RED
+    val ROUTE_LOAD_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.colorPrimary)
+    val ROUTE_PENDING_SAVE_COLOR = Color.MAGENTA
     fun setupMap(mapView: MapView, context: Context) {
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
@@ -33,6 +35,27 @@ object MapUtils {
         mapView.maxZoomLevel = MAX_ZOOM_LEVEL
         mapView.controller.setZoom(DEFAULT_ZOOM_LEVEL)
         clearMapAndRefresh(mapView)
+    }
+
+    fun setupMapRoutePreview(mapView: MapView, context: Context, trackPoints: List<TrackPoint>) {
+        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        mapView.setMultiTouchControls(false)
+        mapView.setBuiltInZoomControls(false)
+        mapView.minZoomLevel = MIN_ZOOM_LEVEL
+        mapView.maxZoomLevel = MAX_ZOOM_LEVEL
+        val routePreview = Polyline()
+        val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
+        routePreview.setPoints(geoPoints)
+        routePreview.color = ROUTE_LOAD_COLOR
+        mapView.overlays.add(routePreview)
+        setUpRouteEndpointsMarker(mapView, routePreview.points.first(), true)
+        setUpRouteEndpointsMarker(mapView, routePreview.points.last(), false)
+        val boundingBox = routePreview.bounds
+        mapView.addOnFirstLayoutListener(object : MapView.OnFirstLayoutListener {
+            override fun onFirstLayout(v: View?, left: Int, top: Int, right: Int, bottom: Int) {
+                mapView.zoomToBoundingBox(boundingBox, false, BOUNDING_BOX_PADDING)
+            }
+        })
     }
 
     fun clearMapAndRefresh(mapView: MapView) {
@@ -99,9 +122,9 @@ object MapUtils {
         } else {
             completeTrackRoute.color = ROUTE_PENDING_SAVE_COLOR
         }
-        mapView.overlays.add(completeTrackRoute)
         val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
         completeTrackRoute.setPoints(geoPoints)
+        mapView.overlays.add(completeTrackRoute)
         setUpRouteEndpointsMarker(mapView, completeTrackRoute.points.first(), true)
         setUpRouteEndpointsMarker(mapView, completeTrackRoute.points.last(), false)
         mapView.invalidate()
@@ -155,12 +178,12 @@ object MapUtils {
         mapView.controller.setZoom(zoomLevel)
     }
 
-    fun centerAndZoomOverCurrentRoute(mapView: MapView) {
+    const val BOUNDING_BOX_PADDING = 100
+    fun centerAndZoomOverCurrentRoute(mapView: MapView, animated: Boolean = true) {
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
         currentRoute?.let {
-            val boundingBox = it.bounds
-            // TODO add padding to box
-            mapView.zoomToBoundingBox(boundingBox, true)
+            val boundingBox = currentRoute.bounds
+            mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
         }
     }
 }
