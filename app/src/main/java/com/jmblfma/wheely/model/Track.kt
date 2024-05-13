@@ -67,6 +67,9 @@ data class Track(
             TrackAnalysis.convertTimestampToTime(this.endTime)
         }
     }
+    fun getFormattedDateTime(): String {
+        return TrackAnalysis.convertTimestampToDateTime(this.startTime)
+    }
     fun getFormattedAverageSpeedInKmh(): String {
         return TrackAnalysis.formatSpeedInKmh(this.averageSpeed)
     }

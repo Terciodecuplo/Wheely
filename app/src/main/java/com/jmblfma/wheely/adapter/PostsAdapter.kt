@@ -1,51 +1,52 @@
 package com.jmblfma.wheely.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.jmblfma.wheely.R
-import com.jmblfma.wheely.model.Post
+import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.User
+import org.osmdroid.views.MapView
 
-class PostsAdapter(val postList: ArrayList<Post>, var context: Context) :
-    RecyclerView.Adapter<PostsAdapter.MyHolder>() {
+class PostsAdapter(private val trackList: List<Track>, private val usersById: Map<Int, User>) :
+    RecyclerView.Adapter<PostsAdapter.PostViewHolder>() {
 
-    class MyHolder(item: View) : ViewHolder(item) {
-        var userProfileImage: ImageView
-        var userName: TextView
-        var trackInfo: TextView
-        var trackTitle: TextView
-        var trackPreview: ImageView
-
-        init {
-            userProfileImage = item.findViewById(R.id.userPost_image)
-            userName = item.findViewById(R.id.userName_text)
-            trackInfo = item.findViewById(R.id.postInfo_text)
-            trackTitle = item.findViewById(R.id.trackName_text)
-            trackPreview = item.findViewById(R.id.trackPreview_image)
-        }
+    class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val userProfileImage: ImageView = view.findViewById(R.id.user_profile_img)
+        val userName: TextView = view.findViewById(R.id.user_name)
+        val trackDateAndLocation: TextView = view.findViewById(R.id.track_date_and_location)
+        val trackName: TextView = view.findViewById(R.id.track_name)
+        val trackStats: TextView = view.findViewById(R.id.track_stats)
+        val trackPreview: ImageView = view.findViewById(R.id.track_preview)
+        val mapPreview: MapView = view.findViewById(R.id.map_preview)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
-        val view: View
-        view = LayoutInflater.from(context).inflate(R.layout.itempost_recycler, parent, false)
-        return MyHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_recycler, parent, false)
+        return PostViewHolder(itemView)
     }
 
-    override fun getItemCount(): Int {
-        return postList.size
-    }
-
-    override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        var post = postList[position]
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+        val currentTrack = trackList[position]
+        val currentUser = usersById[currentTrack.drivenByUserId]
         holder.userProfileImage.setImageResource(R.drawable.user_default_pic)
-        holder.userName.text = post.postedBy.nickname
-        holder.trackInfo.text = "DELETED_PROPERTY"
-        holder.trackTitle.text = post.associatedTrack.name
+        holder.userName.text = currentUser?.nickname ?: "UNKNOWN USER"
+
+        holder.trackName.text = currentTrack.name
+        val trackDateAndTime = currentTrack.getFormattedDateTime()
+        holder.trackDateAndLocation.text = trackDateAndTime // TODO add general location when implemented
+
+        val trackDuration = currentTrack.getFormattedDuration()
+        val trackDistance = currentTrack.getFormattedDistanceInKm()
+        val trackAveSpeed = currentTrack.getFormattedAverageSpeedInKmh()
+        holder.trackStats.text = "Time: $trackDuration · Distance: $trackDistance · Speed: $trackAveSpeed"
+
         holder.trackPreview.setImageResource(R.drawable.route_example)
+        // MapUtils.setupMap(holder.mapPreview, holder.itemView.context)
     }
+
+    override fun getItemCount(): Int = trackList.size
 }

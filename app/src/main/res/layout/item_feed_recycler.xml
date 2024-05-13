@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp">
+
+    <GridLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:rowCount="2"
+        android:columnCount="2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/user_image_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_rowSpan="2"
+            app:cardCornerRadius="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/user_profile_img"
+                android:layout_width="70dp"
+                android:layout_height="70dp" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/user_name"
+            style="@style/TestTextFieldStyleForStats"
+            android:layout_width="wrap_content"
+            android:gravity="bottom"
+            android:textStyle="bold"
+            android:text="VAL_USER_NAME" />
+        <TextView
+            android:id="@+id/track_date_and_location"
+            style="@style/TestTextFieldStyleForStats"
+            android:layout_width="wrap_content"
+            android:gravity="top"
+            android:text="DATE, TIME AND GEN. LOCATION?" />
+    </GridLayout>
+
+    <TextView
+        android:id="@+id/track_name"
+        style="@style/TestTextFieldStyleForStats"
+        android:gravity="start"
+        android:layout_width="match_parent"
+        android:autoSizeMinTextSize="12dp"
+        android:text="VAL_TRACK_NAME"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
+    <TextView
+        android:id="@+id/track_stats"
+        style="@style/TestTextFieldStyleForStats"
+        app:layout_constraintTop_toBottomOf="@+id/track_name"
+        android:layout_width="match_parent"
+        android:gravity="start"
+        android:text="VAL_DURATION - VAL_DISTANCE - VAL_AVE_SPEED" />
+
+    <ImageView
+        android:id="@+id/track_preview"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/track_stats"
+        android:layout_width="match_parent"
+        android:layout_height="180dp" />
+
+    <org.osmdroid.views.MapView
+        android:id="@+id/map_preview"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:layout_constraintTop_toBottomOf="@+id/track_stats"
+        android:clickable="false"
+        android:focusable="false"
+        android:enabled="false" />
+</androidx.constraintlayout.widget.ConstraintLayout>
