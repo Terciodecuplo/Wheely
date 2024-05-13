@@ -26,10 +26,12 @@ import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
+import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.PermissionsManager
+import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +43,7 @@ import java.util.UUID
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
     private var trackHistoryList: List<Track> = emptyList()
+    private var userVehicleList: List<Vehicle> = emptyList()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private val viewModel: UserDataViewModel by viewModels()
@@ -57,7 +60,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
-        setupHistoryObserver()
+        setupObservers()
         setupFragments()
         setupBottomNavigation()
         setupToolbar()
@@ -65,9 +68,21 @@ class ProfilePageActivity : NavigationMenuActivity() {
         setupTakePictureLauncher()
     }
 
-    private fun setupHistoryObserver() {
+    private fun setupUserFields() {
+        binding.totalTracksValue.text = trackHistoryList.size.toString()
+        binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(trackHistoryList)
+        binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackHistoryList)
+        getMaxSpeed()
+    }
+
+    private fun setupObservers() {
         viewModel.userTrackList.observe(this){
             trackHistoryList = it
+            setupUserFields()
+
+        }
+        viewModel.vehicleList.observe(this){
+            userVehicleList = it
         }
     }
 
@@ -182,11 +197,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
             .setTitle(getString(R.string.select_highlights))
             .setPositiveButton("Ok") { _, _ ->
                 when (selectedItem) {
-                    0 -> getTotalRoutes()
-                    1 -> getRidingTime()
-                    2 -> getMaxSpeed()
-                    3 -> getTotalDistance()
-                    4 -> getLongestRoute()
+                    0 -> getMaxSpeed()
+                    1 -> getLongestRoute()
+                    2 -> getNumberOfVehicles()
+                    3 -> getMaxInclination()
                 }
             }
             .setSingleChoiceItems(options, selectedItem) { _, selectedItemIndex ->
@@ -198,22 +212,23 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     private fun getLongestRoute() {
         binding.selectedHighlightText.text = getString(R.string.longest_route)
+        binding.selectedHighlightValue.text = ""//TODO - Method not implemeted yet
+
     }
 
-    private fun getTotalDistance() {
-        binding.selectedHighlightText.text = getString(R.string.total_distance)
+    private fun getNumberOfVehicles() {
+        binding.selectedHighlightText.text = getString(R.string.number_of_vehicles)
+        binding.selectedHighlightValue.text = userVehicleList.size.toString()
     }
+    private fun getMaxInclination() {
+        binding.selectedHighlightText.text = getString(R.string.max_inclination)
+        binding.selectedHighlightValue.text = "23º"
+    }
+
 
     private fun getMaxSpeed() {
         binding.selectedHighlightText.text = getString(R.string.max_speed)
-    }
-
-    private fun getRidingTime() {
-        binding.selectedHighlightText.text = getString(R.string.riding_time)
-    }
-
-    private fun getTotalRoutes() {
-        binding.selectedHighlightText.text = getString(R.string.total_routes)
+        binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
     }
 
 
@@ -407,6 +422,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
             )
         }
         UserSessionManager.updateLoggedUser(updatedUser)
+        startActivity(Intent(this, ProfilePageActivity::class.java))
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
     }
 
     private fun showSnackbar(message: String) {

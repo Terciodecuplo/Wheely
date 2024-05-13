@@ -91,4 +91,6 @@
     <string name="accuracy_threshold_reached">¡Señal GPS lista!</string>
     <string name="snackbar_dismiss">Ocultar</string>
     <string name="user_stats_menu_item">Datos de Usuario</string>
+    <string name="number_of_vehicles">Vehículos Totales</string>
+    <string name="max_inclination">Inclinación Máx</string>
 </resources>

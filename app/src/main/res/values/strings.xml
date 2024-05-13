@@ -72,6 +72,8 @@
     <string name="total_distance">Total Distance</string>
     <string name="total_routes">Total Routes</string>
     <string name="max_speed">Max Speed</string>
+    <string name="max_inclination">Max Inclination</string>
+    <string name="number_of_vehicles">Total Vehicles</string>
     <string name="riding_time">Riding Time</string>
     <string name="longest_route">Longest Route</string>
     <string name="step1of2">Step 1 of 2</string>
