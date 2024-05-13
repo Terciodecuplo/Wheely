@@ -1,5 +1,7 @@
 package com.jmblfma.wheely.adapter
 
+import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
+import com.jmblfma.wheely.TrackViewerActivity
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.MapUtils
@@ -22,6 +25,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         val trackName: TextView = view.findViewById(R.id.track_name)
         val trackStats: TextView = view.findViewById(R.id.track_stats)
         val mapPreview: MapView = view.findViewById(R.id.map_preview)
+        val mapPreviewHolder: View = view.findViewById<View>(R.id.map_preview_holder)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -46,6 +50,13 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
 
         currentTrack.trackData?.let {
             MapUtils.setupMapRoutePreview(holder.mapPreview, holder.itemView.context, it)
+        }
+        holder.mapPreviewHolder.setOnClickListener {
+            Log.d("Feed", "Viewer Listener")
+            val intent = Intent(holder.itemView.context, TrackViewerActivity::class.java)
+            intent.putExtra("TRACK_ID", currentTrack.trackId)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            holder.itemView.context.startActivity(intent)
         }
     }
 

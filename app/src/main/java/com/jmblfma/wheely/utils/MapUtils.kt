@@ -1,6 +1,7 @@
 package com.jmblfma.wheely.utils
 
 import CustomAccuracyOverlay
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.location.Location
@@ -37,12 +38,15 @@ object MapUtils {
         clearMapAndRefresh(mapView)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun setupMapRoutePreview(mapView: MapView, context: Context, trackPoints: List<TrackPoint>) {
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(false)
         mapView.setBuiltInZoomControls(false)
         mapView.minZoomLevel = MIN_ZOOM_LEVEL
         mapView.maxZoomLevel = MAX_ZOOM_LEVEL
+        // consume all touch events on map preview so that the user can't interact
+        //mapView.setOnTouchListener { _, _ -> true }
         val routePreview = Polyline()
         val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
         routePreview.setPoints(geoPoints)

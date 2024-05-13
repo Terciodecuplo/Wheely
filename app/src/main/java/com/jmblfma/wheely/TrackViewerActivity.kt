@@ -22,14 +22,18 @@ class TrackViewerActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = TrackViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val trackId = intent.getIntExtra("TRACK_ID", -1)
+
         setupBottomNavigation()
         setupButtonListeners()
         MapUtils.setupMap(binding.mapView, this)
         setupTrackManagement()
 
-        // forces auto load last
-        viewModel.fetchLastTrack()
-
+        if (trackId != -1)  {
+            viewModel.fetchTrackByID(trackId)
+        } else {
+            viewModel.fetchLastTrack()
+        }
 
         setupAllTracksStats()
         // TODO maybe only testing:

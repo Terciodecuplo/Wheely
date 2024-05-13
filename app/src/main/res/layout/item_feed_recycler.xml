@@ -59,12 +59,20 @@
         android:gravity="start"
         android:text="VAL_DURATION - VAL_DISTANCE - VAL_AVE_SPEED" />
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map_preview"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        app:layout_constraintTop_toBottomOf="@+id/track_stats"
-        android:clickable="false"
-        android:focusable="false"
-        android:enabled="false" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/track_stats" >
+        <org.osmdroid.views.MapView
+            android:id="@+id/map_preview"
+            android:layout_width="match_parent"
+            android:layout_height="180dp" />
+        <View
+            android:id="@+id/map_preview_holder"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@android:color/transparent" /> <!-- This transparent view will catch all touches -->
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
