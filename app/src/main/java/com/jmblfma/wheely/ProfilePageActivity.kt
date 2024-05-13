@@ -40,7 +40,6 @@ import java.util.UUID
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
-    private lateinit var trackHistoryList: ArrayList<Track>
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private val viewModel: UserDataViewModel by viewModels()
@@ -64,9 +63,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
         profileUserMainDataSetup()
-        trackHistoryList = ArrayList()
 
-        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
+
+
+        val profileViewPagerAdapter = ProfileViewPagerAdapter(this)
 
         binding.viewPager.adapter = profileViewPagerAdapter
 

@@ -4,13 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
+import com.jmblfma.wheely.repository.TrackDataRepository
 import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.utils.UserSessionManager
 import kotlinx.coroutines.launch
 
 class UserDataViewModel : ViewModel() {
     private val repository = UserDataRepository.sharedInstance
+    private val trackRepository = TrackDataRepository.sharedInstance
 
 
     private val _fetchedUser = MutableLiveData<User?>()
@@ -19,7 +22,14 @@ class UserDataViewModel : ViewModel() {
     val userUpdateStatus: LiveData<String?> = _userUpdateStatus
     private val _fetchAllUsers = MutableLiveData<List<User>>()
     val fetchAllUsers: LiveData<List<User>> = _fetchAllUsers
+    private val _trackListLoader = MutableLiveData<List<Track>>()
+    val trackListLoader:LiveData<List<Track>> = _trackListLoader
 
+    fun fetchUserTrackList(userId: Int){
+        viewModelScope.launch {
+            _trackListLoader.postValue(trackRepository.fetchAllTracksForUser(userId))
+        }
+    }
     fun setUserCandidate(newUser: User) {
         viewModelScope.launch {
             repository.setUserCandidate(newUser)

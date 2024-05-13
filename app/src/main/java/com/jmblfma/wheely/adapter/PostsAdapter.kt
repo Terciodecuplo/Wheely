@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Post
 
-class PostsAdapter(val postList: ArrayList<Post>, var context: Context) :
+class PostsAdapter(val postList: List<Post>, var context: Context) :
     RecyclerView.Adapter<PostsAdapter.MyHolder>() {
 
     class MyHolder(item: View) : ViewHolder(item) {

@@ -15,27 +15,27 @@
 
 
     <TextView
-        android:id="@+id/routeLocation_text"
+        android:id="@+id/routeDate_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="3dp"
         android:layout_marginStart="5dp"
-        android:text="Route Location"
+        android:text="Route Date"
         android:textColor="@color/subtext_grey"
         android:textSize="8dp"
         app:layout_constraintStart_toStartOf="@+id/routeTitle_text"
         app:layout_constraintTop_toBottomOf="@+id/routeTitle_text" />
 
     <TextView
-        android:id="@+id/routeDate_text"
+        android:id="@+id/routeTime_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:text="Route Date"
         android:textColor="@color/subtext_grey"
         android:textSize="8dp"
-        app:layout_constraintStart_toEndOf="@+id/routeLocation_text"
-        app:layout_constraintTop_toTopOf="@+id/routeLocation_text" />
+        app:layout_constraintStart_toEndOf="@+id/routeDate_text"
+        app:layout_constraintTop_toTopOf="@+id/routeDate_text" />
 
     <TextView
         android:id="@+id/routeDuration_text"
@@ -92,7 +92,7 @@
         android:text="3:14:26"
         android:textColor="@color/subtext_grey"
         android:textSize="8dp"
-        app:layout_constraintStart_toEndOf="@+id/guideline7"
+        app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="@+id/trackPreview_image" />
 
     <TextView
@@ -135,7 +135,7 @@
         android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/routeTitle_text"
-        app:layout_constraintTop_toBottomOf="@+id/routeLocation_text"
+        app:layout_constraintTop_toBottomOf="@+id/routeDate_text"
         app:layout_constraintWidth_percent="0.45" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -143,5 +143,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_percent="0.6946565" />
 </androidx.constraintlayout.widget.ConstraintLayout>

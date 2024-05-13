@@ -27,7 +27,6 @@ class VehicleFragment : Fragment(), ProfileVehicleListAdapter.OnVehicleItemClick
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fetchVehicles()
     }
 
     override fun onResume() {
