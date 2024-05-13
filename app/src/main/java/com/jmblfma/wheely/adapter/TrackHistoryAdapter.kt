@@ -9,10 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
-import java.time.format.DateTimeFormatter
-import java.util.Locale
+import com.jmblfma.wheely.model.Vehicle
 
-class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: Context) :
+class TrackHistoryAdapter(
+    private val trackHistoryList: List<Track>,
+    private val vehicleList: List<Vehicle>,
+    var context: Context
+) :
     RecyclerView.Adapter<TrackHistoryAdapter.MyHolder>() {
 
     class MyHolder(item: View) : RecyclerView.ViewHolder(item) {
@@ -23,7 +26,7 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
         var trackDistance: TextView
         var trackAvgSpeed: TextView
         var trackVehicle: TextView
-        var trackPreview: ImageView
+        var vehicleImage: ImageView
 
 
         init {
@@ -34,7 +37,7 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
             trackDistance = item.findViewById(R.id.distance_text)
             trackAvgSpeed = item.findViewById(R.id.avgSpeed_text)
             trackVehicle = item.findViewById(R.id.vehicleName_text)
-            trackPreview = item.findViewById(R.id.trackPreview_image)
+            vehicleImage = item.findViewById(R.id.vehicleUsed_image)
         }
     }
 
@@ -49,20 +52,21 @@ class TrackHistoryAdapter(val trackHistoryList: ArrayList<Track>, var context: C
     }
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
-        val dateFormatter =
-            DateTimeFormatter.ofPattern("dd MMMM yyyy - HH:mm:ss", Locale.getDefault())
-        var history = trackHistoryList[position]
-        holder.trackTitle.text = history.name
-        holder.trackLocation.text = history.generalLocation
-        holder.trackDate.text = "DELETED_PROPERTY"
-        /*holder.trackDuration.text = history.trackSummary.elapsedTime.toString()
-        holder.trackDistance.text = history.trackSummary.distanceTraveled.toString()
-        holder.trackAvgSpeed.text = history.trackSummary.averageSpeed.toString()
-        holder.trackVehicle.text = holder.itemView.context.getString(
-            R.string.vehicle_display_format,
-            history.vehicleUsed.brand,
-            history.vehicleUsed.model
-        )*/
-        holder.trackPreview.setImageResource(R.drawable.route_example)
+        var track = trackHistoryList[position]
+        var vehicle = vehicleList.find{ it.vehicleId == track.vehicleUsedId}
+        holder.trackTitle.text = track.name
+        holder.trackLocation.text = track.getFormattedDate()
+        holder.trackDate.text = track.getFormattedTime(true)
+        holder.trackDuration.text = track.getFormattedDuration()
+        holder.trackDistance.text = track.getFormattedDistanceInKm()
+        holder.trackAvgSpeed.text = track.getFormattedAverageSpeedInKmh()
+        if (vehicle != null) {
+            holder.trackVehicle.text = holder.itemView.context.getString(
+                R.string.vehicle_used_in_track,
+                vehicle.brand,
+                vehicle.model
+            )
+        }
+        holder.vehicleImage.setImageResource(R.drawable.vehicle_placeholder)
     }
 }

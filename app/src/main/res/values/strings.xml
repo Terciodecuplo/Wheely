@@ -95,4 +95,5 @@
     <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
     <string name="snackbar_dismiss">Dismiss</string>
     <string name="user_stats_menu_item">User stats</string>
+    <string name="vehicle_used_in_track" translatable="false">%1$s %2$s</string>
 </resources>

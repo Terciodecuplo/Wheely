@@ -10,7 +10,7 @@ import com.jmblfma.wheely.model.Track
 class ProfileViewPagerAdapter(
     fragmentActivity: FragmentActivity,
 
-    private val trackHistoryList: ArrayList<Track>
+    private val trackHistoryList: List<Track>
 
 ) : FragmentStateAdapter(fragmentActivity) {
 
@@ -18,7 +18,7 @@ class ProfileViewPagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> TrackHistoryFragment.newInstance(trackHistoryList)
+            0 -> TrackHistoryFragment()
             1 -> VehicleFragment.newInstance()
             else -> throw IllegalStateException("Unexpected position $position")
         }

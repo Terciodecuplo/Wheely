@@ -40,7 +40,7 @@ import java.util.UUID
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
-    private lateinit var trackHistoryList: ArrayList<Track>
+    private var trackHistoryList: List<Track> = emptyList()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private val viewModel: UserDataViewModel by viewModels()
@@ -57,15 +57,23 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding = UserProfileMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
+        setupHistoryObserver()
+        setupFragments()
         setupBottomNavigation()
         setupToolbar()
         setupImagePickerLauncher()
         setupTakePictureLauncher()
+    }
+
+    private fun setupHistoryObserver() {
+        viewModel.userTrackList.observe(this){
+            trackHistoryList = it
+        }
+    }
+
+    private fun setupFragments() {
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
-        profileUserMainDataSetup()
-        trackHistoryList = ArrayList()
-
         val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
 
         binding.viewPager.adapter = profileViewPagerAdapter
@@ -88,6 +96,9 @@ class ProfilePageActivity : NavigationMenuActivity() {
     override fun onResume() {
         super.onResume()
         profileUserMainDataSetup()
+        val userId = UserSessionManager.getCurrentUser()!!.userId
+        viewModel.fetchTrackListByUser(userId)
+        viewModel.fetchUserVehicles(userId)
     }
 
     override fun onBackPressed() {
