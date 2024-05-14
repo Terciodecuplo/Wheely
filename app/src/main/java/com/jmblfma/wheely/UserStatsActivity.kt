@@ -25,8 +25,10 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.UserStatsLayoutBinding
+import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.PermissionsManager
+import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +42,7 @@ class UserStatsActivity : AppCompatActivity() {
     private lateinit var binding: UserStatsLayoutBinding
     private val calendar = Calendar.getInstance()
     private val viewModel: UserDataViewModel by viewModels()
+    private var trackList: List<Track> = emptyList()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var photoURI: Uri? = null
@@ -63,6 +66,7 @@ class UserStatsActivity : AppCompatActivity() {
         binding.toolbarUserStats.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+        setupObservers()
         getUserData()
         binding.submitChangesButton.setOnClickListener {
             submitChangesDialog()
@@ -70,10 +74,34 @@ class UserStatsActivity : AppCompatActivity() {
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
         }
-        binding.editUserImgage.setOnClickListener {
+        binding.editUserImage.setOnClickListener {
             showImageSourceDialog()
         }
 
+    }
+
+    private fun setupObservers() {
+        viewModel.userTrackList.observe(this) {
+            trackList = it
+            setupUserStats()
+        }
+    }
+
+    private fun setupUserStats() {
+        binding.totalTimeValue.text = TrackAnalysis.getTracksTotalDuration(trackList)
+        binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(trackList)
+        binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
+        binding.avgSpeedValue.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
+        binding.longestRouteValue.text = TrackAnalysis.getLongestTrackInKm(trackList)
+        binding.maxDurationValue.text = TrackAnalysis.getTracksMaxDuration(trackList)
+        binding.maxAltitudeValue.text = TrackAnalysis.getTracksMaxAltitude(trackList)
+        binding.totalRoutesValue.text = trackList.size.toString()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val userId = UserSessionManager.getCurrentUser()!!.userId
+        viewModel.fetchTrackListByUser(userId)
     }
 
     private fun submitChanges() {
@@ -198,19 +226,22 @@ class UserStatsActivity : AppCompatActivity() {
         manageFields(binding.userLastnameEdittext, isEditable)
         binding.userEmailEdittext.setTextColor(getColor(R.color.subtext_grey))
         binding.userBirthdayEdittext.isClickable = true
-        binding.editUserImgage.visibility = View.VISIBLE
-        binding.submitChangesButton.visibility = View.VISIBLE
+        binding.editUserImage.visibility = View.VISIBLE
+        binding.submitChangesContainer.visibility = View.VISIBLE
+        val layoutParams = binding.userStatsContainer.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.bottomMargin = (15 * applicationContext.resources.displayMetrics.density).toInt()
+        binding.userStatsContainer.layoutParams = layoutParams
+        if(binding.scrollView.scrollY == (binding.scrollView.getChildAt(0).measuredHeight - binding.scrollView.measuredHeight)){
+            binding.scrollView.post {
+                binding.scrollView.smoothScrollTo(0, binding.scrollView.getChildAt(0).height)
+            }
+        }
     }
 
     private fun blockDataEdition() {
-        val isEditable = false
-        manageFields(binding.userNicknameEdittext, isEditable)
-        manageFields(binding.userFirstnameEdittext, isEditable)
-        manageFields(binding.userLastnameEdittext, isEditable)
-        binding.userEmailEdittext.setTextColor(getColor(R.color.black))
-        binding.userBirthdayEdittext.isClickable = false
-        binding.editUserImgage.visibility = View.INVISIBLE
-        binding.submitChangesButton.visibility = View.INVISIBLE
+        startActivity(Intent(this, UserStatsActivity::class.java))
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        finish()
     }
 
     private fun showDatePicker() {
