@@ -71,6 +71,10 @@
     <string name="select_highlights">Select highlights</string>
     <string name="total_distance">Total Distance</string>
     <string name="total_routes">Total Routes</string>
+    <string name="total_duration">Total Duration</string>
+    <string name="longest_duration">Max Duration</string>
+    <string name="avg_speed">Average Speed</string>
+    <string name="max_altitude">Max Altitude</string>
     <string name="max_speed">Max Speed</string>
     <string name="max_inclination">Max Inclination</string>
     <string name="number_of_vehicles">Total Vehicles</string>

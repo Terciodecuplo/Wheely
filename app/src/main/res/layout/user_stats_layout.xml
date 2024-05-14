@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/statsLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/statsLayout">
+    android:background="@color/tab_layout_background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_user_stats"
@@ -31,262 +32,371 @@
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
-        app:layout_constraintBottom_toTopOf="@id/submit_changes_button"
+        app:layout_constraintBottom_toTopOf="@id/submit_changes_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar_user_stats">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stats_layout_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/user_image"
-                android:layout_width="177dp"
-                android:layout_height="199dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/user_default_pic"
-                app:civ_border_color="@color/white"
-                app:civ_border_width="2dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/user_personal_info_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/stats_layout_container">
 
-            <ImageView
-                android:id="@+id/edit_user_imgage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_edit"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/user_image"
-                app:layout_constraintEnd_toEndOf="@+id/user_image" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/user_nickname_edittext"
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/user_image"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginTop="20dp"
+                        android:src="@drawable/user_default_pic"
+                        app:civ_border_color="@color/white"
+                        app:civ_border_width="2dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/edit_user_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_edit"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="@+id/user_image"
+                        app:layout_constraintEnd_toEndOf="@+id/user_image" />
+
+
+                    <EditText
+                        android:id="@+id/user_nickname_edittext"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@color/transparent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName|textCapSentences"
+                        android:maxLines="1"
+                        android:minHeight="48dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/user_image" />
+
+                    <EditText
+                        android:id="@+id/user_firstname_edittext"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/transparent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName|textCapSentences"
+                        android:maxLines="1"
+                        android:minHeight="48dp"
+                        app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
+                        app:layout_constraintStart_toStartOf="@+id/user_nickname_edittext"
+                        app:layout_constraintTop_toBottomOf="@+id/user_nickname_edittext" />
+
+                    <EditText
+                        android:id="@+id/user_lastname_edittext"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/transparent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:imeOptions="actionNext"
+                        android:inputType="textPersonName|textCapSentences"
+                        android:maxLines="1"
+                        android:minHeight="48dp"
+                        app:layout_constraintEnd_toEndOf="@+id/user_firstname_edittext"
+                        app:layout_constraintStart_toStartOf="@+id/user_firstname_edittext"
+                        app:layout_constraintTop_toBottomOf="@+id/user_firstname_edittext" />
+
+                    <EditText
+                        android:id="@+id/user_email_edittext"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:background="@android:color/transparent"
+                        android:backgroundTint="@color/subtext_grey"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:imeOptions="actionDone"
+                        android:inputType="textEmailAddress"
+                        android:maxLines="1"
+                        android:minHeight="48dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/user_birthday_edittext"
+                        app:layout_constraintStart_toStartOf="@+id/user_birthday_edittext"
+                        app:layout_constraintTop_toBottomOf="@+id/user_birthday_edittext" />
+
+                    <EditText
+                        android:id="@+id/user_birthday_edittext"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/transparent"
+                        android:clickable="false"
+                        android:cursorVisible="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:maxLines="1"
+                        android:minHeight="48dp"
+                        app:layout_constraintEnd_toEndOf="@+id/user_lastname_edittext"
+                        app:layout_constraintStart_toStartOf="@+id/user_lastname_edittext"
+                        app:layout_constraintTop_toBottomOf="@+id/user_lastname_edittext" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/user_stats_container"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginEnd="15dp"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
+                android:layout_marginTop="15dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/stats_layout_container"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/user_image" />
+                app:layout_constraintTop_toBottomOf="@+id/user_personal_info_container">
 
-            <EditText
-                android:id="@+id/user_firstname_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/user_nickname_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_nickname_edittext"
-                app:layout_constraintTop_toBottomOf="@+id/user_nickname_edittext" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/user_lastname_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/user_firstname_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_firstname_edittext"
-                app:layout_constraintTop_toBottomOf="@+id/user_firstname_edittext" />
+                    <TextView
+                        android:id="@+id/total_routes_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/total_routes"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/total_routes_value"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/total_routes_value" />
 
-            <EditText
-                android:id="@+id/user_email_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionDone"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/user_birthday_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_birthday_edittext"
-                app:layout_constraintTop_toBottomOf="@+id/user_birthday_edittext" />
+                    <TextView
+                        android:id="@+id/total_routes_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="60dp"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/total_routes_text"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/user_birthday_edittext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                app:layout_constraintEnd_toEndOf="@+id/user_lastname_edittext"
-                app:layout_constraintStart_toStartOf="@+id/user_lastname_edittext"
-                app:layout_constraintTop_toBottomOf="@+id/user_lastname_edittext" />
+                    <TextView
+                        android:id="@+id/total_time_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_duration"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/total_time_value"
+                        app:layout_constraintStart_toStartOf="@+id/total_routes_text"
+                        app:layout_constraintTop_toTopOf="@+id/total_time_value" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/subtext_grey"
-                android:text="Riding time:"
-                app:layout_constraintBottom_toTopOf="@+id/total_distance_value"
-                app:layout_constraintStart_toStartOf="@+id/user_email_edittext"
-                app:layout_constraintTop_toBottomOf="@+id/user_email_edittext" />
+                    <TextView
+                        android:id="@+id/total_time_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/total_routes_value"
+                        app:layout_constraintStart_toStartOf="@+id/total_routes_value"
+                        app:layout_constraintTop_toBottomOf="@+id/total_routes_value" />
 
-            <EditText
-                android:id="@+id/total_riding_time"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
-                app:layout_constraintEnd_toEndOf="@+id/user_email_edittext"
-                app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/user_email_edittext" />
+                    <TextView
+                        android:id="@+id/total_distance_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_distance"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/total_distance_value"
+                        app:layout_constraintStart_toStartOf="@+id/total_time_text"
+                        app:layout_constraintTop_toTopOf="@+id/total_distance_value" />
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total distance:"
-                android:textColor="@color/subtext_grey"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/total_distance_value"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toTopOf="@+id/total_distance_value" />
+                    <TextView
+                        android:id="@+id/total_distance_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/total_time_value"
+                        app:layout_constraintStart_toStartOf="@+id/total_time_value"
+                        app:layout_constraintTop_toBottomOf="@id/total_time_value" />
 
-            <EditText
-                android:id="@+id/total_distance_value"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
-                app:layout_constraintEnd_toEndOf="@+id/total_riding_time"
-                app:layout_constraintStart_toStartOf="@+id/total_riding_time"
-                app:layout_constraintTop_toBottomOf="@+id/total_riding_time" />
+                    <TextView
+                        android:id="@+id/avg_speed_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/avg_speed"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/avg_speed_value"
+                        app:layout_constraintStart_toStartOf="@+id/total_distance_text"
+                        app:layout_constraintTop_toTopOf="@+id/avg_speed_value" />
 
-            <TextView
-                android:id="@+id/max_speed_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Max speed:"
-                android:textColor="@color/subtext_grey"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/max_speed_value"
-                app:layout_constraintStart_toStartOf="@+id/textView2"
-                app:layout_constraintTop_toTopOf="@+id/max_speed_value" />
+                    <TextView
+                        android:id="@+id/avg_speed_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/total_distance_value"
+                        app:layout_constraintStart_toStartOf="@+id/total_distance_value"
+                        app:layout_constraintTop_toBottomOf="@id/total_distance_value" />
 
-            <EditText
-                android:id="@+id/max_speed_value"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
-                app:layout_constraintEnd_toEndOf="@+id/total_distance_value"
-                app:layout_constraintStart_toStartOf="@+id/total_distance_value"
-                app:layout_constraintTop_toBottomOf="@id/total_distance_value" />
+                    <TextView
+                        android:id="@+id/max_speed_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/max_speed"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/max_speed_value"
+                        app:layout_constraintStart_toStartOf="@+id/avg_speed_text"
+                        app:layout_constraintTop_toTopOf="@+id/max_speed_value" />
 
-            <TextView
-                android:id="@+id/total_tracks_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total routes:"
-                android:textColor="@color/subtext_grey"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/total_tracks_value"
-                app:layout_constraintStart_toStartOf="@+id/max_speed_text"
-                app:layout_constraintTop_toTopOf="@+id/total_tracks_value" />
+                    <TextView
+                        android:id="@+id/max_speed_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/avg_speed_value"
+                        app:layout_constraintStart_toStartOf="@+id/avg_speed_value"
+                        app:layout_constraintTop_toBottomOf="@id/avg_speed_value" />
 
-            <EditText
-                android:id="@+id/total_tracks_value"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@android:color/transparent"
-                android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
-                app:layout_constraintEnd_toEndOf="@+id/max_speed_value"
-                app:layout_constraintStart_toStartOf="@+id/max_speed_value"
-                app:layout_constraintTop_toBottomOf="@id/max_speed_value" />
+
+                    <TextView
+                        android:id="@+id/max_duration_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/longest_duration"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/max_duration_value"
+                        app:layout_constraintStart_toStartOf="@+id/max_speed_text"
+                        app:layout_constraintTop_toTopOf="@+id/max_duration_value" />
+
+                    <TextView
+                        android:id="@+id/max_duration_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/max_speed_value"
+                        app:layout_constraintStart_toStartOf="@+id/max_speed_value"
+                        app:layout_constraintTop_toBottomOf="@id/max_speed_value" />
+
+                    <TextView
+                        android:id="@+id/longest_route_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/longest_route"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/longest_route_value"
+                        app:layout_constraintStart_toStartOf="@+id/max_duration_text"
+                        app:layout_constraintTop_toTopOf="@+id/longest_route_value" />
+
+                    <TextView
+                        android:id="@+id/longest_route_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/max_duration_value"
+                        app:layout_constraintStart_toStartOf="@+id/max_duration_value"
+                        app:layout_constraintTop_toBottomOf="@id/max_duration_value" />
+
+                    <TextView
+                        android:id="@+id/max_altitude_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/max_altitude"
+                        android:textColor="@color/subtext_grey"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/max_altitude_value"
+                        app:layout_constraintStart_toStartOf="@+id/longest_route_text"
+                        app:layout_constraintTop_toTopOf="@+id/max_altitude_value" />
+
+                    <TextView
+                        android:id="@+id/max_altitude_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp"
+                        android:background="@android:color/transparent"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/longest_route_value"
+                        app:layout_constraintStart_toStartOf="@+id/longest_route_value"
+                        app:layout_constraintTop_toBottomOf="@id/longest_route_value" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <Button
-        android:id="@+id/submit_changes_button"
-        android:layout_width="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/submit_changes_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="10dp"
         android:visibility="gone"
-        android:text="@string/submit_changes_button"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollView">
+
+        <Button
+            android:id="@+id/submit_changes_button"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginVertical="10dp"
+            android:text="@string/submit_changes_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

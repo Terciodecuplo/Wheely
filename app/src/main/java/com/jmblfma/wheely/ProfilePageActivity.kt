@@ -187,11 +187,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
     private fun showHighlightsDialog() {
         var selectedItem = 0
         val options = arrayOf(
-            getString(R.string.total_routes),
-            getString(R.string.riding_time),
             getString(R.string.max_speed),
-            getString(R.string.total_distance),
-            getString(R.string.longest_route)
+            getString(R.string.longest_route),
+            getString(R.string.number_of_vehicles),
+            getString(R.string.max_inclination)
         )
         MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.select_highlights))

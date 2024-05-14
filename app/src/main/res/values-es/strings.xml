@@ -93,4 +93,8 @@
     <string name="user_stats_menu_item">Datos de Usuario</string>
     <string name="number_of_vehicles">Vehículos Totales</string>
     <string name="max_inclination">Inclinación Máx</string>
+    <string name="total_duration">Duración Total</string>
+    <string name="avg_speed">Velocidad Media</string>
+    <string name="longest_duration">Máx. Duración</string>
+    <string name="max_altitude">Altitud Máx</string>
 </resources>
