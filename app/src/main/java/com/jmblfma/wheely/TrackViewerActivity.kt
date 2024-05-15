@@ -18,24 +18,27 @@ class TrackViewerActivity : NavigationMenuActivity() {
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_viewer
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TrackViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val trackId = intent.getIntExtra("TRACK_ID", -1)
+        Log.d("Feed", "TrackViewer Intent; received TRACK_ID $trackId")
 
         setupBottomNavigation()
         setupButtonListeners()
         MapUtils.setupMap(binding.mapView, this)
         setupTrackManagement()
 
-        if (trackId != -1)  {
+        if (trackId != -1) {
             viewModel.fetchTrackByID(trackId)
         } else {
             viewModel.fetchLastTrack()
         }
 
         setupAllTracksStats()
+
         // TODO maybe only testing:
         viewModel.fetchTrackList()
     }
@@ -53,11 +56,19 @@ class TrackViewerActivity : NavigationMenuActivity() {
     private fun setupButtonListeners() {
         binding.buttonLoadPrev.setOnClickListener {
             val success = viewModel.fetchCycle(false)
-            success.let { if (!it) { showCycleError() } }
+            success.let {
+                if (!it) {
+                    showCycleError()
+                }
+            }
         }
         binding.buttonLoadNext.setOnClickListener {
             val success = viewModel.fetchCycle(true)
-            success.let { if (!it) { showCycleError() } }
+            success.let {
+                if (!it) {
+                    showCycleError()
+                }
+            }
         }
         binding.buttonDeleteLoadedTrack.setOnClickListener {
             viewModel.deleteLoadedTrack()
@@ -66,7 +77,11 @@ class TrackViewerActivity : NavigationMenuActivity() {
     }
 
     private fun showCycleError() {
-        Snackbar.make(binding.root, getString(R.string.track_cant_cycle_load), Snackbar.LENGTH_SHORT)
+        Snackbar.make(
+            binding.root,
+            getString(R.string.track_cant_cycle_load),
+            Snackbar.LENGTH_SHORT
+        )
             .setAction(getString(R.string.snackbar_dismiss)) { }
             .show()
     }
@@ -85,11 +100,18 @@ class TrackViewerActivity : NavigationMenuActivity() {
         viewModel.trackLoader.observe(this) { track ->
             if (track != null) {
                 Log.d("TESTING", "UI/TrackViewer/ TRACK LOADED: $track.trackId")
-                track.trackData?.let { MapUtils.loadCompleteRoute(binding.mapView, it) }
-                updateTelemetryFromTrack(track)
+                track.trackData?.let {
+                    MapUtils.loadCompleteRoute(binding.mapView, it)
+                    MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, true)
+                    updateTelemetryFromTrack(track)
+                }
                 // Snackbar.make(binding.root, getString(R.string.track_load_success), Snackbar.LENGTH_SHORT).show()
             } else {
-                Snackbar.make(binding.root, getString(R.string.track_load_failure), Snackbar.LENGTH_SHORT)
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.track_load_failure),
+                    Snackbar.LENGTH_SHORT
+                )
                     .setAction(getString(R.string.snackbar_dismiss)) { }
                     .show()
                 MapUtils.clearMapAndRefresh(binding.mapView)
@@ -101,24 +123,34 @@ class TrackViewerActivity : NavigationMenuActivity() {
                 if (it) {
                     viewModel.fetchLastTrack()
                     viewModel.fetchTrackList()
-                    Snackbar.make(binding.root, getString(R.string.track_delete_success), Snackbar.LENGTH_SHORT)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.track_delete_success),
+                        Snackbar.LENGTH_SHORT
+                    )
                         .setAction(getString(R.string.snackbar_dismiss)) { }
                         .show()
                 } else {
-                    Snackbar.make(binding.root, getString(R.string.track_delete_failure), Snackbar.LENGTH_SHORT)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.track_delete_failure),
+                        Snackbar.LENGTH_SHORT
+                    )
                         .setAction(getString(R.string.snackbar_dismiss)) { }
                         .show()
                 }
             }
         }
     }
+
     private fun setupAllTracksStats() {
         viewModel.trackListLoader.observe(this) { trackList ->
             if (trackList.isNotEmpty()) {
                 binding.allTracksDistance.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
                 binding.allTracksDuration.text = TrackAnalysis.getTracksTotalDuration(trackList)
-                binding.allTracksAverageSpeed.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
-                binding.allTracksMaxSpeed.text = TrackAnalysis.getTracksMaxSpeed(trackList)
+                binding.allTracksAverageSpeed.text =
+                    TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
+                binding.allTracksMaxSpeed.text = TrackAnalysis.getTracksMaxDuration(trackList)
             }
         }
     }
@@ -134,6 +166,7 @@ class TrackViewerActivity : NavigationMenuActivity() {
         binding.distance.text = loadedTrack.getFormattedDistanceInKm()
         binding.trackID.text = String.format("ID_%d", loadedTrack.trackId)
     }
+
     private fun clearTelemetry() {
         val standByText = getString(R.string.telemetry_standby_placeholder)
         binding.trackName.text = standByText
@@ -152,10 +185,16 @@ class TrackViewerActivity : NavigationMenuActivity() {
         super.onDestroy()
         binding.mapView.onDetach()
     }
+
     override fun onResume() {
         super.onResume()
-        binding.mapView.onResume() // Ensures map tiles and other resources are refreshed
+        binding.mapView.onResume()
+        Log.d(
+            "Feed",
+            "TrackViewer/ onResume()"
+        )  // Ensures map tiles and other resources are refreshed
     }
+
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause() // Ensures any changes or state are paused

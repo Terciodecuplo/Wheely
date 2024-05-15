@@ -2,7 +2,6 @@ package com.jmblfma.wheely
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -35,14 +34,12 @@ class HomePageActivity : NavigationMenuActivity() {
         super.onResume()
         viewModel.fetchTrackList()
         viewModel.fetchUserList()
-        Log.d("Feed", "onResume()/ Executed fetches")
     }
 
     private fun setupFeedObservers() {
         viewModel.combinedData.observe(this) { (trackList, userList) ->
             if (trackList != null && userList != null) {
                 val usersById = userList.associateBy { it.userId }
-                Log.d("Feed", "combinedData OBSERVED/ preparing adapter...")
                 binding.postRecycler.adapter = PostsAdapter(trackList, usersById)
                 binding.postRecycler.layoutManager =
                     LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)

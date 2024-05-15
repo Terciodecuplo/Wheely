@@ -12,23 +12,26 @@ import java.time.format.DateTimeFormatter
 object TrackAnalysis {
     const val FAILED_CALC_MSG = "NaN"
 
-    // TODO velocidad media total, velocidad maxima, duración total, número de rutas
-    fun formatSpeedInKmh(speedInMs: Double?): String {
-        return speedInMs?.let { String.format("%.2f km/h", convertSpeedToKmh(speedInMs)) }
-            ?: FAILED_CALC_MSG
+    fun formatSpeedInKmh(speedInMs: Double?, decimalPlaces: Int = 2): String {
+        return speedInMs?.let {
+            String.format(
+                "%.${decimalPlaces}f km/h",
+                convertSpeedToKmh(speedInMs)
+            )
+        } ?: FAILED_CALC_MSG
     }
 
-    fun formatDistanceInKm(distanceInMeters: Double?): String {
+    fun formatDistanceInKm(distanceInMeters: Double?, decimalPlaces: Int = 2): String {
         return distanceInMeters?.let {
             String.format(
-                "%.2f km",
+                "%.${decimalPlaces}f km",
                 convertDistanceToKm(distanceInMeters)
             )
         } ?: FAILED_CALC_MSG
     }
 
-    fun formatAltitudeInMeters(altitude: Double?): String {
-        return altitude?.let { String.format("%.0f m", altitude) } ?: FAILED_CALC_MSG
+    fun formatAltitudeInMeters(altitude: Double?, decimalPlaces: Int = 0): String {
+        return altitude?.let { String.format("%.${decimalPlaces}f m", altitude) } ?: FAILED_CALC_MSG
     }
 
     // SINGLE TRACK ANALYSIS
@@ -75,18 +78,18 @@ object TrackAnalysis {
     fun getTracksAverageSpeedInKmh(trackBatch: List<Track>): String {
         // if a particular track's ave. speed is NULL; skips this value to compute the average (ie mapNotNull)
         val averageSpeed = trackBatch.mapNotNull { it.averageSpeed }.average()
-        return formatSpeedInKmh(averageSpeed)
+        return formatSpeedInKmh(averageSpeed, 0)
     }
 
     fun getTracksTotalDistanceInKm(trackBatch: List<Track>): String {
         // same logic as for average speed
         val totalDistance = trackBatch.mapNotNull { it.totalDistance }.sum()
-        return formatDistanceInKm(totalDistance)
+        return formatDistanceInKm(totalDistance, 0)
     }
 
     fun getLongestTrackInKm(trackBatch: List<Track>): String {
         val longestTrack = trackBatch.mapNotNull { it.totalDistance }.max()
-        return formatDistanceInKm(longestTrack)
+        return formatDistanceInKm(longestTrack, 0)
     }
 
     fun getTracksTotalDuration(trackBatch: List<Track>): String {
@@ -101,26 +104,23 @@ object TrackAnalysis {
 
     fun getTracksMaxSpeed(trackBatch: List<Track>): String {
         val maxSpeed = trackBatch.mapNotNull { it.maxSpeed }.max()
-        return formatSpeedInKmh(maxSpeed)
+        return formatSpeedInKmh(maxSpeed, 0)
     }
 
     fun getTracksMaxAltitude(trackBatch: List<Track>): String {
         val maxAltitude = trackBatch.mapNotNull { it.maxAltitude }.max()
-        return formatAltitudeInMeters(maxAltitude)
+        return formatAltitudeInMeters(maxAltitude, 0)
     }
 
     fun getTracksMaxDuration(trackBatch: List<Track>): String {
-        var maxDuration = Duration.ZERO
-        trackBatch.forEach {
-            if (it.startTime != null && it.endTime != null && maxDuration < computeDurationBetweenTimestamps(
-                    it.startTime!!,
-                    it.endTime!!
-                )
-            ) {
-                maxDuration = computeDurationBetweenTimestamps(it.startTime!!, it.endTime!!)
+        val maxDuration = trackBatch.mapNotNull {
+            if (it.startTime != null && it.endTime != null) {
+                computeDurationBetweenTimestamps(it.startTime!!, it.endTime!!)
+            } else {
+                null
             }
-        }
-        return formatDuration(maxDuration)
+        }.max()
+        return formatDuration(maxDuration, 1)
     }
 
     // DATE TIME UTILS

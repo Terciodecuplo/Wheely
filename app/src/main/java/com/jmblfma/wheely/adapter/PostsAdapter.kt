@@ -1,7 +1,6 @@
 package com.jmblfma.wheely.adapter
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,38 +25,59 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         val trackStats: TextView = view.findViewById(R.id.track_stats)
         val mapPreview: MapView = view.findViewById(R.id.map_preview)
         val mapPreviewHolder: View = view.findViewById<View>(R.id.map_preview_holder)
+
+        private var selectedTrackId: Int? = null
+
+        init {
+            MapUtils.setupMapRoutePreview(mapPreview, itemView.context)
+            mapPreviewHolder.setOnClickListener {
+                selectedTrackId?.let { trackId ->
+                    val intent = Intent(view.context, TrackViewerActivity::class.java).apply {
+                        putExtra("TRACK_ID", trackId)
+                        // TODO review flags a bit more
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                    view.context.startActivity(intent)
+                }
+            }
+            mapPreview.addOnFirstLayoutListener { v, left, top, right, bottom -> // remove the listener to prevent multiple calls
+                MapUtils.centerAndZoomOverCurrentRoute(mapPreview, false, false)
+            }
+        }
+
+        fun bind(track: Track, user: User?) {
+            userProfileImage.setImageResource(R.drawable.user_default_pic)
+            userName.text = user?.nickname ?: "UNKNOWN USER"
+
+            trackName.text = track.name
+            val trackDateAndTime = track.getFormattedDateTime()
+            trackDateAndLocation.text =
+                trackDateAndTime // TODO add general location when implemented
+
+            val trackDuration = track.getFormattedDuration()
+            val trackDistance = track.getFormattedDistanceInKm()
+            val trackAveSpeed = track.getFormattedAverageSpeedInKmh()
+            val statsText =
+                "Time: $trackDuration · Distance: $trackDistance · Speed: $trackAveSpeed"
+            trackStats.text = statsText
+
+            track.trackData?.let {
+                MapUtils.loadRoutePreview(mapPreview, it)
+            }
+            selectedTrackId = track.trackId
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_feed_recycler, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_feed_recycler, parent, false)
         return PostViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         val currentTrack = trackList[position]
         val currentUser = usersById[currentTrack.drivenByUserId]
-        holder.userProfileImage.setImageResource(R.drawable.user_default_pic)
-        holder.userName.text = currentUser?.nickname ?: "UNKNOWN USER"
-
-        holder.trackName.text = currentTrack.name
-        val trackDateAndTime = currentTrack.getFormattedDateTime()
-        holder.trackDateAndLocation.text = trackDateAndTime // TODO add general location when implemented
-
-        val trackDuration = currentTrack.getFormattedDuration()
-        val trackDistance = currentTrack.getFormattedDistanceInKm()
-        val trackAveSpeed = currentTrack.getFormattedAverageSpeedInKmh()
-        holder.trackStats.text = "Time: $trackDuration · Distance: $trackDistance · Speed: $trackAveSpeed"
-
-        currentTrack.trackData?.let {
-            MapUtils.setupMapRoutePreview(holder.mapPreview, holder.itemView.context, it)
-        }
-        holder.mapPreviewHolder.setOnClickListener {
-            Log.d("Feed", "Viewer Listener")
-            val intent = Intent(holder.itemView.context, TrackViewerActivity::class.java)
-            intent.putExtra("TRACK_ID", currentTrack.trackId)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            holder.itemView.context.startActivity(intent)
-        }
+        holder.bind(currentTrack, currentUser)
     }
 
     override fun getItemCount(): Int = trackList.size
