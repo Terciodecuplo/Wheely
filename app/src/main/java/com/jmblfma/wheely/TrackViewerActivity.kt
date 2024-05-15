@@ -3,8 +3,8 @@ package com.jmblfma.wheely
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.TrackViewerBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.utils.MapUtils
@@ -77,13 +77,7 @@ class TrackViewerActivity : NavigationMenuActivity() {
     }
 
     private fun showCycleError() {
-        Snackbar.make(
-            binding.root,
-            getString(R.string.track_cant_cycle_load),
-            Snackbar.LENGTH_SHORT
-        )
-            .setAction(getString(R.string.snackbar_dismiss)) { }
-            .show()
+        Toast.makeText(this, getString(R.string.track_cant_cycle_load), Toast.LENGTH_SHORT).show()
     }
 
     // TRACK LOAD MANAGEMENT
@@ -102,18 +96,12 @@ class TrackViewerActivity : NavigationMenuActivity() {
                 Log.d("TESTING", "UI/TrackViewer/ TRACK LOADED: $track.trackId")
                 track.trackData?.let {
                     MapUtils.loadCompleteRoute(binding.mapView, it)
-                    MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, true)
+                    MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, true, checkMapState = true)
                     updateTelemetryFromTrack(track)
                 }
                 // Snackbar.make(binding.root, getString(R.string.track_load_success), Snackbar.LENGTH_SHORT).show()
             } else {
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.track_load_failure),
-                    Snackbar.LENGTH_SHORT
-                )
-                    .setAction(getString(R.string.snackbar_dismiss)) { }
-                    .show()
+                Toast.makeText(this, getString(R.string.track_load_failure), Toast.LENGTH_SHORT).show()
                 MapUtils.clearMapAndRefresh(binding.mapView)
                 clearTelemetry()
             }
@@ -123,21 +111,9 @@ class TrackViewerActivity : NavigationMenuActivity() {
                 if (it) {
                     viewModel.fetchLastTrack()
                     viewModel.fetchTrackList()
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.track_delete_success),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .setAction(getString(R.string.snackbar_dismiss)) { }
-                        .show()
+                    Toast.makeText(this, getString(R.string.track_delete_success), Toast.LENGTH_SHORT).show()
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.track_delete_failure),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .setAction(getString(R.string.snackbar_dismiss)) { }
-                        .show()
+                    Toast.makeText(this, getString(R.string.track_delete_failure), Toast.LENGTH_SHORT).show()
                 }
             }
         }

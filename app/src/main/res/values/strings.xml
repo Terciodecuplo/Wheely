@@ -95,11 +95,19 @@
     <string name="vehicles_loaded">Vehicle list loaded…</string>
     <string name="telemetry_standby_placeholder" translatable="false">---</string>
     <string name="active_tracking_launching">Launching active tracking…</string>
+    <string name="active_tracking_requested">Tracking will start automatically when GPS signal is good.</string>
     <string name="active_tracking_ongoing">Tracking route…</string>
     <string name="active_tracking_stopping">Stopping tracking…</string>
+    <string name="active_tracking_stopped">Tracking stopped</string>
+    <string name="tracking_didnt_save_anything">Nothing recorded yet…</string>
     <string name="accuracy_threshold_waiting">Waiting for good GPS signal…</string>
     <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
     <string name="snackbar_dismiss">Dismiss</string>
     <string name="user_stats_menu_item">User stats</string>
     <string name="vehicle_used_in_track" translatable="false">%1$s %2$s</string>
+    <string name="acc_check_disabled" translatable="false">Pre-launch acc. check OFF.</string>
+    <string name="tracking_notification_elapsed_time">Elapsed time: </string>
+    <string name="tracking_notification_title">Wheely - Route in progress</string>
+    <string name="tracking_notification_content">Location is being tracked</string>
+    <string name="track_recording_reset">Discarded track!</string>
 </resources>
