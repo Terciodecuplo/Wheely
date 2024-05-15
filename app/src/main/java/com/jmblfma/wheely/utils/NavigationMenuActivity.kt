@@ -18,19 +18,12 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
                         startActivityIfNeeded(Intent(this, HomePageActivity::class.java), 0)
                         finish()
                         true
-
                 }
-
                 R.id.nav_record -> {
-/*
-                    startActivityIfNeeded(Intent(this, RecordActivityTest::class.java), 0)
-                    finish()*/
-
                     startActivityIfNeeded(Intent(this, TrackRecordingActivity::class.java), 0)
                     finish()
                     true
                 }
-
                 R.id.nav_profile -> {
                     startActivityIfNeeded(Intent(this, ProfilePageActivity::class.java), 0)
                     finish()
@@ -42,7 +35,6 @@ abstract class NavigationMenuActivity : AppCompatActivity() {
                     finish()
                     true
                 }
-
                 else -> false
             }
         }

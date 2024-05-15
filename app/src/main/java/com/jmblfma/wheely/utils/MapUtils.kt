@@ -1,11 +1,10 @@
 package com.jmblfma.wheely.utils
 
 import CustomAccuracyOverlay
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.location.Location
-import android.view.View
+import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import com.jmblfma.wheely.MyApp
 import com.jmblfma.wheely.R
@@ -22,13 +21,15 @@ object MapUtils {
     // TODO zoom/ animate zoom changes between levels
     // CONFIG
     const val MIN_ZOOM_LEVEL = 5.0
-    const val MAX_ZOOM_LEVEL = 21.0 // sensible: 20; switch to 30.0 for debugging (might generate crashes)
+    const val MAX_ZOOM_LEVEL =
+        21.0 // sensible: 20; switch to 30.0 for debugging (might generate crashes)
     const val ACTIVE_ZOOM_LEVEL = 18.0
     const val DEFAULT_ZOOM_LEVEL = 19.0
     val ROUTE_ACTIVE_COLOR = Color.RED
     val ROUTE_LOAD_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.colorPrimary)
     val ROUTE_PENDING_SAVE_COLOR = Color.MAGENTA
     fun setupMap(mapView: MapView, context: Context) {
+        isMapReady = false
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(true)
         mapView.setBuiltInZoomControls(false)
@@ -38,28 +39,27 @@ object MapUtils {
         clearMapAndRefresh(mapView)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun setupMapRoutePreview(mapView: MapView, context: Context, trackPoints: List<TrackPoint>) {
+    fun setupMapRoutePreview(mapView: MapView, context: Context) {
+        isMapReady = false
         mapView.setTileSource(TileSourceFactory.MAPNIK)
         mapView.setMultiTouchControls(false)
         mapView.setBuiltInZoomControls(false)
         mapView.minZoomLevel = MIN_ZOOM_LEVEL
         mapView.maxZoomLevel = MAX_ZOOM_LEVEL
-        // consume all touch events on map preview so that the user can't interact
-        //mapView.setOnTouchListener { _, _ -> true }
         val routePreview = Polyline()
-        val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
-        routePreview.setPoints(geoPoints)
         routePreview.color = ROUTE_LOAD_COLOR
         mapView.overlays.add(routePreview)
-        setUpRouteEndpointsMarker(mapView, routePreview.points.first(), true)
-        setUpRouteEndpointsMarker(mapView, routePreview.points.last(), false)
-        val boundingBox = routePreview.bounds
-        mapView.addOnFirstLayoutListener(object : MapView.OnFirstLayoutListener {
-            override fun onFirstLayout(v: View?, left: Int, top: Int, right: Int, bottom: Int) {
-                mapView.zoomToBoundingBox(boundingBox, false, BOUNDING_BOX_PADDING)
-            }
-        })
+    }
+
+    fun loadRoutePreview(mapView: MapView, trackPoints: List<TrackPoint>) {
+        val routePreview = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
+        routePreview?.let {
+            val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
+            routePreview.setPoints(geoPoints)
+            setUpRouteEndpointsMarker(mapView, geoPoints.first(), true)
+            setUpRouteEndpointsMarker(mapView, geoPoints.last(), false)
+            mapView.invalidate()
+        }
     }
 
     fun clearMapAndRefresh(mapView: MapView) {
@@ -69,24 +69,34 @@ object MapUtils {
 
     fun drawAccuracyCircle(mapView: MapView, location: Location) {
         if (mapView.overlays.none { it is CustomAccuracyOverlay }) {
-            val accuracyOverlay = CustomAccuracyOverlay(accuracyThreshold = TrackingService.ACCURACY_THRESHOLD.toFloat())
+            val accuracyOverlay =
+                CustomAccuracyOverlay(accuracyThreshold = TrackingService.ACCURACY_THRESHOLD.toFloat())
             mapView.overlays.add(accuracyOverlay)
             mapView.invalidate()
         }
-        val accuracyOverlay = mapView.overlays.filterIsInstance<CustomAccuracyOverlay>().firstOrNull()
+        val accuracyOverlay =
+            mapView.overlays.filterIsInstance<CustomAccuracyOverlay>().firstOrNull()
         accuracyOverlay?.updateLocation(location)
         mapView.invalidate()
     }
 
     // ROUTE UPDATES AND LOADING
-    fun liveRouteUpdate(mapView: MapView, newTrackPoint: TrackPoint, addStartMarker: Boolean = false) {
+    fun liveRouteUpdate(
+        mapView: MapView,
+        newTrackPoint: TrackPoint,
+        addStartMarker: Boolean = false
+    ) {
         if (mapView.overlays.none { it is Polyline }) {
             clearMapAndRefresh(mapView)
             val newLiveRoute = Polyline()
             newLiveRoute.color = ROUTE_ACTIVE_COLOR
             mapView.overlays.add(newLiveRoute)
             if (addStartMarker) {
-                setUpRouteEndpointsMarker(mapView, GeoPoint(newTrackPoint.latitude, newTrackPoint.longitude), true)
+                setUpRouteEndpointsMarker(
+                    mapView,
+                    GeoPoint(newTrackPoint.latitude, newTrackPoint.longitude),
+                    true
+                )
             }
             setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
         }
@@ -97,6 +107,7 @@ object MapUtils {
             mapView.invalidate()
         }
     }
+
     fun clearCurrentRoute(mapView: MapView) {
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
         currentRoute?.let {
@@ -104,6 +115,7 @@ object MapUtils {
         }
         mapView.invalidate()
     }
+
     private fun setUpRouteEndpointsMarker(mapView: MapView, where: GeoPoint, isStart: Boolean) {
         val newMarker = Marker(mapView).apply {
             position = where
@@ -118,26 +130,40 @@ object MapUtils {
         }
         mapView.overlays.add(newMarker)
     }
-    fun loadCompleteRoute(mapView: MapView, trackPoints: List<TrackPoint>, unsaved: Boolean = false) {
+
+    fun loadCompleteRoute(
+        mapView: MapView,
+        trackPoints: List<TrackPoint>,
+        unsaved: Boolean = false
+    ) {
         clearMapAndRefresh(mapView)
         val completeTrackRoute = Polyline()
+        var loadWithAnimation = false
         if (!unsaved) {
             completeTrackRoute.color = ROUTE_LOAD_COLOR
+            loadWithAnimation = true
         } else {
             completeTrackRoute.color = ROUTE_PENDING_SAVE_COLOR
+            loadWithAnimation = true
         }
+        mapView.overlays.add(completeTrackRoute)
         val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
         completeTrackRoute.setPoints(geoPoints)
-        mapView.overlays.add(completeTrackRoute)
         setUpRouteEndpointsMarker(mapView, completeTrackRoute.points.first(), true)
         setUpRouteEndpointsMarker(mapView, completeTrackRoute.points.last(), false)
         mapView.invalidate()
-        centerAndZoomOverCurrentRoute(mapView)
     }
 
     // LOCATION MARKER SETUP AND MGMT
-    const val LOC_MARKER_TITLE = "CurrentLocationMarker" // TODO implement custom marker class to better filter by subtype
-    fun updateLocationMarker(mapView: MapView, trackPoint: TrackPoint, autoCenter: Boolean = true, isLiveRoute: Boolean = false) {
+    const val LOC_MARKER_TITLE =
+        "CurrentLocationMarker" // TODO implement custom marker class to better filter by subtype
+
+    fun updateLocationMarker(
+        mapView: MapView,
+        trackPoint: TrackPoint,
+        autoCenter: Boolean = true,
+        isLiveRoute: Boolean = false
+    ) {
         if (mapView.overlays.none { it is Marker && it.title == LOC_MARKER_TITLE }) {
             // creates the marker if it doesn't exist
             Marker(mapView).apply {
@@ -155,7 +181,8 @@ object MapUtils {
             }
         }
 
-        val currentMarker = mapView.overlays.filterIsInstance<Marker>().firstOrNull { it.title == LOC_MARKER_TITLE }
+        val currentMarker =
+            mapView.overlays.filterIsInstance<Marker>().firstOrNull { it.title == LOC_MARKER_TITLE }
         currentMarker?.let { marker ->
             val geoPoint = GeoPoint(trackPoint.latitude, trackPoint.longitude)
             marker.position = geoPoint
@@ -173,21 +200,51 @@ object MapUtils {
     // explicit call from centering button, autoCenter = true and then it gets called again from liveTracking before finishing the first animation
     // 200L works well to hide the problem almost completely; but we might want to do it slower without the problem as well
     const val ANIMATION_TIME_FAST = 200L
-    fun animateToLocation(mapView: MapView, where: TrackPoint, restoreZoom: Boolean = false, fastAnimation: Boolean = false, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
-        val pSpeed = if (fastAnimation) ANIMATION_TIME_FAST else null // "null" sets the default animation speed (see Implementation)
-        val pZoom = if (restoreZoom) zoomLevel else mapView.zoomLevelDouble // applies current zoom value
+    fun animateToLocation(
+        mapView: MapView,
+        where: TrackPoint,
+        restoreZoom: Boolean = false,
+        fastAnimation: Boolean = false,
+        zoomLevel: Double = ACTIVE_ZOOM_LEVEL
+    ) {
+        val pSpeed =
+            if (fastAnimation) ANIMATION_TIME_FAST else null // "null" sets the default animation speed (see Implementation)
+        val pZoom =
+            if (restoreZoom) zoomLevel else mapView.zoomLevelDouble // applies current zoom value
         mapView.controller.animateTo(GeoPoint(where.latitude, where.longitude), pZoom, pSpeed)
     }
+
     fun setZoom(mapView: MapView, zoomLevel: Double = ACTIVE_ZOOM_LEVEL) {
         mapView.controller.setZoom(zoomLevel)
     }
 
     const val BOUNDING_BOX_PADDING = 100
-    fun centerAndZoomOverCurrentRoute(mapView: MapView, animated: Boolean = true) {
+    private var isMapReady = false
+    fun centerAndZoomOverCurrentRoute(
+        mapView: MapView,
+        animated: Boolean = true,
+        checkMapState: Boolean = true
+    ) {
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
         currentRoute?.let {
             val boundingBox = currentRoute.bounds
-            mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
+            if (checkMapState) {
+                val observer = mapView.viewTreeObserver
+                observer.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        // remove the listener to prevent multiple calls
+                        mapView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        isMapReady = true
+                        mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
+                    }
+                })
+            } else {
+                isMapReady = true
+            }
+            if (isMapReady) {
+                mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
+            }
         }
     }
 }
