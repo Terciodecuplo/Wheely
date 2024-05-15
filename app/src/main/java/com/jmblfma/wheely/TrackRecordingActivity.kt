@@ -2,18 +2,22 @@ package com.jmblfma.wheely
 
 import SaveTrackFragment
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.TrackRecordingBinding
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.services.TrackingService
@@ -29,6 +33,12 @@ import org.osmdroid.events.ZoomEvent
 class TrackRecordingActivity : NavigationMenuActivity() {
     private lateinit var binding: TrackRecordingBinding
     private val viewModel: TrackRecordingViewModel by viewModels()
+
+    companion object {
+        private const val LIGHTWEIGHT_LOCATION_REFRESH_RATE = 2000
+        private const val ACCURACY_CHECK_ENABLED = false
+    }
+
     override fun getBottomNavigationMenuItemId(): Int {
         return R.id.nav_record
     }
@@ -45,22 +55,30 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         setupTrackSavingLogic()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.mapView.onDetach()
-        viewModel.setUIState(null) // necessary for autoDetectAndRestoreState()
-        stopLightweightLocationUpdates()
-    }
-
     override fun onResume() {
         super.onResume()
         autoDetectAndRestoreState() // only applies when ACTIVE_RECORDING (more info. inside the function)
         binding.mapView.onResume() // ensures map tiles and other resources are refreshed
+        IntentFilter().apply {
+            addAction(TrackingService.SERVICE_STARTED)
+            addAction(TrackingService.SERVICE_STOPPED)
+            addAction(TrackingService.SERVICE_ACC_MET)
+        }.also { filter ->
+            LocalBroadcastManager.getInstance(this).registerReceiver(serviceStateReceiver, filter)
+        }
     }
 
     override fun onPause() {
         super.onPause()
         binding.mapView.onPause() // Ensures any changes or state are paused
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.mapView.onDetach()
+        viewModel.setUIState(null) // necessary for autoDetectAndRestoreState()
+        stopLightweightLocationUpdates()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(serviceStateReceiver)
     }
 
     override fun onBackPressed() {
@@ -89,6 +107,11 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         binding.buttonDiscardTrack.setOnClickListener {
             viewModel.discardTrack()
             restartTrackingPostSaving()
+            Toast.makeText(
+                this,
+                getString(R.string.track_recording_reset),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         binding.mapView.addMapListener(object : MapListener {
@@ -149,13 +172,13 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                     TrackRecordingState.WAITING_FOR_ACCURACY -> {
                         resetAutoCenterState()
                         startLightweightLocationUpdates()
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.accuracy_threshold_waiting),
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .setAction(getString(R.string.snackbar_dismiss)) { }
-                            .show()
+                        if (ACCURACY_CHECK_ENABLED) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.accuracy_threshold_waiting),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         binding.buttonStartRec.isEnabled = false
                         binding.buttonStopRec.isEnabled = false
                         binding.buttonSaveTrack.isEnabled = false
@@ -165,13 +188,15 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                     }
 
                     TrackRecordingState.READY_FOR_RECORDING -> {
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.accuracy_threshold_reached),
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .setAction(getString(R.string.snackbar_dismiss)) { }
-                            .show()
+                        if (ACCURACY_CHECK_ENABLED) {
+                            Toast.makeText(
+                                this,
+                                getString(R.string.accuracy_threshold_reached),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            // Toast.makeText(this, getString(R.string.acc_check_disabled), Toast.LENGTH_SHORT).show()
+                        }
                         binding.buttonStartRec.isEnabled = true
                         binding.buttonStopRec.isEnabled = false
                         binding.buttonSaveTrack.isEnabled = false
@@ -181,14 +206,12 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                     }
 
                     TrackRecordingState.ACTIVE_RECORDING_REQUESTED -> {
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.active_tracking_launching),
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .setAction(getString(R.string.snackbar_dismiss)) { }
-                            .show()
-                        stopLightweightLocationUpdates()
+
+                        Toast.makeText(
+                            this,
+                            getString(R.string.active_tracking_requested),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         binding.buttonStartRec.isEnabled = false
                         binding.buttonStopRec.isEnabled = false
                         binding.buttonSaveTrack.isEnabled = false
@@ -198,14 +221,8 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                     }
 
                     TrackRecordingState.ACTIVE_RECORDING -> {
+                        stopLightweightLocationUpdates()
                         resetAutoCenterState()
-                        Snackbar.make(
-                            binding.root,
-                            getString(R.string.active_tracking_ongoing),
-                            Snackbar.LENGTH_SHORT
-                        )
-                            .setAction(getString(R.string.snackbar_dismiss)) { }
-                            .show()
                         binding.buttonStartRec.isEnabled = false
                         binding.buttonStopRec.isEnabled = true
                         binding.buttonSaveTrack.isEnabled = false
@@ -215,19 +232,33 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                     }
 
                     TrackRecordingState.SAVING_MODE -> {
-                        setMapToSaveMode()
-                        binding.buttonStartRec.isEnabled = false
-                        binding.buttonStopRec.isEnabled = false
-                        binding.buttonSaveTrack.isEnabled = true
-                        binding.buttonDiscardTrack.isEnabled = true
-                        binding.buttonCenterAndFollow.isEnabled = false
-                        binding.restoreAndFollow.isEnabled = true
+                        if (setMapToSaveMode()) {
+                            binding.buttonStartRec.isEnabled = false
+                            binding.buttonStopRec.isEnabled = false
+                            binding.buttonSaveTrack.isEnabled = true
+                            binding.buttonDiscardTrack.isEnabled = true
+                            binding.buttonCenterAndFollow.isEnabled = false
+                            binding.restoreAndFollow.isEnabled = true
+                        } else {
+                            binding.buttonStartRec.isEnabled = false
+                            binding.buttonStopRec.isEnabled = false
+                            binding.buttonSaveTrack.isEnabled = false
+                            binding.buttonDiscardTrack.isEnabled = false
+                            binding.buttonCenterAndFollow.isEnabled = false
+                            binding.restoreAndFollow.isEnabled = false
+                            Toast.makeText(
+                                this,
+                                getString(R.string.tracking_didnt_save_anything),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            restartTrackingPostSaving()
+                        }
                     }
                 }
             }
         }
     }
-
+    private var safeLoadMode = false
     private fun autoDetectAndRestoreState() { // should be called from onResume to deal with ALL cause (first initialization, after onDestroy, after onPause...)
         val isTrackingServiceRunning = TrackingService.isRunning
         val currentUiState = viewModel.getUIState()
@@ -239,6 +270,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                 viewModel.setUIState(TrackRecordingState.SAVING_MODE)
             } else { // nothing going on previously; DEFAULT INITIALIZATION:
                 viewModel.setUIState(TrackRecordingState.WAITING_FOR_ACCURACY)
+                MapUtils.isMapReady = true
             }
         } else if (currentUiState == TrackRecordingState.ACTIVE_RECORDING) { // onPause TRACKING to onResume TRACKING
             restoreLiveRoute() // fills 'missing' points between last onPause and onResume
@@ -275,14 +307,13 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     // PRE-SERVICE LAUNCH LIGHTWEIGHT LOCATION FETCH
     private var fusedLocationClient: FusedLocationProviderClient? = null
     private lateinit var locationCallback: LocationCallback
-    private val LOCATION_REFRESH_RATE = 2000
 
     @SuppressLint("MissingPermission")
     private fun startLightweightLocationUpdates() {
         MapUtils.clearMapAndRefresh(binding.mapView)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        val locationRequest = LocationRequest.Builder(LOCATION_REFRESH_RATE.toLong())
+        val locationRequest = LocationRequest.Builder(LIGHTWEIGHT_LOCATION_REFRESH_RATE.toLong())
             .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
             .build()
 
@@ -297,7 +328,8 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         false
                     )
                     MapUtils.drawAccuracyCircle(binding.mapView, newLocation)
-                    if (TrackingService.isAccuracyEnough(newLocation)) {
+
+                    if (TrackingService.isAccuracyEnough(newLocation) || !ACCURACY_CHECK_ENABLED) {
                         viewModel.setUIState(TrackRecordingState.READY_FOR_RECORDING)
                     }
                     binding.accuracyThreshold.text =
@@ -321,7 +353,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         viewModel.trackPointsLiveData.observe(this) { trackPoints ->
             // && !restoringPreviousState* see onResume()
             if (trackPoints.isNotEmpty() && viewModel.getUIState() != TrackRecordingState.SAVING_MODE && !loadingSomethingOntoMap) {
-                viewModel.setUIState(TrackRecordingState.ACTIVE_RECORDING)
                 lastTrackPoint = trackPoints.last()
                 MapUtils.liveRouteUpdate(binding.mapView, lastTrackPoint!!, true)
                 MapUtils.updateLocationMarker(
@@ -343,7 +374,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
 
     private fun startTracking() {
         Log.d("TESTING", "TrackingService Start Requested")
-        stopLightweightLocationUpdates()
         Intent(this, TrackingService::class.java).also {
             startForegroundService(it)
         }
@@ -356,13 +386,35 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         Intent(this, TrackingService::class.java).also { intent ->
             stopService(intent)
         }
-        Snackbar.make(
-            binding.root,
-            getString(R.string.active_tracking_stopping),
-            Snackbar.LENGTH_SHORT
-        )
-            .setAction(getString(R.string.snackbar_dismiss)) { }
-            .show()
+    }
+
+    private val serviceStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                TrackingService.SERVICE_STARTED -> {
+                    Log.d("TrackingService", "TrackingService/ RECEIVER/ LAUNCHED")
+                    viewModel.setUIState(TrackRecordingState.ACTIVE_RECORDING)
+                }
+
+                TrackingService.SERVICE_STOPPED -> {
+                    Log.d("TrackingService", "TrackingService/ RECEIVER/ STOPPED")
+                    Toast.makeText(
+                        this@TrackRecordingActivity,
+                        getString(R.string.active_tracking_stopped),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                TrackingService.SERVICE_ACC_MET -> {
+                    Log.d("TrackingService", "TrackingService/ RECEIVER/ ACC_MET")
+                    Toast.makeText(
+                        this@TrackRecordingActivity,
+                        getString(R.string.active_tracking_ongoing),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     // TELEMETRY
@@ -386,27 +438,12 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         // launches the saving window after vehicles are fetch when clicking binding.buttonSaveTrack
         // TODO might be moved to onCreate and always fetch this list beforehand?
         viewModel.loadedVehicles.observe(this) {
-            Log.d(
-                "TEST2",
-                "TrackRecordingActivity/ loadedVehicles: ${it.isEmpty()} / Size: ${it.size}"
-            )
             if (it.isNotEmpty()) {
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.vehicles_loaded),
-                    Snackbar.LENGTH_SHORT
-                )
-                    .setAction(getString(R.string.snackbar_dismiss)) { }
-                    .show()
+                Toast.makeText(this, getString(R.string.vehicles_loaded), Toast.LENGTH_SHORT).show()
                 val dialog = SaveTrackFragment()
                 dialog.show(supportFragmentManager, "SaveTrackDialog")
             } else {
-                Snackbar.make(
-                    binding.root,
-                    getString(R.string.no_vehicles_available),
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAction(getString(R.string.snackbar_dismiss)) { }
+                Toast.makeText(this, getString(R.string.no_vehicles_available), Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -416,20 +453,10 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             success?.let {
                 if (it) {
                     restartTrackingPostSaving()
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.track_save_success),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .setAction(getString(R.string.snackbar_dismiss)) { }
+                    Toast.makeText(this, getString(R.string.track_save_success), Toast.LENGTH_SHORT)
                         .show()
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        getString(R.string.track_save_failure),
-                        Snackbar.LENGTH_SHORT
-                    )
-                        .setAction(getString(R.string.snackbar_dismiss)) { }
+                    Toast.makeText(this, getString(R.string.track_save_failure), Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -442,14 +469,18 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         viewModel.setUIState(TrackRecordingState.WAITING_FOR_ACCURACY)
     }
 
-    private fun setMapToSaveMode() {
+    private fun setMapToSaveMode(): Boolean {
         viewModel.getTrackPoints()?.let { trackPoints ->
-            loadingSomethingOntoMap = true
-            MapUtils.loadCompleteRoute(binding.mapView, trackPoints, true)
-            MapUtils.centerAndZoomOverCurrentRoute(binding.mapView)
-            updateLiveTelemetry(trackPoints)
-            loadingSomethingOntoMap = false
+            if (trackPoints.isNotEmpty()) {
+                loadingSomethingOntoMap = true
+                MapUtils.loadCompleteRoute(binding.mapView, trackPoints, true)
+                MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, checkMapState = true)
+                updateLiveTelemetry(trackPoints)
+                loadingSomethingOntoMap = false
+                return true
+            }
         }
+        return false
     }
 
     // LEGACY

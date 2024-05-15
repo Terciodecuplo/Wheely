@@ -35,7 +35,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
                     val intent = Intent(view.context, TrackViewerActivity::class.java).apply {
                         putExtra("TRACK_ID", trackId)
                         // TODO review flags a bit more
-                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     view.context.startActivity(intent)
                 }

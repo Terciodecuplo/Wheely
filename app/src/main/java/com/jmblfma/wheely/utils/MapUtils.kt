@@ -4,6 +4,7 @@ import CustomAccuracyOverlay
 import android.content.Context
 import android.graphics.Color
 import android.location.Location
+import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import com.jmblfma.wheely.MyApp
@@ -23,8 +24,8 @@ object MapUtils {
     const val MIN_ZOOM_LEVEL = 5.0
     const val MAX_ZOOM_LEVEL =
         21.0 // sensible: 20; switch to 30.0 for debugging (might generate crashes)
-    const val ACTIVE_ZOOM_LEVEL = 18.0
-    const val DEFAULT_ZOOM_LEVEL = 19.0
+    const val ACTIVE_ZOOM_LEVEL = 20.0
+    const val DEFAULT_ZOOM_LEVEL = 18.0
     val ROUTE_ACTIVE_COLOR = Color.RED
     val ROUTE_LOAD_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.colorPrimary)
     val ROUTE_PENDING_SAVE_COLOR = Color.MAGENTA
@@ -98,7 +99,7 @@ object MapUtils {
                     true
                 )
             }
-            setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
+            // setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
         }
 
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
@@ -138,25 +139,22 @@ object MapUtils {
     ) {
         clearMapAndRefresh(mapView)
         val completeTrackRoute = Polyline()
-        var loadWithAnimation = false
         if (!unsaved) {
             completeTrackRoute.color = ROUTE_LOAD_COLOR
-            loadWithAnimation = true
         } else {
             completeTrackRoute.color = ROUTE_PENDING_SAVE_COLOR
-            loadWithAnimation = true
         }
         mapView.overlays.add(completeTrackRoute)
         val geoPoints = trackPoints.map { GeoPoint(it.latitude, it.longitude) }
         completeTrackRoute.setPoints(geoPoints)
-        setUpRouteEndpointsMarker(mapView, completeTrackRoute.points.first(), true)
-        setUpRouteEndpointsMarker(mapView, completeTrackRoute.points.last(), false)
-        mapView.invalidate()
+        setUpRouteEndpointsMarker(mapView, geoPoints.first(), true)
+        setUpRouteEndpointsMarker(mapView, geoPoints.last(), false)
     }
 
     // LOCATION MARKER SETUP AND MGMT
     const val LOC_MARKER_TITLE =
         "CurrentLocationMarker" // TODO implement custom marker class to better filter by subtype
+
 
     fun updateLocationMarker(
         mapView: MapView,
@@ -164,20 +162,21 @@ object MapUtils {
         autoCenter: Boolean = true,
         isLiveRoute: Boolean = false
     ) {
+        var firstUpdate = false
         if (mapView.overlays.none { it is Marker && it.title == LOC_MARKER_TITLE }) {
             // creates the marker if it doesn't exist
             Marker(mapView).apply {
                 if (isLiveRoute) {
                     icon = MyApp.applicationContext().getDrawable(R.drawable.ic_direction_arrow)
-                    setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
+                    // setZoom(mapView, ACTIVE_ZOOM_LEVEL) // sets default zoom value to start with
                 } else {
                     icon = MyApp.applicationContext().getDrawable(R.drawable.ic_location_pointer)
-                    setZoom(mapView, DEFAULT_ZOOM_LEVEL)
+                    // setZoom(mapView, DEFAULT_ZOOM_LEVEL)
                 }
                 title = LOC_MARKER_TITLE
                 setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 mapView.overlays.add(this)
-
+                firstUpdate = true
             }
         }
 
@@ -191,7 +190,16 @@ object MapUtils {
             }
             mapView.invalidate()
             if (autoCenter) {
-                animateToLocation(mapView, trackPoint, false, true)
+                if (firstUpdate) {
+                   if (isLiveRoute) {
+                       animateToLocation(mapView, trackPoint, true, false, ACTIVE_ZOOM_LEVEL)
+                   } else {
+                       animateToLocation(mapView, trackPoint, true, false, DEFAULT_ZOOM_LEVEL)
+                   }
+                    firstUpdate = false
+                } else {
+                    animateToLocation(mapView, trackPoint, false, true)
+                }
             }
         }
     }
@@ -219,16 +227,19 @@ object MapUtils {
     }
 
     const val BOUNDING_BOX_PADDING = 100
-    private var isMapReady = false
+    var isMapReady = false
+    // TODO thing about the use of this in viewer vs recording vs post adapter a bit more
+    // it works fine in this state but might be able to refactor the system
     fun centerAndZoomOverCurrentRoute(
         mapView: MapView,
         animated: Boolean = true,
         checkMapState: Boolean = true
     ) {
+        Log.d("NewDebug", "centerAndZoomOverCurrentRoute - $isMapReady")
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
         currentRoute?.let {
             val boundingBox = currentRoute.bounds
-            if (checkMapState) {
+            if (checkMapState && !isMapReady) {
                 val observer = mapView.viewTreeObserver
                 observer.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
@@ -237,12 +248,10 @@ object MapUtils {
                         mapView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         isMapReady = true
                         mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
+                        Log.d("NewDebug", "onGlobalLayout - $isMapReady")
                     }
                 })
             } else {
-                isMapReady = true
-            }
-            if (isMapReady) {
                 mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
             }
         }

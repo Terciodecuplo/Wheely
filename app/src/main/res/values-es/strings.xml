@@ -84,9 +84,12 @@
     <string name="track_load_failure">FALLO cargando ruta</string>
     <string name="track_cant_cycle_load">No hay rutas disponibles que repasar</string>
     <string name="vehicles_loaded">Lista de vehículos cargada…</string>
-    <string name="active_tracking_launching">Ejecutando posicionamiento activo…</string>
-    <string name="active_tracking_ongoing">Siguiendo ruta…</string>
-    <string name="active_tracking_stopping">Ruta detenida…</string>
+    <string name="active_tracking_launching">Lanzando grabación de ruta…</string>
+    <string name="active_tracking_requested">La grabación comenzará automáticamente cuando la señal del GPS sea buena.</string>
+    <string name="active_tracking_ongoing">Grabando ruta…</string>
+    <string name="active_tracking_stopping">Finalizando grabación…</string>
+    <string name="active_tracking_stopped">Grabación detenida</string>
+    <string name="tracking_didnt_save_anything">Nada grabado aún…</string>
     <string name="accuracy_threshold_waiting">Esperando señal GPS…</string>
     <string name="accuracy_threshold_reached">¡Señal GPS lista!</string>
     <string name="snackbar_dismiss">Ocultar</string>
@@ -97,4 +100,8 @@
     <string name="avg_speed">Velocidad Media</string>
     <string name="longest_duration">Máx. Duración</string>
     <string name="max_altitude">Altitud Máx</string>
+    <string name="tracking_notification_elapsed_time">Tiempo transcurrido: </string>
+    <string name="tracking_notification_title">Wheely - Ruta en progreso</string>
+    <string name="tracking_notification_content">Seguimiento de localización activo</string>
+    <string name="track_recording_reset">Track descartado!</string>
 </resources>
