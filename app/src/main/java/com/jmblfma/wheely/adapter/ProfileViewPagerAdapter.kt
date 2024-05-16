@@ -5,13 +5,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.jmblfma.wheely.fragment.TrackHistoryFragment
 import com.jmblfma.wheely.fragment.VehicleFragment
-import com.jmblfma.wheely.model.Track
 
 class ProfileViewPagerAdapter(
     fragmentActivity: FragmentActivity,
-
-    private val trackHistoryList: List<Track>
-
 ) : FragmentStateAdapter(fragmentActivity) {
 
     private val TAB_TITLES = arrayOf("History", "Vehicles")
@@ -23,6 +19,7 @@ class ProfileViewPagerAdapter(
             else -> throw IllegalStateException("Unexpected position $position")
         }
     }
+
     override fun getItemCount(): Int = TAB_TITLES.size
 
 }

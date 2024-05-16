@@ -60,7 +60,6 @@
                         android:id="@+id/user_image"
                         android:layout_width="180dp"
                         android:layout_height="180dp"
-                        android:layout_alignParentStart="true"
                         android:layout_marginTop="20dp"
                         android:src="@drawable/user_default_pic"
                         app:civ_border_color="@color/white"
