@@ -14,11 +14,20 @@ import com.jmblfma.wheely.model.Vehicle
 class TrackHistoryAdapter(
     private val trackHistoryList: List<Track>,
     private val vehicleList: List<Vehicle>,
-    var context: Context
+    var context: Context,
+    private val itemClickListener: OnTrackItemClickListener
 ) :
     RecyclerView.Adapter<TrackHistoryAdapter.MyHolder>() {
+        interface OnTrackItemClickListener{
+            fun onTrackItemClick(track : Track)
+        }
 
-    class MyHolder(item: View) : RecyclerView.ViewHolder(item) {
+    class MyHolder(
+        view: View,
+        private val trackHistoryList: List<Track>,
+        private val itemClickListener: OnTrackItemClickListener
+    ) :
+        RecyclerView.ViewHolder(view), View.OnClickListener {
         var trackTitle: TextView
         var trackLocation: TextView
         var trackDate: TextView
@@ -30,21 +39,27 @@ class TrackHistoryAdapter(
 
 
         init {
-            trackTitle = item.findViewById(R.id.routeTitle_text)
-            trackLocation = item.findViewById(R.id.routeLocation_text)
-            trackDate = item.findViewById(R.id.routeDate_text)
-            trackDuration = item.findViewById(R.id.duration_text)
-            trackDistance = item.findViewById(R.id.distance_text)
-            trackAvgSpeed = item.findViewById(R.id.avgSpeed_text)
-            trackVehicle = item.findViewById(R.id.vehicleName_text)
-            vehicleImage = item.findViewById(R.id.vehicleUsed_image)
+            trackTitle = view.findViewById(R.id.routeTitle_text)
+            trackLocation = view.findViewById(R.id.routeLocation_text)
+            trackDate = view.findViewById(R.id.routeDate_text)
+            trackDuration = view.findViewById(R.id.duration_text)
+            trackDistance = view.findViewById(R.id.distance_text)
+            trackAvgSpeed = view.findViewById(R.id.avgSpeed_text)
+            trackVehicle = view.findViewById(R.id.vehicleName_text)
+            vehicleImage = view.findViewById(R.id.vehicleUsed_image)
+            view.setOnClickListener(this)
+        }
+
+        override fun onClick(view: View?) {
+            val clickedTrack = trackHistoryList[adapterPosition]
+            itemClickListener.onTrackItemClick(clickedTrack)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         val view: View
         view = LayoutInflater.from(context).inflate(R.layout.track_history_recycler, parent, false)
-        return MyHolder(view)
+        return MyHolder(view, trackHistoryList, itemClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -53,7 +68,7 @@ class TrackHistoryAdapter(
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         var track = trackHistoryList[position]
-        var vehicle = vehicleList.find{ it.vehicleId == track.vehicleUsedId}
+        var vehicle = vehicleList.find { it.vehicleId == track.vehicleUsedId }
         holder.trackTitle.text = track.name
         holder.trackLocation.text = track.getFormattedDate()
         holder.trackDate.text = track.getFormattedTime(true)

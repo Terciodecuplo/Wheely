@@ -89,7 +89,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     private fun setupFragments() {
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
-        val profileViewPagerAdapter = ProfileViewPagerAdapter(this, trackHistoryList)
+        val profileViewPagerAdapter = ProfileViewPagerAdapter(this)
 
         binding.viewPager.adapter = profileViewPagerAdapter
 
