@@ -161,8 +161,12 @@ object TrackAnalysis {
         return Duration.between(startInstant, endInstant)
     }
 
-    fun formatDurationFromMillis(timeMillis: Long): String {
-        return formatDuration(computeDurationFromMillis(timeMillis))
+    fun formatDurationFromMillis(timeMillis: Long?): String {
+        return if (timeMillis != null) {
+            formatDuration(computeDurationFromMillis(timeMillis))
+        } else {
+            FAILED_CALC_MSG
+        }
     }
 
     fun formatDurationBetweenTimestamps(startTimestamp: Long?, endTimestamp: Long?): String {
@@ -179,15 +183,15 @@ object TrackAnalysis {
         val seconds = duration.seconds % 60
         return when (mode) {
             0 -> {
-                "${hours}h"
+                "${hours} h"
             }
 
             1 -> {
-                "${hours}h ${minutes}min"
+                "${hours} h ${minutes} min"
             }
 
             else -> {
-                "${hours}h ${minutes}min ${seconds}s"
+                "${hours} h ${minutes} min ${seconds} s"
             }
         }
     }

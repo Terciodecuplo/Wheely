@@ -44,7 +44,7 @@ class TrackingService : Service(), SensorEventListener {
         var isRecording = false
 
         @Volatile
-        var enoughAccuracyForTracking = false
+        var liveAccuracyThresholdMet = false
 
         // Broadcasts MSGs
         const val SERVICE_STARTED = "tracking_service_started"
@@ -106,6 +106,7 @@ class TrackingService : Service(), SensorEventListener {
         stopTimer()
         isRunning = false
         isRecording = false
+        liveAccuracyThresholdMet = false
         fusedLocationClient.removeLocationUpdates(locationCallback)
         stopForeground(STOP_FOREGROUND_REMOVE)
         LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(SERVICE_STOPPED))
@@ -131,7 +132,7 @@ class TrackingService : Service(), SensorEventListener {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
                     if (location.accuracy <= ACCURACY_THRESHOLD) {
-                        enoughAccuracyForTracking = true
+                        liveAccuracyThresholdMet = true
                         if (startTime == null) {
                             startTime = location.time
                             startTimer()
@@ -143,6 +144,8 @@ class TrackingService : Service(), SensorEventListener {
                             isRecording = true
                         }
                         repository.addTrackPoint(buildTrackPoint(location))
+                    } else {
+                        liveAccuracyThresholdMet = false // discarded location
                     }
                 }
             }

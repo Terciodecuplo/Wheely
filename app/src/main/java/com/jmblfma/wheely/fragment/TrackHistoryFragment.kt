@@ -2,11 +2,9 @@ package com.jmblfma.wheely.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +13,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.TrackViewerActivity
-import com.jmblfma.wheely.VehicleStatsActivity
 import com.jmblfma.wheely.adapter.TrackHistoryAdapter
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.Vehicle
@@ -69,7 +66,8 @@ class TrackHistoryFragment : Fragment(), TrackHistoryAdapter.OnTrackItemClickLis
                         val minTranslation = 0f
 
                         // Constrain the new translation within the adjusted bounds
-                        val newTranslation = deltaTranslation.coerceIn(minTranslation, maxTranslation)
+                        val newTranslation =
+                            deltaTranslation.coerceIn(minTranslation, maxTranslation)
 
                         // Set the new translationY
                         appBar.translationY = newTranslation
@@ -80,10 +78,11 @@ class TrackHistoryFragment : Fragment(), TrackHistoryAdapter.OnTrackItemClickLis
         }
     }
 
-     override fun onTrackItemClick(track: Track) {
-        val intent = Intent(requireContext(), TrackViewerActivity::class.java)
-        intent.putExtra("vehicleId", track.trackId)
-        Log.d("VEHICLE", "Vehicle selected = $track")
+    override fun onTrackItemClick(track: Track) {
+        val intent = Intent(requireContext(), TrackViewerActivity::class.java).apply {
+            putExtra("TRACK_ID", track.trackId)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
         startActivity(intent)
     }
 }
