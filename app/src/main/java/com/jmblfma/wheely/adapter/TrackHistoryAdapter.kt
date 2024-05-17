@@ -1,12 +1,14 @@
 package com.jmblfma.wheely.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.Vehicle
@@ -82,6 +84,21 @@ class TrackHistoryAdapter(
                 vehicle.model
             )
         }
-        holder.vehicleImage.setImageResource(R.drawable.vehicle_placeholder)
+        if (vehicle != null) {
+            setVehicleImage(holder.vehicleImage, vehicle.image)
+        }
+    }
+
+    private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
+        if (imagePath.isNullOrEmpty()) {
+            Log.d("VEHICLE","Image path = $imagePath")
+            Glide.with(imageView.context)
+                .load(R.drawable.vehicle_placeholder) // Your placeholder drawable
+                .into(imageView)
+        } else {
+            Glide.with(imageView.context)
+                .load(imagePath)
+                .into(imageView)
+        }
     }
 }
