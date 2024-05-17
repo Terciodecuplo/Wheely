@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:rowCount="2"
-        android:columnCount="4"
+        android:columnCount="3"
         android:background="@color/semitransparentWhite"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -48,45 +48,96 @@
             android:text="ACC.?"/>
     </GridLayout>
 
-    <GridLayout
-        style="@style/TestMapButtonGridLayout"
-        android:id="@+id/testButtonGrid"
-        android:layout_width="match_parent"
-        android:rowCount="2"
-        android:columnCount="4"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
+    <!-- Container for Buttons -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
 
         <Button
-            android:id="@+id/buttonStartRec"
-            style="@style/TestMapButtonGenericFeatures"
-            android:layout_rowSpan="2"
-            android:backgroundTint="#FF0000"
-            android:text="REC." />
-        <Button
-            android:id="@+id/buttonStopRec"
-            style="@style/TestMapButtonGenericFeatures"
-            android:backgroundTint="#625B5B"
-            android:layout_rowSpan="2"
-            android:text="STOP" />
-        <Button
-            android:id="@+id/buttonSaveTrack"
-            style="@style/TestMapButtonGenericFeatures"
-            android:text="Save" />
+            android:id="@+id/buttonRestoreAndFollow"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+
+            app:icon="@drawable/ic_center"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="40dp" />
         <Button
             android:id="@+id/buttonCenterAndFollow"
-            style="@style/TestMapButtonGenericFeatures"
-            android:maxLines="3"
-            android:text="Center &amp; Follow" />
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+
+
+            app:icon="@drawable/ic_focus"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="40dp" />
+
+        <Button
+            android:id="@+id/buttonStopRec"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+
+            app:backgroundTint="@color/button_stop_rec_tint"
+            app:rippleColor="@color/greyRipple"
+
+            app:icon="@drawable/ic_stop_rec"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50dp" />
+        <Button
+            android:id="@+id/buttonStartRec"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+
+            app:backgroundTint="@color/button_start_rec_tint"
+            app:rippleColor="@color/redRipple"
+
+            app:icon="@drawable/ic_start_rec"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50dp" />
+        <Button
+            android:id="@+id/buttonSaveTrack"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+
+            app:backgroundTint="@color/button_save_track_tint"
+            app:rippleColor="@color/greenRipple"
+
+            app:icon="@drawable/ic_save"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50dp" />
         <Button
             android:id="@+id/buttonDiscardTrack"
-            style="@style/TestMapButtonGenericFeatures"
-            android:text="Discard" />
-        <Button
-            android:id="@+id/restoreAndFollow"
-            style="@style/TestMapButtonGenericFeatures"
-            android:maxLines="3"
-            android:text="Restore &amp; Follow" />
-    </GridLayout>
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+
+            app:backgroundTint="@color/button_discard_track_tint"
+            app:rippleColor="@color/orangeRipple"
+
+            app:icon="@drawable/ic_bin"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50dp" />
+
+    </LinearLayout>
+
+
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

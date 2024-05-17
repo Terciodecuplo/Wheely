@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -132,7 +133,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             // return false to allow the map to handle all default interactions (panning, zooming, etc.)
             false
         }
-        binding.restoreAndFollow.setOnClickListener {
+        binding.buttonRestoreAndFollow.setOnClickListener {
             resetAutoCenterState()
             if (viewModel.getUIState() == TrackRecordingState.SAVING_MODE) {
                 MapUtils.centerAndZoomOverCurrentRoute(binding.mapView)
@@ -178,13 +179,17 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                                 getString(R.string.accuracy_threshold_waiting),
                                 Toast.LENGTH_SHORT
                             ).show()
+                            binding.buttonCenterAndFollow.visibility = View.VISIBLE
+                            binding.buttonRestoreAndFollow.visibility = View.VISIBLE
+                        } else {
+                            binding.buttonCenterAndFollow.visibility = View.GONE
+                            binding.buttonRestoreAndFollow.visibility = View.GONE
                         }
-                        binding.buttonStartRec.isEnabled = false
-                        binding.buttonStopRec.isEnabled = false
-                        binding.buttonSaveTrack.isEnabled = false
-                        binding.buttonDiscardTrack.isEnabled = false
-                        binding.buttonCenterAndFollow.isEnabled = true
-                        binding.restoreAndFollow.isEnabled = true
+                        binding.buttonStartRec.visibility = View.GONE
+                        binding.buttonStopRec.visibility = View.GONE
+                        binding.buttonSaveTrack.visibility = View.GONE
+                        binding.buttonDiscardTrack.visibility = View.GONE
+
                     }
 
                     TrackRecordingState.READY_FOR_RECORDING -> {
@@ -197,12 +202,12 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         } else {
                             // Toast.makeText(this, getString(R.string.acc_check_disabled), Toast.LENGTH_SHORT).show()
                         }
-                        binding.buttonStartRec.isEnabled = true
-                        binding.buttonStopRec.isEnabled = false
-                        binding.buttonSaveTrack.isEnabled = false
-                        binding.buttonDiscardTrack.isEnabled = false
-                        binding.buttonCenterAndFollow.isEnabled = true
-                        binding.restoreAndFollow.isEnabled = true
+                        binding.buttonStartRec.visibility = View.VISIBLE
+                        binding.buttonStopRec.visibility = View.GONE
+                        binding.buttonSaveTrack.visibility = View.GONE
+                        binding.buttonDiscardTrack.visibility = View.GONE
+                        binding.buttonCenterAndFollow.visibility = View.VISIBLE
+                        binding.buttonRestoreAndFollow.visibility = View.VISIBLE
                     }
 
                     TrackRecordingState.ACTIVE_RECORDING_REQUESTED -> {
@@ -212,40 +217,40 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                             getString(R.string.active_tracking_requested),
                             Toast.LENGTH_SHORT
                         ).show()
-                        binding.buttonStartRec.isEnabled = false
-                        binding.buttonStopRec.isEnabled = false
-                        binding.buttonSaveTrack.isEnabled = false
-                        binding.buttonDiscardTrack.isEnabled = false
-                        binding.buttonCenterAndFollow.isEnabled = false
-                        binding.restoreAndFollow.isEnabled = false
+                        binding.buttonStartRec.visibility = View.GONE
+                        binding.buttonStopRec.visibility = View.VISIBLE
+                        binding.buttonSaveTrack.visibility = View.GONE
+                        binding.buttonDiscardTrack.visibility = View.GONE
+                        binding.buttonCenterAndFollow.visibility = View.VISIBLE
+                        binding.buttonRestoreAndFollow.visibility = View.VISIBLE
                     }
 
                     TrackRecordingState.ACTIVE_RECORDING -> {
                         stopLightweightLocationUpdates()
                         resetAutoCenterState()
-                        binding.buttonStartRec.isEnabled = false
-                        binding.buttonStopRec.isEnabled = true
-                        binding.buttonSaveTrack.isEnabled = false
-                        binding.buttonDiscardTrack.isEnabled = false
-                        binding.buttonCenterAndFollow.isEnabled = true
-                        binding.restoreAndFollow.isEnabled = true
+                        binding.buttonStartRec.visibility = View.GONE
+                        binding.buttonStopRec.visibility = View.VISIBLE
+                        binding.buttonSaveTrack.visibility = View.GONE
+                        binding.buttonDiscardTrack.visibility = View.GONE
+                        binding.buttonCenterAndFollow.visibility = View.VISIBLE
+                        binding.buttonRestoreAndFollow.visibility = View.VISIBLE
                     }
 
                     TrackRecordingState.SAVING_MODE -> {
                         if (setMapToSaveMode()) {
-                            binding.buttonStartRec.isEnabled = false
-                            binding.buttonStopRec.isEnabled = false
-                            binding.buttonSaveTrack.isEnabled = true
-                            binding.buttonDiscardTrack.isEnabled = true
-                            binding.buttonCenterAndFollow.isEnabled = false
-                            binding.restoreAndFollow.isEnabled = true
+                            binding.buttonStartRec.visibility = View.GONE
+                            binding.buttonStopRec.visibility = View.GONE
+                            binding.buttonSaveTrack.visibility = View.VISIBLE
+                            binding.buttonDiscardTrack.visibility = View.VISIBLE
+                            binding.buttonCenterAndFollow.visibility = View.GONE
+                            binding.buttonRestoreAndFollow.visibility = View.GONE
                         } else {
-                            binding.buttonStartRec.isEnabled = false
-                            binding.buttonStopRec.isEnabled = false
-                            binding.buttonSaveTrack.isEnabled = false
-                            binding.buttonDiscardTrack.isEnabled = false
-                            binding.buttonCenterAndFollow.isEnabled = false
-                            binding.restoreAndFollow.isEnabled = false
+                            binding.buttonStartRec.visibility = View.GONE
+                            binding.buttonStopRec.visibility = View.GONE
+                            binding.buttonSaveTrack.visibility = View.GONE
+                            binding.buttonDiscardTrack.visibility = View.GONE
+                            binding.buttonCenterAndFollow.visibility = View.GONE
+                            binding.buttonRestoreAndFollow.visibility = View.GONE
                             Toast.makeText(
                                 this,
                                 getString(R.string.tracking_didnt_save_anything),

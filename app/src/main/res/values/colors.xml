@@ -40,4 +40,22 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="semitransparentWhite">#95FFFFFF</color>
     <color name="semitransparentPrimary">#8B5FB6FF</color>
+
+
+    <!-- BUTTON COLORS -->
+    <color name="red">#FF0000</color>
+    <color name="redRipple">#B20000</color>
+
+    <color name="grey">#BDBDBD</color>
+    <color name="greyRipple">#9E9E9E</color>
+
+    <!-- Colors for Save Track -->
+    <color name="green">#4CAF50</color>
+    <color name="greenRipple">#388E3C</color>
+
+    <!-- Colors for Discard Track -->
+    <color name="orange">#FF9800</color>
+    <color name="orangeRipple">#F57C00</color>
+
+    <color name="disabled">#654A4A4A</color>
 </resources>
