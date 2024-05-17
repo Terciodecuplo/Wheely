@@ -38,7 +38,7 @@
 
     <!-- TESTING -->
     <color name="transparent">#00FFFFFF</color>
-    <color name="semitransparentWhite">#95FFFFFF</color>
+    <color name="semitransparentWhite">#56FFFFFF</color>
     <color name="semitransparentPrimary">#8B5FB6FF</color>
 
 
@@ -46,7 +46,7 @@
     <color name="red">#FF0000</color>
     <color name="redRipple">#B20000</color>
 
-    <color name="grey">#BDBDBD</color>
+    <color name="grey">#7F7D7D</color>
     <color name="greyRipple">#9E9E9E</color>
 
     <!-- Colors for Save Track -->

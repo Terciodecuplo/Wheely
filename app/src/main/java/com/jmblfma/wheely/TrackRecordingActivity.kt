@@ -24,6 +24,7 @@ import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.services.TrackingService
 import com.jmblfma.wheely.utils.MapUtils
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.StyleUtils
 import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.TrackRecordingState
 import com.jmblfma.wheely.viewmodels.TrackRecordingViewModel
@@ -189,7 +190,8 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         binding.buttonStopRec.visibility = View.GONE
                         binding.buttonSaveTrack.visibility = View.GONE
                         binding.buttonDiscardTrack.visibility = View.GONE
-
+                        toggleActiveTelemetryVisibility(false)
+                        updateSignalQualityIndicator(enabled = true)
                     }
 
                     TrackRecordingState.READY_FOR_RECORDING -> {
@@ -208,10 +210,11 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         binding.buttonDiscardTrack.visibility = View.GONE
                         binding.buttonCenterAndFollow.visibility = View.VISIBLE
                         binding.buttonRestoreAndFollow.visibility = View.VISIBLE
+                        toggleActiveTelemetryVisibility(false)
+                        updateSignalQualityIndicator(enabled = true)
                     }
 
                     TrackRecordingState.ACTIVE_RECORDING_REQUESTED -> {
-
                         Toast.makeText(
                             this,
                             getString(R.string.active_tracking_requested),
@@ -223,6 +226,8 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         binding.buttonDiscardTrack.visibility = View.GONE
                         binding.buttonCenterAndFollow.visibility = View.VISIBLE
                         binding.buttonRestoreAndFollow.visibility = View.VISIBLE
+                        toggleActiveTelemetryVisibility(false)
+                        updateSignalQualityIndicator(enabled = true)
                     }
 
                     TrackRecordingState.ACTIVE_RECORDING -> {
@@ -234,6 +239,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         binding.buttonDiscardTrack.visibility = View.GONE
                         binding.buttonCenterAndFollow.visibility = View.VISIBLE
                         binding.buttonRestoreAndFollow.visibility = View.VISIBLE
+                        updateSignalQualityIndicator(enabled = true)
                     }
 
                     TrackRecordingState.SAVING_MODE -> {
@@ -244,6 +250,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                             binding.buttonDiscardTrack.visibility = View.VISIBLE
                             binding.buttonCenterAndFollow.visibility = View.GONE
                             binding.buttonRestoreAndFollow.visibility = View.GONE
+                            toggleActiveTelemetryVisibility(true)
                         } else {
                             binding.buttonStartRec.visibility = View.GONE
                             binding.buttonStopRec.visibility = View.GONE
@@ -251,6 +258,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                             binding.buttonDiscardTrack.visibility = View.GONE
                             binding.buttonCenterAndFollow.visibility = View.GONE
                             binding.buttonRestoreAndFollow.visibility = View.GONE
+                            toggleActiveTelemetryVisibility(false)
                             Toast.makeText(
                                 this,
                                 getString(R.string.tracking_didnt_save_anything),
@@ -258,12 +266,13 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                             ).show()
                             restartTrackingPostSaving()
                         }
+                        updateSignalQualityIndicator(enabled = false)
                     }
                 }
             }
         }
     }
-    private var safeLoadMode = false
+
     private fun autoDetectAndRestoreState() { // should be called from onResume to deal with ALL cause (first initialization, after onDestroy, after onPause...)
         val isTrackingServiceRunning = TrackingService.isRunning
         val currentUiState = viewModel.getUIState()
@@ -333,12 +342,11 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                         false
                     )
                     MapUtils.drawAccuracyCircle(binding.mapView, newLocation)
-
-                    if (TrackingService.isAccuracyEnough(newLocation) || !ACCURACY_CHECK_ENABLED) {
+                    val accuracyThresholdMet = TrackingService.isAccuracyEnough(newLocation)
+                    updateSignalQualityIndicator(goodSignal = accuracyThresholdMet)
+                    if (accuracyThresholdMet || !ACCURACY_CHECK_ENABLED) {
                         viewModel.setUIState(TrackRecordingState.READY_FOR_RECORDING)
                     }
-                    binding.accuracyThreshold.text =
-                        TrackingService.isAccuracyEnough(newLocation).toString()
                 }
             }
         }
@@ -371,9 +379,11 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         }
         // PASSIVE TELEMETRY
         // updates time counter only when the track recording actually starts
-        // when the service gets its first location update
         viewModel.elapsedTime.observe(this) { elapsedTime ->
-            binding.elapsedTime.text = TrackAnalysis.formatDurationFromMillis(elapsedTime)
+            val formattedTime = TrackAnalysis.formatDurationFromMillis(elapsedTime)
+            binding.elapsedTime.text = StyleUtils.getStyledDuration(formattedTime, true)
+            // this must be here otherwise when not updating trackpoints bc bad signal it wouldn't update
+            updateSignalQualityIndicator()
         }
     }
 
@@ -412,6 +422,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
 
                 TrackingService.SERVICE_ACC_MET -> {
                     Log.d("TrackingService", "TrackingService/ RECEIVER/ ACC_MET")
+                    toggleActiveTelemetryVisibility()
                     Toast.makeText(
                         this@TrackRecordingActivity,
                         getString(R.string.active_tracking_ongoing),
@@ -424,18 +435,43 @@ class TrackRecordingActivity : NavigationMenuActivity() {
 
     // TELEMETRY
     private fun updateLiveTelemetry(trackPoints: List<TrackPoint>) {
-        binding.speed.text = TrackAnalysis.formatSpeedInKmh(trackPoints.last().speed.toDouble())
         val currentDistanceInMeters = TrackAnalysis.calculateTotalDistanceInMeters(trackPoints)
-        binding.distance.text = TrackAnalysis.formatDistanceInKm(currentDistanceInMeters)
-        binding.accuracyThreshold.text = TrackingService.enoughAccuracyForTracking.toString()
+        val formattedDistance = TrackAnalysis.formatDistanceInKm(currentDistanceInMeters)
+        binding.distance.text = StyleUtils.getStyledMagnitude(formattedDistance)
+        val formattedCurrentSpeed = TrackAnalysis.formatSpeedInKmh(trackPoints.last().speed.toDouble(), 0)
+        binding.currentSpeed.text = StyleUtils.getStyledMagnitude(formattedCurrentSpeed)
+        val averageSpeed = TrackAnalysis.computeAverageSpeed(trackPoints)
+        val formattedAveSpeed = TrackAnalysis.formatSpeedInKmh(averageSpeed, 0)
+        val labelledAveSpeed = StyleUtils.getStyledMagnitude(formattedAveSpeed + " " + getString(R.string.ave_speed_label))
+        binding.aveSpeed.text = labelledAveSpeed
     }
 
-    private fun clearTelemetry() {
-        val standByText = getString(R.string.telemetry_standby_placeholder)
-        binding.elapsedTime.text = standByText
-        binding.speed.text = standByText
-        binding.distance.text = standByText
-        binding.accuracyThreshold.text = standByText
+    private fun toggleActiveTelemetryVisibility(visible: Boolean = true) {
+        val currentViewMode = if (visible) View.VISIBLE else View.GONE
+        binding.elapsedTime.visibility = currentViewMode
+        binding.distance.visibility = currentViewMode
+        binding.currentSpeed.visibility = currentViewMode
+        binding.aveSpeed.visibility = currentViewMode
+        binding.topTelemetryContainer.visibility = currentViewMode
+        binding.bottomTelemetryContainer.visibility = currentViewMode
+    }
+
+    private fun updateSignalQualityIndicator(goodSignal: Boolean = false, enabled: Boolean = true) {
+        if (enabled) {
+            if (TrackingService.liveAccuracyThresholdMet || goodSignal) {
+                binding.satelliteSymbol.visibility = View.VISIBLE
+                binding.satelliteGood.visibility = View.VISIBLE
+                binding.satelliteBad.visibility = View.GONE
+            } else {
+                binding.satelliteSymbol.visibility = View.VISIBLE
+                binding.satelliteGood.visibility = View.GONE
+                binding.satelliteBad.visibility = View.VISIBLE
+            }
+        } else {
+            binding.satelliteSymbol.visibility = View.GONE
+            binding.satelliteGood.visibility = View.GONE
+            binding.satelliteBad.visibility = View.GONE
+        }
     }
 
     // TRACK SAVING LOGIC
@@ -470,7 +506,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
 
     private fun restartTrackingPostSaving() {
         MapUtils.clearMapAndRefresh(binding.mapView)
-        clearTelemetry()
         viewModel.setUIState(TrackRecordingState.WAITING_FOR_ACCURACY)
     }
 

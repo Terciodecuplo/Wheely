@@ -161,8 +161,12 @@ object TrackAnalysis {
         return Duration.between(startInstant, endInstant)
     }
 
-    fun formatDurationFromMillis(timeMillis: Long): String {
-        return formatDuration(computeDurationFromMillis(timeMillis))
+    fun formatDurationFromMillis(timeMillis: Long?): String {
+        return if (timeMillis != null) {
+            formatDuration(computeDurationFromMillis(timeMillis))
+        } else {
+            FAILED_CALC_MSG
+        }
     }
 
     fun formatDurationBetweenTimestamps(startTimestamp: Long?, endTimestamp: Long?): String {
