@@ -183,15 +183,15 @@ object TrackAnalysis {
         val seconds = duration.seconds % 60
         return when (mode) {
             0 -> {
-                "${hours}h"
+                "${hours} h"
             }
 
             1 -> {
-                "${hours}h ${minutes}min"
+                "${hours} h ${minutes} min"
             }
 
             else -> {
-                "${hours}h ${minutes}min ${seconds}s"
+                "${hours} h ${minutes} min ${seconds} s"
             }
         }
     }

@@ -33,20 +33,20 @@ object StyleUtils {
         val secondUnitSize = 0.5f
 
         // Validate the input format
-        val pattern = Regex("^\\d+h \\d+min \\d+s$")
+        val pattern = Regex("^\\d+ h \\d+ min \\d+ s$")
         if (!pattern.matches(time)) {
             return SpannableString(time)
         }
 
         // Split the time string into parts
         val parts = time.split(" ")
-        val hours = parts[0]
-        val minutes = parts[1]
-        val seconds = parts[2]
+        val hours = parts[0] + " " + parts[1]  // "0 h"
+        val minutes = parts[2] + " " + parts[3]  // "0 min"
+        val seconds = parts[4] + " " + parts[5]  // "0 s"
 
         // Optionally hide zero fields
-        val displayHours = !(hideZeroFields && hours.startsWith("0"))
-        val displayMinutes = !(hideZeroFields && minutes.startsWith("0"))
+        val displayHours = !(hideZeroFields && parts[0] == "0")
+        val displayMinutes = !(hideZeroFields && parts[2] == "0")
 
         // Build the display string
         val displayTime = StringBuilder()
@@ -63,12 +63,12 @@ object StyleUtils {
             val end = start + hours.length
             spannableString.setSpan(
                 RelativeSizeSpan(hourNumberSize), // Bigger size for hour numbers
-                start, end - 1,
+                start, end - 2,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannableString.setSpan(
                 RelativeSizeSpan(hourUnitSize), // Smaller size for hour unit
-                end - 1, end,
+                end - 2, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             start = end + 1
@@ -78,12 +78,12 @@ object StyleUtils {
             val end = start + minutes.length
             spannableString.setSpan(
                 RelativeSizeSpan(minuteNumberSize), // Bigger size for minute numbers
-                start, end - 3,
+                start, end - 4,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannableString.setSpan(
                 RelativeSizeSpan(minuteUnitSize), // Smaller size for minute unit
-                end - 3, end,
+                end - 4, end,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             start = end + 1
@@ -93,12 +93,12 @@ object StyleUtils {
         val secondsEnd = secondsStart + seconds.length
         spannableString.setSpan(
             RelativeSizeSpan(secondNumberSize), // Bigger size for second numbers
-            secondsStart, secondsEnd - 1,
+            secondsStart, secondsEnd - 2,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         spannableString.setSpan(
             RelativeSizeSpan(secondUnitSize), // Smaller size for second unit
-            secondsEnd - 1, secondsEnd,
+            secondsEnd - 2, secondsEnd,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
