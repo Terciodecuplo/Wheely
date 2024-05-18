@@ -13,40 +13,101 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
-    <GridLayout
-        android:id="@+id/statsGridLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:rowCount="2"
-        android:columnCount="3"
-        android:background="@color/semitransparentWhite"
-        app:layout_constraintTop_toTopOf="parent">
+    <!-- Container for Stats -->
+    <LinearLayout
+        android:id="@+id/accuracyStateContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        app:layout_constraintTop_toTopOf="parent    "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
+
+        <ImageView
+            android:id="@+id/satellite_symbol"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_satellite"
+            app:tint="@color/colorPrimary" />
+        <ImageView
+            android:id="@+id/satellite_good"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_satellite_good" />
+        <ImageView
+            android:id="@+id/satellite_bad"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_satellite_bad"/>
+    </LinearLayout>
+
+
+    <!-- Container for Stats -->
+    <LinearLayout
+        android:id="@+id/topTelemetryContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_white_bg"
+        app:layout_constraintTop_toTopOf="parent    "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
 
         <TextView
-            android:id="@+id/elapsedTime"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_TIME"/>
+            android:id="@+id/currentSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorSecondary"
+            android:textSize="45sp"
+            android:textStyle="bold"
+            android:text="00 km"/>
         <TextView
-            android:id="@+id/speed"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_SPEED"/>
+            android:id="@+id/aveSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:text="00 km"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottomTelemetryContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_white_bg"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
+
         <TextView
             android:id="@+id/distance"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_DIST"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:text="000.00 km"/>
         <TextView
-            android:id="@+id/accuracyThreshold"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="ACC.?"/>
-    </GridLayout>
+            android:id="@+id/elapsedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="45sp"
+            android:textStyle="bold"
+            android:text="00h00min00s"/>
+    </LinearLayout>
 
     <!-- Container for Buttons -->
     <LinearLayout
@@ -134,7 +195,6 @@
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="50dp" />
-
     </LinearLayout>
 
 
