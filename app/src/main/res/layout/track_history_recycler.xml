@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -14,62 +15,49 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="5dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/routeTitle_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
                 android:text="Route Title"
+                android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
             <TextView
-                android:id="@+id/routeLocation_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="3dp"
-                android:text="Route Location"
-                android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/routeTitle_text"
-                app:layout_constraintTop_toBottomOf="@+id/routeTitle_text" />
-
-            <TextView
-                android:id="@+id/routeDate_text"
+                android:id="@+id/route_date_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Route Date"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/routeLocation_text" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/routeTitle_text"
+                app:layout_constraintTop_toBottomOf="@+id/routeTitle_text" />
 
             <TextView
                 android:id="@+id/routeDuration_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="5dp"
-                android:paddingBottom="10dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="13dp"
                 android:text="Total Duration:"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@+id/vehicleUsed_image"
-                app:layout_constraintTop_toTopOf="@+id/vehicleUsed_image" />
+                app:layout_constraintTop_toBottomOf="@+id/route_date_text" />
 
             <TextView
                 android:id="@+id/routeDistance_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
+                android:layout_marginTop="8dp"
                 android:text="Total Distance:"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/routeDuration_text"
                 app:layout_constraintTop_toBottomOf="@+id/routeDuration_text" />
 
@@ -77,87 +65,69 @@
                 android:id="@+id/routeAvgSpeed_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
+                android:layout_marginTop="8dp"
                 android:text="Average Speed:"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/routeDistance_text"
                 app:layout_constraintTop_toBottomOf="@+id/routeDistance_text" />
-
-            <TextView
-                android:id="@+id/vehicle_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:text="Vehicle:"
-                android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintStart_toStartOf="@+id/routeAvgSpeed_text"
-                app:layout_constraintTop_toBottomOf="@+id/routeAvgSpeed_text" />
 
             <TextView
                 android:id="@+id/duration_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:paddingBottom="10dp"
+                android:layout_marginStart="20dp"
                 android:text="3:14:26"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintStart_toEndOf="@+id/guideline7"
-                app:layout_constraintTop_toTopOf="@+id/vehicleUsed_image" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/routeDuration_text"
+                app:layout_constraintTop_toTopOf="@+id/routeDuration_text" />
 
             <TextView
                 android:id="@+id/distance_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
+                android:layout_marginStart="20dp"
                 android:text="324Km"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintStart_toStartOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/routeDuration_text" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/routeDistance_text"
+                app:layout_constraintTop_toTopOf="@+id/routeDistance_text" />
 
             <TextView
                 android:id="@+id/avgSpeed_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
+                android:layout_marginStart="20dp"
                 android:text="104 km/h"
                 android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintStart_toEndOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/routeDistance_text" />
-
-            <TextView
-                android:id="@+id/vehicleName_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:text="Yamaha Mt-07"
-                android:textColor="@color/subtext_grey"
-                android:textSize="8dp"
-                app:layout_constraintStart_toEndOf="@+id/guideline7"
-                app:layout_constraintTop_toBottomOf="@+id/routeAvgSpeed_text" />
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/routeAvgSpeed_text"
+                app:layout_constraintTop_toTopOf="@+id/routeAvgSpeed_text" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/vehicleUsed_image"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginVertical="10dp"
-                android:src="@drawable/user_default_pic"
+                android:src="@drawable/vehicle_placeholder"
                 app:civ_border_color="@color/colorPrimaryDark"
                 app:civ_border_width="2dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/routeTitle_text" />
+                app:layout_constraintStart_toStartOf="@+id/route_date_text"
+                app:layout_constraintTop_toTopOf="@+id/routeDuration_text" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.7" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginVertical="15dp"
+                android:layout_marginHorizontal="10dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/routeAvgSpeed_text" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
