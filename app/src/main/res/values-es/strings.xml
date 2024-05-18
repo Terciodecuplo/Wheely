@@ -100,6 +100,8 @@
     <string name="avg_speed">Velocidad Media</string>
     <string name="longest_duration">Máx. Duración</string>
     <string name="max_altitude">Altitud Máx</string>
+    <string name="vehicle_used_in_track">%1$s con mi %2$s %3$s</string>
+    <string name="default_track_name">Ruta</string>
     <string name="tracking_notification_elapsed_time">Tiempo transcurrido: </string>
     <string name="tracking_notification_title">Wheely - Ruta en progreso</string>
     <string name="tracking_notification_content">Seguimiento de localización activo</string>
@@ -108,6 +110,7 @@
     <string name="confirmation_dialog_stop_tracking_msg">¿Estás seguro de quieres finalizar la grabación de la ruta?</string>
     <string name="confirmation_dialog_positive">Sí</string>
     <string name="confirmation_dialog_negative">No</string>
+    <string name="date_time_history_list">El %1$s a las %2$s</string>
     <string name="ave_speed_label">(med.)</string>
     <string name="max_speed_label">(máx.)</string>
     <string name="max_alt_label">(alt. máx.)</string>
