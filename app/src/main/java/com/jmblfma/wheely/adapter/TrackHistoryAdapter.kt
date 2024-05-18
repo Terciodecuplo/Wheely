@@ -1,7 +1,13 @@
 package com.jmblfma.wheely.adapter
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.StyleSpan
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +26,9 @@ class TrackHistoryAdapter(
     private val itemClickListener: OnTrackItemClickListener
 ) :
     RecyclerView.Adapter<TrackHistoryAdapter.MyHolder>() {
-        interface OnTrackItemClickListener{
-            fun onTrackItemClick(track : Track)
-        }
+    interface OnTrackItemClickListener {
+        fun onTrackItemClick(track: Track)
+    }
 
     class MyHolder(
         view: View,
@@ -31,23 +37,19 @@ class TrackHistoryAdapter(
     ) :
         RecyclerView.ViewHolder(view), View.OnClickListener {
         var trackTitle: TextView
-        var trackLocation: TextView
         var trackDate: TextView
         var trackDuration: TextView
         var trackDistance: TextView
         var trackAvgSpeed: TextView
-        var trackVehicle: TextView
         var vehicleImage: ImageView
 
 
         init {
             trackTitle = view.findViewById(R.id.routeTitle_text)
-            trackLocation = view.findViewById(R.id.routeLocation_text)
-            trackDate = view.findViewById(R.id.routeDate_text)
+            trackDate = view.findViewById(R.id.route_date_text)
             trackDuration = view.findViewById(R.id.duration_text)
             trackDistance = view.findViewById(R.id.distance_text)
             trackAvgSpeed = view.findViewById(R.id.avgSpeed_text)
-            trackVehicle = view.findViewById(R.id.vehicleName_text)
             vehicleImage = view.findViewById(R.id.vehicleUsed_image)
             view.setOnClickListener(this)
         }
@@ -71,27 +73,91 @@ class TrackHistoryAdapter(
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         var track = trackHistoryList[position]
         var vehicle = vehicleList.find { it.vehicleId == track.vehicleUsedId }
-        holder.trackTitle.text = track.name
-        holder.trackLocation.text = track.getFormattedDate()
-        holder.trackDate.text = track.getFormattedTime(true)
+
+        holder.trackTitle.text = titleTextFormatter(holder, track, vehicle)
+        holder.trackDate.text = context.getString(R.string.date_time_history_list,
+            track.getFormattedDate(),
+            track.getFormattedTime(true)
+        )
+
         holder.trackDuration.text = track.getFormattedDuration()
         holder.trackDistance.text = track.getFormattedDistanceInKm()
         holder.trackAvgSpeed.text = track.getFormattedAverageSpeedInKmh()
-        if (vehicle != null) {
-            holder.trackVehicle.text = holder.itemView.context.getString(
-                R.string.vehicle_used_in_track,
-                vehicle.brand,
-                vehicle.model
-            )
-        }
+
         if (vehicle != null) {
             setVehicleImage(holder.vehicleImage, vehicle.image)
         }
     }
 
+    private fun titleTextFormatter(
+        holder: MyHolder,
+        track: Track,
+        vehicle: Vehicle?
+    ): SpannableString {
+        val trackName = if (track.name.isNullOrEmpty()) context.getString(R.string.default_track_name) else track.name
+        val formattedText = String.format(
+            holder.trackTitle.context.getString(R.string.vehicle_used_in_track),
+            trackName,
+            vehicle?.brand,
+            vehicle?.model
+        )
+
+        val spannable = SpannableString(formattedText)
+
+        val trackNameLength = trackName.length
+        val trackTitleMotoInfoLength = formattedText.length
+        Log.d(
+            "TESTING",
+            "TrackNameLength => $trackNameLength  |||| Rest => $trackTitleMotoInfoLength"
+        )
+
+
+        val textSize24sp = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            24f,
+            holder.itemView.resources.displayMetrics
+        ).toInt()
+
+        val textSize16sp = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP,
+            16f,
+            holder.itemView.resources.displayMetrics
+        ).toInt()
+
+        spannable.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0,
+            trackNameLength,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        spannable.setSpan(
+            AbsoluteSizeSpan(textSize24sp),
+            0,
+            trackNameLength,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        spannable.setSpan(
+            StyleSpan(Typeface.NORMAL),
+            trackNameLength,
+            trackTitleMotoInfoLength,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        spannable.setSpan(
+            AbsoluteSizeSpan(textSize16sp),
+            trackNameLength,
+            trackTitleMotoInfoLength,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        return spannable
+    }
+
     private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
         if (imagePath.isNullOrEmpty()) {
-            Log.d("VEHICLE","Image path = $imagePath")
+            Log.d("VEHICLE", "Image path = $imagePath")
             Glide.with(imageView.context)
                 .load(R.drawable.vehicle_placeholder) // Your placeholder drawable
                 .into(imageView)

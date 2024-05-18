@@ -104,7 +104,9 @@
     <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
     <string name="snackbar_dismiss">Dismiss</string>
     <string name="user_stats_menu_item">User stats</string>
-    <string name="vehicle_used_in_track" translatable="false">%1$s %2$s</string>
+    <string name="vehicle_used_in_track">%1$s with my %2$s %3$s</string>
+    <string name="date_time_history_list">On %1$s at %2$s</string>
+    <string name="default_track_name">Route</string>
     <string name="acc_check_disabled" translatable="false">Pre-launch acc. check OFF.</string>
     <string name="tracking_notification_elapsed_time">Elapsed time: </string>
     <string name="tracking_notification_title">Wheely - Route in progress</string>
