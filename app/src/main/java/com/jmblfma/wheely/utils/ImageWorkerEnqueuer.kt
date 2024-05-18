@@ -10,10 +10,16 @@ import androidx.work.workDataOf
 import java.util.UUID
 
 object ImageWorkerUtil {
-    fun enqueueImageSave(context: Context, uri: Uri, entityId: Int?, entityType: String, imageType: String, prefix: String) {
+    fun enqueueImageSave(
+        context: Context,
+        uri: Uri,
+        entityId: Int?,
+        entityType: String,
+        imageType: String,
+        prefix: String
+    ) {
         val imageId = UUID.randomUUID().toString()
         val fileName = "$prefix-$imageId.jpg"
-        Log.d("SaveImageWorker", " VARIABLE FILENAME =====> $fileName")
 
         val inputData = workDataOf(
             "uri" to uri.toString(),

@@ -94,13 +94,18 @@ class TrackHistoryAdapter(
         track: Track,
         vehicle: Vehicle?
     ): SpannableString {
+        var formattedText = ""
         val trackName = if (track.name.isNullOrEmpty()) context.getString(R.string.default_track_name) else track.name
-        val formattedText = String.format(
-            holder.trackTitle.context.getString(R.string.vehicle_used_in_track),
-            trackName,
-            vehicle?.brand,
-            vehicle?.model
-        )
+        if(vehicle != null) {
+            formattedText = String.format(
+                holder.trackTitle.context.getString(R.string.vehicle_used_in_track),
+                trackName,
+                vehicle.brand,
+                vehicle.model
+            )
+        } else {
+            formattedText = trackName
+        }
 
         val spannable = SpannableString(formattedText)
 

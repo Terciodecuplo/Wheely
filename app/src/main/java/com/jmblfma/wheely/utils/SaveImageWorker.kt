@@ -1,4 +1,5 @@
 package com.jmblfma.wheely.utils
+
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -24,7 +25,10 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
             val entityId = inputData.getInt("entityId", -1)
 
             if (uri == null || fileName == null || entityType == null || imageType == null || entityId == -1) {
-                Log.e("SaveImageWorker", "Invalid input data: uri=$uri, fileName=$fileName, entityType=$entityType, imageType=$imageType, entityId=$entityId")
+                Log.e(
+                    "SaveImageWorker",
+                    "Invalid input data: uri=$uri, fileName=$fileName, entityType=$entityType, imageType=$imageType, entityId=$entityId"
+                )
                 return@withContext Result.failure()
             }
 
@@ -34,7 +38,8 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
                 return@withContext Result.failure()
             }
 
-            val savedPath = ImagePicker.saveImageToInternalStorage(applicationContext, bitmap, fileName)
+            val savedPath =
+                ImagePicker.saveImageToInternalStorage(applicationContext, bitmap, fileName)
             if (savedPath == null) {
                 Log.e("SaveImageWorker", "Failed to save image to internal storage")
                 return@withContext Result.failure()
@@ -49,9 +54,14 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
     }
 
 
-    private fun updateImagesInDataBase(entityId: Int, entityType: String, imageType: String, path: String) {
+    private fun updateImagesInDataBase(
+        entityId: Int,
+        entityType: String,
+        imageType: String,
+        path: String
+    ) {
         // Use the repository for user updates
-        Log.d("SaveImageWorker" ,"entityId ======> $entityId path ========> $path")
+        Log.d("SaveImageWorker", "entityId ======> $entityId path ========> $path")
         runBlocking {
             when (entityType) {
                 "user" -> {
@@ -63,20 +73,30 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
 
                         }
                     } else if (imageType == "profile") {
-                        userRepository.updateUserPersonalInfo(entityId, null, null, null, null, path) { result ->
-                            Log.d("SaveImageWorker", "User profile image updated, affected rows: $result")
+                        userRepository.updateUserPersonalInfo(
+                            entityId,
+                            null,
+                            null,
+                            null,
+                            null,
+                            path
+                        ) { result ->
+                            Log.d(
+                                "SaveImageWorker",
+                                "User profile image updated, affected rows: $result"
+                            )
                         }
                     }
                 }
-              /*  "vehicle" -> {
-                    if (imageType == "vehicle") {
-                        // Assume you have a VehicleDataRepository or similar
-                        val vehicleRepo = VehicleDataRepository.sharedInstance
-                        vehicleRepo.updateVehicleImage(entityId, path) { result ->
-                            Log.d("SaveImageWorker", "Vehicle image updated, affected rows: $result")
-                        }
-                    }
-                }*/
+                /*  "vehicle" -> {
+                      if (imageType == "vehicle") {
+                          // Assume you have a VehicleDataRepository or similar
+                          val vehicleRepo = VehicleDataRepository.sharedInstance
+                          vehicleRepo.updateVehicleImage(entityId, path) { result ->
+                              Log.d("SaveImageWorker", "Vehicle image updated, affected rows: $result")
+                          }
+                      }
+                  }*/
             }
         }
     }
@@ -86,7 +106,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
         applicationContext.sendBroadcast(intent)
     }
 
-    private fun updateCurrentUserBanner(bannerPath: String){
+    private fun updateCurrentUserBanner(bannerPath: String) {
         val updatedUser = UserSessionManager.getCurrentUser()?.let {
             User(
                 it.userId,
@@ -101,7 +121,10 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
         }
         UserSessionManager.updateLoggedUser(updatedUser)
         sendUpdateBroadcast()
-        Log.d("SaveImageWorker", "User profile image updated: $bannerPath ||||  ${UserSessionManager.getCurrentUser()?.profileBanner}")
+        Log.d(
+            "SaveImageWorker",
+            "User profile image updated: $bannerPath ||||  ${UserSessionManager.getCurrentUser()?.profileBanner}"
+        )
 
     }
 }

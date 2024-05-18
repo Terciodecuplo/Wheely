@@ -108,7 +108,7 @@ class NewUserActivity : AppCompatActivity() {
         }
         viewModel.userUpdateStatus.observe(this) { status ->
             status?.let {
-                //showSnackbar(it)
+                showSnackbar(it)
             }
 
         }

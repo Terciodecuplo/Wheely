@@ -88,13 +88,15 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun setupUserStats() {
-        binding.totalTimeValue.text = TrackAnalysis.getTracksTotalDuration(trackList)
-        binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(trackList)
-        binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
-        binding.avgSpeedValue.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
-        binding.longestRouteValue.text = TrackAnalysis.getLongestTrackInKm(trackList)
-        binding.maxDurationValue.text = TrackAnalysis.getTracksMaxDuration(trackList)
-        binding.maxAltitudeValue.text = TrackAnalysis.getTracksMaxAltitude(trackList)
+        if(trackList.isNotEmpty()) {
+            binding.totalTimeValue.text = TrackAnalysis.getTracksTotalDuration(trackList)
+            binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(trackList)
+            binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
+            binding.avgSpeedValue.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
+            binding.longestRouteValue.text = TrackAnalysis.getLongestTrackInKm(trackList)
+            binding.maxDurationValue.text = TrackAnalysis.getTracksMaxDuration(trackList)
+            binding.maxAltitudeValue.text = TrackAnalysis.getTracksMaxAltitude(trackList)
+        }
         binding.totalRoutesValue.text = trackList.size.toString()
     }
 

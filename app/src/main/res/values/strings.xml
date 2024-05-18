@@ -113,4 +113,5 @@
     <string name="tracking_notification_content">Location is being tracked</string>
     <string name="track_recording_reset">Discarded track!</string>
     <string name="ave_speed_label">(ave.)</string>
+
 </resources>
