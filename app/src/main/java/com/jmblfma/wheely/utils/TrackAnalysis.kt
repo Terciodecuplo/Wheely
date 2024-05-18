@@ -8,6 +8,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object TrackAnalysis {
     const val FAILED_CALC_MSG = "NaN"
@@ -126,13 +127,13 @@ object TrackAnalysis {
     // DATE TIME UTILS
     private const val DATE_FORMAT_PATTERN_SYS = "yyyy-MM-dd" // e.g. 2024-05-11
     private const val TIME_FORMAT_PATTERN = "HH:mm" // e.g. 21:49
-    private const val DATE_AND_TIME_LONG_PATTERN =
-        "MMM d, yyyy 'at' hh:mm a" // e.g. May 11, 2024 at 10:01 AM
+
 
     private fun convertTimestampToFormattedDateTime(timestamp: Long?, format: String): String {
         return timestamp?.let {
             val dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
-            dateTime.format(DateTimeFormatter.ofPattern(format))
+            val formatter = DateTimeFormatter.ofPattern(format, Locale.getDefault())
+            dateTime.format(formatter)
         } ?: FAILED_CALC_MSG
     }
 
@@ -145,7 +146,18 @@ object TrackAnalysis {
     }
 
     fun convertTimestampToDateTime(timestamp: Long?): String {
-        return convertTimestampToFormattedDateTime(timestamp, DATE_AND_TIME_LONG_PATTERN)
+        val locale = Locale.getDefault()
+        val localizedDateTimePattern = getLocalizedDateTimePattern(locale)
+        return convertTimestampToFormattedDateTime(timestamp, localizedDateTimePattern)
+    }
+
+    // TODO add patterns for different languages as needed
+    // for anything other than ES it defaults to english
+    private fun getLocalizedDateTimePattern(locale: Locale): String {
+        return when (locale.language) {
+            "es" -> "d 'de' MMMM 'de' yyyy 'a las' HH:mm"
+            else -> "MMMM d, yyyy 'at' hh:mm a"
+        }
     }
 
     private fun computeDurationFromMillis(timeMillis: Long): Duration {
