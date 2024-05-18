@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -22,6 +21,8 @@ import com.google.android.gms.location.Priority
 import com.jmblfma.wheely.databinding.TrackRecordingBinding
 import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.services.TrackingService
+import com.jmblfma.wheely.utils.DialogUtils
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.MapUtils
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.StyleUtils
@@ -49,6 +50,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = TrackRecordingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setupBottomNavigation()
         MapUtils.setupMap(binding.mapView, this)
         setupUIManagement()
@@ -99,7 +101,13 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             startTracking()
         }
         binding.buttonStopRec.setOnClickListener {
-            stopTracking()
+            DialogUtils.showConfirmationDialog(
+                this,
+                getString(R.string.confirmation_dialog_stop_tracking_msg),
+                onPositiveAction = {
+                    stopTracking()
+                }
+            )
         }
         binding.buttonSaveTrack.setOnClickListener {
             viewModel.fetchCurrentVehicleList()
@@ -107,13 +115,19 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             // see setupTrackSavingLogic()
         }
         binding.buttonDiscardTrack.setOnClickListener {
-            viewModel.discardTrack()
-            restartTrackingPostSaving()
-            Toast.makeText(
+            DialogUtils.showConfirmationDialog(
                 this,
-                getString(R.string.track_recording_reset),
-                Toast.LENGTH_SHORT
-            ).show()
+                getString(R.string.confirmation_dialog_track_deletion_msg),
+                onPositiveAction = {
+                    viewModel.discardTrack()
+                    restartTrackingPostSaving()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.track_recording_reset),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            )
         }
 
         binding.mapView.addMapListener(object : MapListener {
@@ -142,7 +156,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                 lastTrackPoint?.let {
                     // forces immediate recenter & sets zoom to default mode
                     MapUtils.animateToLocation(binding.mapView, it, true, true)
-                    Log.d("MapDebug", "button(restoreAndFollow) executed")
                 }
             }
         }
@@ -169,7 +182,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     private fun setupUIManagement() {
         viewModel.trackRecordingState.observe(this) {
             it?.let {
-                // Log.d("TEST2","TrackRecording/ setupUIManagement/ UIState: ${it.name}")
                 when (it) {
                     TrackRecordingState.WAITING_FOR_ACCURACY -> {
                         resetAutoCenterState()
@@ -388,7 +400,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     }
 
     private fun startTracking() {
-        Log.d("TESTING", "TrackingService Start Requested")
         Intent(this, TrackingService::class.java).also {
             startForegroundService(it)
         }
@@ -396,7 +407,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
     }
 
     private fun stopTracking() {
-        Log.d("TESTING", "TrackingService Stop Requested")
         viewModel.setUIState(TrackRecordingState.SAVING_MODE)
         Intent(this, TrackingService::class.java).also { intent ->
             stopService(intent)
@@ -407,12 +417,10 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 TrackingService.SERVICE_STARTED -> {
-                    Log.d("TrackingService", "TrackingService/ RECEIVER/ LAUNCHED")
                     viewModel.setUIState(TrackRecordingState.ACTIVE_RECORDING)
                 }
 
                 TrackingService.SERVICE_STOPPED -> {
-                    Log.d("TrackingService", "TrackingService/ RECEIVER/ STOPPED")
                     Toast.makeText(
                         this@TrackRecordingActivity,
                         getString(R.string.active_tracking_stopped),
@@ -421,7 +429,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                 }
 
                 TrackingService.SERVICE_ACC_MET -> {
-                    Log.d("TrackingService", "TrackingService/ RECEIVER/ ACC_MET")
                     toggleActiveTelemetryVisibility()
                     Toast.makeText(
                         this@TrackRecordingActivity,
@@ -522,6 +529,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         }
         return false
     }
+
 
     // LEGACY
     // TRACKING SERVICE BINDING (service connection setup) - UNUSED

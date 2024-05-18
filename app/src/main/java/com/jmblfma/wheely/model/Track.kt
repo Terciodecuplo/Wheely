@@ -57,8 +57,8 @@ data class Track(
     fun getFormattedDate(): String {
         return TrackAnalysis.convertTimestampToDate(this.startTime)
     }
-    fun getFormattedDuration(): String {
-        return TrackAnalysis.formatDurationBetweenTimestamps(this.startTime, this.endTime)
+    fun getFormattedDuration(withSeconds: Boolean = false): String {
+        return TrackAnalysis.formatDurationBetweenTimestamps(this.startTime, this.endTime, withSeconds)
     }
     fun getFormattedTime(isStart: Boolean): String {
         return if (isStart) {

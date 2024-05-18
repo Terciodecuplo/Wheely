@@ -35,6 +35,7 @@ object TrackAnalysis {
         return altitude?.let { String.format("%.${decimalPlaces}f m", altitude) } ?: FAILED_CALC_MSG
     }
 
+
     // SINGLE TRACK ANALYSIS
     fun computeAverageSpeed(trackData: List<TrackPoint>): Double {
         return trackData.map { it.speed }.average()
@@ -69,6 +70,19 @@ object TrackAnalysis {
 
     fun getMaxAltitudeInMeters(trackData: List<TrackPoint>): Double? {
         return trackData.maxByOrNull { it.altitude }?.altitude
+    }
+
+    fun calculateElevationInMeters(trackData: List<TrackPoint>): Double? {
+        if (trackData.isEmpty()) return null
+
+        val maxAltitude = trackData.maxByOrNull { it.altitude }?.altitude
+        val minAltitude = trackData.minByOrNull { it.altitude }?.altitude
+
+        return if (maxAltitude != null && minAltitude != null) {
+            maxAltitude - minAltitude
+        } else {
+            null
+        }
     }
 
     fun getMaxSpeedInMs(trackData: List<TrackPoint>): Double? {
@@ -181,9 +195,10 @@ object TrackAnalysis {
         }
     }
 
-    fun formatDurationBetweenTimestamps(startTimestamp: Long?, endTimestamp: Long?): String {
+    fun formatDurationBetweenTimestamps(startTimestamp: Long?, endTimestamp: Long?, withSeconds: Boolean = false): String {
         return if (startTimestamp != null && endTimestamp != null) {
-            formatDuration(computeDurationBetweenTimestamps(startTimestamp, endTimestamp), 1)
+            val mode = if (withSeconds) 2 else 1
+            formatDuration(computeDurationBetweenTimestamps(startTimestamp, endTimestamp), mode)
         } else {
             FAILED_CALC_MSG
         }

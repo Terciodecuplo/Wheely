@@ -2,14 +2,18 @@ package com.jmblfma.wheely
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import com.jmblfma.wheely.databinding.TrackViewerBinding
 import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.utils.DialogUtils
+import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.MapUtils
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.StyleUtils
 import com.jmblfma.wheely.utils.TrackAnalysis
+import com.jmblfma.wheely.utils.TrackAnalysis.calculateElevationInMeters
 import com.jmblfma.wheely.viewmodels.TrackViewerViewModel
 
 class TrackViewerActivity : NavigationMenuActivity() {
@@ -23,21 +27,20 @@ class TrackViewerActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = TrackViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val trackId = intent.getIntExtra("TRACK_ID", -1)
-        Log.d("Feed", "TrackViewer Intent; received TRACK_ID $trackId")
 
+        LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setupBottomNavigation()
         setupButtonListeners()
         MapUtils.setupMap(binding.mapView, this)
         setupTrackManagement()
-
+        val trackId = intent.getIntExtra("TRACK_ID", -1)
         if (trackId != -1) {
             viewModel.fetchTrackByID(trackId)
         } else {
             viewModel.fetchLastTrack()
         }
 
-        setupAllTracksStats()
+        // setupAllTracksStats()
 
         // TODO maybe only testing:
         viewModel.fetchTrackList()
@@ -71,9 +74,18 @@ class TrackViewerActivity : NavigationMenuActivity() {
             }
         }
         binding.buttonDeleteLoadedTrack.setOnClickListener {
-            viewModel.deleteLoadedTrack()
+            DialogUtils.showConfirmationDialog(
+                this,
+                getString(R.string.confirmation_dialog_track_deletion_msg),
+                onPositiveAction = {
+                    viewModel.deleteLoadedTrack()
+                }
+            )
         }
-        binding.buttonClearUI.setOnClickListener {}
+
+        binding.buttonRestoreView.setOnClickListener {
+            MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, true, checkMapState = true, largePadding = true)
+        }
     }
 
     private fun showCycleError() {
@@ -88,18 +100,18 @@ class TrackViewerActivity : NavigationMenuActivity() {
         viewModel.totalNumberOfTracks.observe(this) {
             it?.let {
                 numOfTracks = it
-                binding.numOfTracks.text = String.format("Tracks: %d", numOfTracks)
+                val formattedNumOfTracks = getString(R.string.num_of_tracks) + " " + numOfTracks
+                binding.numberOfTracks.text = formattedNumOfTracks
             }
         }
         viewModel.trackLoader.observe(this) { track ->
             if (track != null) {
-                Log.d("TESTING", "UI/TrackViewer/ TRACK LOADED: $track.trackId")
                 track.trackData?.let {
                     MapUtils.loadCompleteRoute(binding.mapView, it)
-                    MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, true, checkMapState = true)
+                    MapUtils.centerAndZoomOverCurrentRoute(binding.mapView, true, checkMapState = true, largePadding = true)
                     updateTelemetryFromTrack(track)
                 }
-                // Snackbar.make(binding.root, getString(R.string.track_load_success), Snackbar.LENGTH_SHORT).show()
+                // Toast.makeText(this, getString(R.string.track_load_success), Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(this, getString(R.string.track_load_failure), Toast.LENGTH_SHORT).show()
                 MapUtils.clearMapAndRefresh(binding.mapView)
@@ -119,6 +131,7 @@ class TrackViewerActivity : NavigationMenuActivity() {
         }
     }
 
+    /*
     private fun setupAllTracksStats() {
         viewModel.trackListLoader.observe(this) { trackList ->
             if (trackList.isNotEmpty()) {
@@ -129,31 +142,62 @@ class TrackViewerActivity : NavigationMenuActivity() {
                 binding.allTracksMaxSpeed.text = TrackAnalysis.getTracksMaxDuration(trackList)
             }
         }
-    }
+    }*/
 
     private fun updateTelemetryFromTrack(loadedTrack: Track) {
-        binding.trackName.text = loadedTrack.name
-        binding.trackDate.text = loadedTrack.getFormattedDate()
-        binding.startTime.text = loadedTrack.getFormattedTime(true)
-        binding.endTime.text = loadedTrack.getFormattedTime(false)
-        binding.elapsedTime.text = loadedTrack.getFormattedDuration()
-        binding.speed.text = loadedTrack.getFormattedAverageSpeedInKmh()
-        binding.maxSpeed.text = loadedTrack.getFormattedMaxSpeedInKmh()
-        binding.distance.text = loadedTrack.getFormattedDistanceInKm()
-        binding.trackID.text = String.format("ID_%d", loadedTrack.trackId)
+        val trackName = loadedTrack.name
+        if (trackName.isNotBlank()) {
+            binding.trackName.text = loadedTrack.name
+            binding.trackName.visibility = View.VISIBLE
+        } else {
+            binding.trackName.visibility = View.GONE
+        }
+
+        binding.trackDate.visibility = View.VISIBLE
+        binding.trackDate.text = loadedTrack.getFormattedDateTime()
+
+        binding.duration.visibility = View.VISIBLE
+        binding.duration.text = StyleUtils.getStyledDuration(loadedTrack.getFormattedDuration(true), false)
+
+        binding.distance.visibility = View.VISIBLE
+        binding.distance.text = StyleUtils.getStyledMagnitude(loadedTrack.getFormattedDistanceInKm())
+
+        val formattedAveSpeed = loadedTrack.getFormattedAverageSpeedInKmh()
+        val labelledAveSpeed = formattedAveSpeed + " " + getString(R.string.ave_speed_label)
+        binding.maxSpeed.visibility = View.VISIBLE
+        binding.aveSpeed.text = StyleUtils.getStyledMagnitude(labelledAveSpeed)
+
+        val formattedMaxSpeed = loadedTrack.getFormattedMaxSpeedInKmh()
+        val labelledMaxSpeed = formattedMaxSpeed + " " + getString(R.string.max_speed_label)
+        binding.maxSpeed.visibility = View.VISIBLE
+        binding.maxSpeed.text = StyleUtils.getStyledMagnitude(labelledMaxSpeed)
+
+        val formattedMaxAltitude = loadedTrack.getFormattedMaxAltitudInMeters()
+        val labelledMaxAltitude = formattedMaxAltitude + " " + getString(R.string.max_alt_label)
+        binding.maxAltitude.visibility = View.VISIBLE
+        binding.maxAltitude.text = StyleUtils.getStyledMagnitude(labelledMaxAltitude)
+
+        val elevationInMeters = loadedTrack.trackData?.let { calculateElevationInMeters(it) }
+        if (elevationInMeters != null) {
+            val formattedElevation = TrackAnalysis.formatAltitudeInMeters(elevationInMeters)
+            val labelledElevation = formattedElevation + " " + getString(R.string.elevation_label)
+            binding.elevation.text = StyleUtils.getStyledMagnitude(labelledElevation)
+            binding.elevation.visibility = View.VISIBLE
+        } else {
+            binding.elevation.visibility = View.GONE
+        }
     }
 
     private fun clearTelemetry() {
-        val standByText = getString(R.string.telemetry_standby_placeholder)
-        binding.trackName.text = standByText
-        binding.trackDate.text = standByText
-        binding.startTime.text = standByText
-        binding.endTime.text = standByText
-        binding.elapsedTime.text = standByText
-        binding.speed.text = standByText
-        binding.maxSpeed.text = standByText
-        binding.distance.text = standByText
-        binding.trackID.text = standByText
+        binding.trackName.text = getString(R.string.no_tracks_available)
+        binding.trackName.visibility = View.VISIBLE
+        binding.trackDate.visibility = View.GONE
+        binding.duration.visibility = View.GONE
+        binding.distance.visibility = View.GONE
+        binding.aveSpeed.visibility = View.GONE
+        binding.maxSpeed.visibility = View.GONE
+        binding.maxAltitude.visibility = View.GONE
+        binding.elevation.visibility = View.GONE
     }
 
     // RECOMMENDED FOR OSMDROID IMPLEMENTATION
@@ -165,10 +209,6 @@ class TrackViewerActivity : NavigationMenuActivity() {
     override fun onResume() {
         super.onResume()
         binding.mapView.onResume()
-        Log.d(
-            "Feed",
-            "TrackViewer/ onResume()"
-        )  // Ensures map tiles and other resources are refreshed
     }
 
     override fun onPause() {
