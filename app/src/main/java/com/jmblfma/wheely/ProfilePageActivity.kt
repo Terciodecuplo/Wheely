@@ -211,7 +211,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     private fun getLongestRoute() {
         binding.selectedHighlightText.text = getString(R.string.longest_route)
-        binding.selectedHighlightValue.text = ""//TODO - Method not implemeted yet
+        binding.selectedHighlightValue.text = TrackAnalysis.getLongestTrackInKm(trackHistoryList)
 
     }
 
