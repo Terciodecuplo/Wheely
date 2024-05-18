@@ -16,6 +16,7 @@ import java.util.Date
 import java.util.Locale
 
 object ImagePicker {
+
     fun saveImageToInternalStorage(context: Context, bitmap: Bitmap, fileName: String): String? {
         return try {
             val file = File(context.filesDir, fileName)
@@ -48,7 +49,7 @@ object ImagePicker {
         val inputStream = context.contentResolver.openInputStream(imgUri)
         inputStream?.let { stream ->
             val bitmap = BitmapFactory.decodeStream(stream)
-            stream.close() // Close the first stream
+            stream.close()
 
             // Re-open the stream for reading EXIF data
             context.contentResolver.openInputStream(imgUri)?.use { exifStream ->

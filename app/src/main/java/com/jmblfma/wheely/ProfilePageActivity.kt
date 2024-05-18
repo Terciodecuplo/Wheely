@@ -2,7 +2,10 @@ package com.jmblfma.wheely
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -15,7 +18,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -25,23 +27,19 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.jmblfma.wheely.adapter.ProfileViewPagerAdapter
 import com.jmblfma.wheely.databinding.UserProfileMainBinding
 import com.jmblfma.wheely.model.Track
-import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.ImageWorkerUtil
 import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.NavigationMenuActivity
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
-import java.util.UUID
 
 class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var binding: UserProfileMainBinding
+    private lateinit var updateReceiver: BroadcastReceiver
     private var trackHistoryList: List<Track> = emptyList()
     private var userVehicleList: List<Vehicle> = emptyList()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
@@ -76,12 +74,12 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.userTrackList.observe(this){
+        viewModel.userTrackList.observe(this) {
             trackHistoryList = it
             setupUserFields()
 
         }
-        viewModel.vehicleList.observe(this){
+        viewModel.vehicleList.observe(this) {
             userVehicleList = it
         }
     }
@@ -110,10 +108,31 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     override fun onResume() {
         super.onResume()
+        setupUpdateReceiver()
         profileUserMainDataSetup()
         val userId = UserSessionManager.getCurrentUser()!!.userId
         viewModel.fetchTrackListByUser(userId)
         viewModel.fetchUserVehicles(userId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister the receiver to avoid memory leaks
+        unregisterReceiver(updateReceiver)
+    }
+
+    private fun setupUpdateReceiver() {
+        updateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
+                    Log.d("SaveImageWorker","Broadcast received")
+                    updateBannerUI()
+                }
+            }
+        }
+
+        val intentFilter = IntentFilter("com.jmblfma.wheely.UPDATE_USER_INFO")
+        registerReceiver(updateReceiver, intentFilter)
     }
 
     override fun onBackPressed() {
@@ -219,6 +238,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding.selectedHighlightText.text = getString(R.string.number_of_vehicles)
         binding.selectedHighlightValue.text = userVehicleList.size.toString()
     }
+
     private fun getMaxInclination() {
         binding.selectedHighlightText.text = getString(R.string.max_inclination)
         binding.selectedHighlightValue.text = "23º"
@@ -296,47 +316,99 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setupImagePickerLauncher() {
-        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
-        val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let { receivedUri ->
-                    // Use Glide to load and display the image without delays
-                    Glide
-                        .with(this@ProfilePageActivity)
-                        .load(receivedUri)
+                    Glide.with(this@ProfilePageActivity).load(receivedUri)
                         .into(binding.bannerProfile)
-                    val bitmap = ImagePicker.fixImageOrientation(this, uri)
-                    // Save the image asynchronously
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let { bitmap ->
-                            currentBannerImagePath?.let { path ->
-                                val file = File(path)
-                                if (file.exists()) {
-                                    file.delete()
-                                }
-                            }
-                            savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@ProfilePageActivity, bitmap, "banner-pic-$imageId.jpg"
-                            )
-                            runOnUiThread { // This waits until the I/O saving operation finishes to persist the path into the DB
-                                updateUserBanner()
-                            }
-                        }
-                    }
+                    processImageAndSave(receivedUri, "user", "banner", "user-banner")
                 }
             }
     }
 
     private fun setupTakePictureLauncher() {
-        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
-        val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.bannerProfile.setImageURI(receivedUri)
-                        val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
+                        processImageAndSave(receivedUri, "user", "banner", "user-banner")
+                    }
+                }
+            }
+    }
+
+    private fun processImageAndSave(
+        uri: Uri,
+        entityType: String,
+        imageType: String,
+        prefix: String
+    ) {
+        val entityId = UserSessionManager.getCurrentUser()?.userId
+        ImageWorkerUtil.enqueueImageSave(
+            this,
+            uri,
+            entityId,
+            entityType,
+            imageType,
+            prefix
+        )
+        Log.d("SaveImageWorker", "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix")
+
+    }
+
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            takePicture()
+        } else {
+            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            takePicture()
+        } else {
+            showSnackbar(getString(R.string.camera_permission_denied_message))
+        }
+    }
+
+    private fun takePicture() {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            photoURI = ImagePicker.createImageFile(this)
+            takePictureLauncher.launch(photoURI)
+        } else {
+            showSnackbar(getString(R.string.no_camera_device_message))
+        }
+    }
+
+    private fun chooseImageFromGallery() {
+        imagePickerLauncher.launch("image/*")
+    }
+
+
+    /*    private fun setupImagePickerLauncher() {
+            val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
+            val imageId = UUID.randomUUID().toString()
+            imagePickerLauncher =
+                registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+                    uri?.let { receivedUri ->
+                        // Use Glide to load and display the image without delays
+                        Glide
+                            .with(this@ProfilePageActivity)
+                            .load(receivedUri)
+                            .into(binding.bannerProfile)
+                        val bitmap = ImagePicker.fixImageOrientation(this, uri)
+                        // Save the image asynchronously
                         lifecycleScope.launch(Dispatchers.IO) {
                             bitmap?.let { bitmap ->
                                 currentBannerImagePath?.let { path ->
@@ -348,82 +420,87 @@ class ProfilePageActivity : NavigationMenuActivity() {
                                 savedPath = ImagePicker.saveImageToInternalStorage(
                                     this@ProfilePageActivity, bitmap, "banner-pic-$imageId.jpg"
                                 )
-                                withContext(Dispatchers.Main) { // This waits until the I/O saving operation finishes to persist the path into the DB
+                                runOnUiThread { // This waits until the I/O saving operation finishes to persist the path into the DB
                                     updateUserBanner()
                                 }
                             }
                         }
                     }
                 }
-            }
-    }
-
-    private fun checkCameraPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            takePicture()
-        } else {
-            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
         }
-    }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
+        private fun setupTakePictureLauncher() {
+            val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
+            val imageId = UUID.randomUUID().toString()
+            takePictureLauncher =
+                registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+                    if (success) {
+                        photoURI?.let { receivedUri ->
+                            binding.bannerProfile.setImageURI(receivedUri)
+                            val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                bitmap?.let { bitmap ->
+                                    currentBannerImagePath?.let { path ->
+                                        val file = File(path)
+                                        if (file.exists()) {
+                                            file.delete()
+                                        }
+                                    }
+                                    savedPath = ImagePicker.saveImageToInternalStorage(
+                                        this@ProfilePageActivity, bitmap, "banner-pic-$imageId.jpg"
+                                    )
+                                    withContext(Dispatchers.Main) { // This waits until the I/O saving operation finishes to persist the path into the DB
+                                        updateUserBanner()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+        }
+
+        private fun checkCameraPermission() {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 takePicture()
             } else {
-                // Permission is denied
-                showSnackbar(getString(R.string.camera_permission_denied_message))
+                PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
             }
         }
-    }
 
-    private fun takePicture() {
-        // Ensure the device has a camera
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            photoURI =
-                ImagePicker.createImageFile(this)
-            takePictureLauncher.launch(photoURI)
-        } else {
-            showSnackbar(getString(R.string.no_camera_device_message))
+        override fun onRequestPermissionsResult(
+            requestCode: Int, permissions: Array<String>, grantResults: IntArray
+        ) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+            if (requestCode == CAMERA_REQUEST_CODE) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted
+                    takePicture()
+                } else {
+                    // Permission is denied
+                    showSnackbar(getString(R.string.camera_permission_denied_message))
+                }
+            }
         }
-    }
 
-    private fun chooseImageFromGallery() {
-        // MIME type for image/* to select any image type
-        imagePickerLauncher.launch("image/*")
-    }
-
-    private fun updateUserBanner() {
-        Log.d("UPDATE USER", "Banner Path: ${savedPath.toString()}")
-        UserSessionManager.getCurrentUser()?.userId?.let {
-            viewModel.updateUserBanner(
-                it,
-                savedPath
-            )
+        private fun takePicture() {
+            // Ensure the device has a camera
+            if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+                photoURI =
+                    ImagePicker.createImageFile(this)
+                takePictureLauncher.launch(photoURI)
+            } else {
+                showSnackbar(getString(R.string.no_camera_device_message))
+            }
         }
-        val updatedUser = UserSessionManager.getCurrentUser()?.let {
-            User(
-                it.userId,
-                it.nickname,
-                it.firstName,
-                it.lastName,
-                it.email,
-                it.dateOfBirth,
-                it.profileImage,
-                savedPath
-            )
-        }
-        UserSessionManager.updateLoggedUser(updatedUser)
-        startActivity(Intent(this, ProfilePageActivity::class.java))
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-        finish()
+    */
+    private fun updateBannerUI() {
+        Log.d("SaveImageWorker","Banner RELOADED => ${UserSessionManager.getCurrentUser()?.profileBanner}")
+        Glide.with(this)
+            .load(UserSessionManager.getCurrentUser()?.profileBanner)
+            .into(binding.bannerProfile)
     }
 
     private fun showSnackbar(message: String) {
