@@ -112,5 +112,14 @@
     <string name="tracking_notification_title">Wheely - Route in progress</string>
     <string name="tracking_notification_content">Location is being tracked</string>
     <string name="track_recording_reset">Discarded track!</string>
+    <string name="confirmation_dialog_track_deletion_msg">Are you sure you want to delete this track?</string>
+    <string name="confirmation_dialog_stop_tracking_msg">Areº you sure you want to stop tracking the route?</string>
+    <string name="confirmation_dialog_positive">Yes</string>
+    <string name="confirmation_dialog_negative">No</string>
     <string name="ave_speed_label">(ave.)</string>
+    <string name="max_speed_label">(max.)</string>
+    <string name="max_alt_label">(max. alt.)</string>
+    <string name="elevation_label">(elevation)</string>
+    <string name="no_tracks_available">No tracks available</string>
+    <string name="num_of_tracks">Tracks available:</string>
 </resources>

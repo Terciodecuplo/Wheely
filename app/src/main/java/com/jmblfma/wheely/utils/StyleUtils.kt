@@ -11,7 +11,14 @@ object StyleUtils {
         // finds the start of the unit (e.g 0.00 Km/h OR 0 Km/h -first is.Letter=true)
         val numberEndIndex = value.indexOfFirst { it.isLetter() }
 
-        // apply relative size span to the unit
+        // validates input format; returns same string if it doesn't apply
+        // only checks for controlled cases within the app
+        // TODO improve validation logic for ALL cases for safety?
+        if (value.isEmpty() || value == TrackAnalysis.FAILED_CALC_MSG) {
+            return SpannableString(value)
+        }
+
+        // applies the different size factor to the units
         if (numberEndIndex != -1) {
             spannableString.setSpan(
                 RelativeSizeSpan(unitScale), // scale the unit relative to the number size
@@ -22,42 +29,43 @@ object StyleUtils {
         return spannableString
     }
 
-    fun getStyledDuration(time: String, hideZeroFields: Boolean): SpannableString {
+    fun getStyledDuration(time: String, hideZeroHours: Boolean = true, hideZeroMinutes: Boolean = false): SpannableString {
         val hourNumberSize = 1f
         val hourUnitSize = 0.5f
 
         val minuteNumberSize = 1f
         val minuteUnitSize = 0.5f
 
-        val secondNumberSize = 1f
-        val secondUnitSize = 0.5f
+        val secondNumberSize = 0.7f
+        val secondUnitSize = 0.3f
 
-        // Validate the input format
-        val pattern = Regex("^\\d+ h \\d+ min \\d+ s$")
-        if (!pattern.matches(time)) {
+        // validates input format; returns same string if it doesn't apply
+        // only checks for controlled cases within the app
+        // TODO improve validation logic for ALL cases for safety?
+        if (time.isEmpty() || time == TrackAnalysis.FAILED_CALC_MSG) {
             return SpannableString(time)
         }
 
-        // Split the time string into parts
+        // splits the time string into parts
         val parts = time.split(" ")
         val hours = parts[0] + " " + parts[1]  // "0 h"
         val minutes = parts[2] + " " + parts[3]  // "0 min"
         val seconds = parts[4] + " " + parts[5]  // "0 s"
 
-        // Optionally hide zero fields
-        val displayHours = !(hideZeroFields && parts[0] == "0")
-        val displayMinutes = !(hideZeroFields && parts[2] == "0")
+        // sets fields show/hide
+        val displayHours = !(hideZeroHours && parts[0] == "0")
+        val displayMinutes = !(hideZeroMinutes && parts[2] == "0")
 
-        // Build the display string
+        // builds the final string
         val displayTime = StringBuilder()
         if (displayHours) displayTime.append(hours).append(" ")
         if (displayMinutes) displayTime.append(minutes).append(" ")
         displayTime.append(seconds)
 
-        // Create a SpannableString from the display string
+        // creates a SpannableString from the final string
         val spannableString = SpannableString(displayTime.toString().trim())
 
-        // Apply relative size spans to different parts of the text
+        // applies size spans to different parts of the text
         var start = 0
         if (displayHours) {
             val end = start + hours.length

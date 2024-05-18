@@ -1,3 +1,9 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorControlHighlight">
 
-</shape>
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="?attr/colorButtonNormal" /> <!-- Button background color -->
+        </shape>
+    </item>
+</ripple>

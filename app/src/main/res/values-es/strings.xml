@@ -106,6 +106,15 @@
     <string name="tracking_notification_title">Wheely - Ruta en progreso</string>
     <string name="tracking_notification_content">Seguimiento de localización activo</string>
     <string name="track_recording_reset">Track descartado!</string>
+    <string name="confirmation_dialog_track_deletion_msg">¿Estás seguro de que quieres eliminar esta ruta?</string>
+    <string name="confirmation_dialog_stop_tracking_msg">¿Estás seguro de quieres finalizar la grabación de la ruta?</string>
+    <string name="confirmation_dialog_positive">Sí</string>
+    <string name="confirmation_dialog_negative">No</string>
     <string name="date_time_history_list">El %1$s a las %2$s</string>
     <string name="ave_speed_label">(med.)</string>
+    <string name="max_speed_label">(máx.)</string>
+    <string name="max_alt_label">(alt. máx.)</string>
+    <string name="elevation_label">(desnivel)</string>
+    <string name="no_tracks_available">Sin rutas que mostrar</string>
+    <string name="num_of_tracks">Rutas disponibles:</string>
 </resources>
