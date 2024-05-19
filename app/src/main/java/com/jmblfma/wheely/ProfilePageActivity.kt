@@ -71,15 +71,42 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding.totalTracksValue.text = trackHistoryList.size.toString()
         binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(trackHistoryList)
         binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackHistoryList)
+        if (trackHistoryList.isNotEmpty()) {
+            when (UserSessionManager.getPreferredHighlight()){
+                1->{
+                    getMaxSpeed()
+                }
+                2->{
+                    getLongestRoute()
+                }
+                3->{
+                    getNumberOfVehicles()
+                }
+                4->{
+                    getMaxAltitude()
+                }
+                else->{
+                    binding.selectedHighlightText.text = getString(R.string.total_routes)
+                    binding.selectedHighlightValue.text = "0"
+                }
+            }
+
+        }
     }
 
     private fun setupObservers() {
         viewModel.userTrackList.observe(this) {
-            trackHistoryList = it ?: emptyList()
-            setupUserFields()
+            if (it != null) {
+                trackHistoryList = it
+                Log.d(
+                    "TESTING",
+                    "TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}"
+                )
+                setupUserFields()
+            }
         }
         viewModel.vehicleList.observe(this) {
-            userVehicleList = it ?: emptyList()
+            if (it != null) userVehicleList = it
         }
     }
 
@@ -135,9 +162,11 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun restoreUI() {
-        val bannerBitmap = BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner)
+        val bannerBitmap =
+            BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner)
         binding.bannerProfile.setImageBitmap(bannerBitmap)
-        val imageProfileBitmap = BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage)
+        val imageProfileBitmap =
+            BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage)
         binding.profileImage.setImageBitmap(imageProfileBitmap)
     }
 
@@ -235,23 +264,29 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun getLongestRoute() {
+        UserSessionManager.highlightPreference(2)
         binding.selectedHighlightText.text = getString(R.string.longest_route)
         binding.selectedHighlightValue.text = TrackAnalysis.getLongestTrackInKm(trackHistoryList)
 
     }
 
     private fun getNumberOfVehicles() {
+        UserSessionManager.highlightPreference(3)
+
         binding.selectedHighlightText.text = getString(R.string.number_of_vehicles)
         binding.selectedHighlightValue.text = userVehicleList.size.toString()
     }
 
     private fun getMaxAltitude() {
+        UserSessionManager.highlightPreference(4)
+
         binding.selectedHighlightText.text = getString(R.string.max_altitude)
         binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxAltitude(trackHistoryList)
     }
 
 
     private fun getMaxSpeed() {
+        UserSessionManager.highlightPreference(1)
         binding.selectedHighlightText.text = getString(R.string.max_speed)
         binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
     }
@@ -264,10 +299,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     private fun profileUserMainDataSetup() {
         Log.d(
-            "SaveImageWorker",
-            "ProfilePageActivity/ binding.userName.text ${binding.userName.text}"
+            "TESTING", "TRACKHISTORY IS NOT EMPTY ${trackHistoryList.size}"
         )
-
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
         setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
