@@ -6,11 +6,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -25,6 +29,7 @@ import com.jmblfma.wheely.utils.DialogUtils
 import com.jmblfma.wheely.utils.LanguageSelector
 import com.jmblfma.wheely.utils.MapUtils
 import com.jmblfma.wheely.utils.NavigationMenuActivity
+import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.StyleUtils
 import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.TrackRecordingState
@@ -46,6 +51,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         return R.id.nav_record
     }
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TrackRecordingBinding.inflate(layoutInflater)
@@ -57,6 +63,47 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         setupButtonAndMapsListeners()
         setupTrackRecordingLogic()
         setupTrackSavingLogic()
+        promptForPermissions()
+    }
+
+    // PERMISSIONS MGMT
+    // TODO might benefit from some refactoring to move notification prompt to utils as well
+    private fun promptForPermissions() {
+        var permissionsMsg = getString(R.string.tracking_permissions_rationale_msg)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // if necessary for api>=33
+            val pushNotificationPermissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestPermission()
+            ) { granted ->
+
+            }
+            permissionsMsg = getString(R.string.tracking_permissions_rationale_with_not_msg)
+        }
+        PermissionsManager.requestPermissions(
+            this,
+            PermissionsManager.TRACKING_PERMISSIONS,
+            PermissionsManager.REQUEST_CODE_TRACKING_PERMISSIONS,
+            permissionsMsg
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PermissionsManager.REQUEST_CODE_TRACKING_PERMISSIONS -> {
+                if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                    recreate() // necessary for notification; TODO might be removed in the future
+                } else {
+                    Toast.makeText(this, getString(R.string.permissions_denied), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.permissions_denied_extended), Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -487,7 +534,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
         // TODO might be moved to onCreate and always fetch this list beforehand?
         viewModel.loadedVehicles.observe(this) {
             if (it.isNotEmpty()) {
-                Toast.makeText(this, getString(R.string.vehicles_loaded), Toast.LENGTH_SHORT).show()
+                // Toast.makeText(this, getString(R.string.vehicles_loaded), Toast.LENGTH_SHORT).show()
                 val dialog = SaveTrackFragment()
                 dialog.show(supportFragmentManager, "SaveTrackDialog")
             } else {

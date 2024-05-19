@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -227,7 +228,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     private fun getMaxSpeed() {
         binding.selectedHighlightText.text = getString(R.string.max_speed)
-        binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
+        // binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
     }
 
 
@@ -379,7 +380,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 takePicture()
             } else {
                 // Permission is denied
-                showSnackbar(getString(R.string.camera_permission_denied_message))
+                Toast.makeText(this, getString(R.string.camera_permission_denied_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permissions_denied_extended), Toast.LENGTH_LONG).show()
             }
         }
     }

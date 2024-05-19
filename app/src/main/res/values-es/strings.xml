@@ -59,7 +59,6 @@
     <string name="take_picture_dialog">Hacer foto</string>
     <string name="gallery_picture_dialog">Elegir desde la galería</string>
     <string name="select_image_dialog_title">Seleccionar foto</string>
-    <string name="camera_permission_denied_message">Es necesario aceptar los permisos de cámara para usarla.</string>
     <string name="no_camera_device_message">Este dispositivo no tiene cámara</string>
     <string name="year_range_error">El año debe estár entre %1$d y %2$d</string>
     <string name="funny_info">¿Sabías que la primera moto fue inventada en 1885?</string>
@@ -117,4 +116,22 @@
     <string name="elevation_label">(desnivel)</string>
     <string name="no_tracks_available">Sin rutas que mostrar</string>
     <string name="num_of_tracks">Rutas disponibles:</string>
+
+    <string name="save_track_dialog_title">Guardar nueva ruta</string>
+    <string name="save_track_dialog_name_hint">Nombre ruta (opcional)</string>
+    <string name="save_track_dialog_description_hint">Descripción (opcional)</string>
+    <string name="save_track_dialog_button_text">Guardar</string>
+    <string name="save_track_dialog_difficulty_title">Selecciona Dificultad</string>
+    <string name="save_track_dialog_vehicle_title">Selecciona Vehículo</string>
+
+    <string name="difficulty_easy">Fácil</string>
+    <string name="difficulty_medium">Media</string>
+    <string name="difficulty_hard">Difícil</string>
+    <string name="difficulty_none">Desconocida</string>
+
+    <string name="tracking_permissions_rationale_msg">Wheely necesita acceso a tu localización para grabar tus rutas</string>
+    <string name="tracking_permissions_rationale_with_not_msg">Wheely necesita acceso a tu localización y notificaciones para grabar tus rutas</string>
+    <string name="permissions_denied">¡Permisos no proporcionados!</string>
+    <string name="permissions_denied_extended">Accede a opciones de aplicaciones y actívalas manualmente</string>
+    <string name="camera_permission_denied_message">Es necesario aceptar los permisos de cámara para usarla.</string>
 </resources>
