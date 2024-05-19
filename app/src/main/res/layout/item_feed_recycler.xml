@@ -5,61 +5,52 @@
     android:layout_height="wrap_content"
     android:paddingBottom="20dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/user_image_holder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_profile_img"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_margin="15dp"
         android:layout_rowSpan="2"
         app:cardCornerRadius="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-        <ImageView
-            android:id="@+id/user_profile_img"
-            android:layout_width="70dp"
-            android:layout_height="70dp" />
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginHorizontal="15dp"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp"
         android:textStyle="bold"
         android:text="User Name"
-        app:layout_constraintStart_toEndOf="@id/user_image_holder"
-        app:layout_constraintTop_toTopOf="@id/user_image_holder"
+        app:layout_constraintStart_toEndOf="@id/user_profile_img"
+        app:layout_constraintTop_toTopOf="@id/user_profile_img"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/track_date_and_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginHorizontal="15dp"
         android:textColor="@color/grey"
         android:textSize="15sp"
         android:textStyle="bold"
         android:text="Full Date"
-        app:layout_constraintStart_toEndOf="@id/user_image_holder"
+        app:layout_constraintStart_toEndOf="@id/user_profile_img"
         app:layout_constraintTop_toBottomOf="@id/user_name"
         app:layout_constraintEnd_toEndOf="parent"/>
-
     <TextView
         android:id="@+id/track_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginHorizontal="15dp"
         android:paddingTop="10dp"
         android:textColor="@color/colorPrimary"
         android:textSize="20sp"
         android:textStyle="bold"
         android:text="Track Name"
-        app:layout_constraintTop_toBottomOf="@id/user_image_holder"
+        app:layout_constraintTop_toBottomOf="@id/user_profile_img"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
@@ -190,7 +181,7 @@
     <TextView
         android:id="@+id/track_description"
         app:layout_constraintTop_toBottomOf="@id/map_container"
-        app:layout_constraintRight_toRightOf="@id/user_image_holder"
+        app:layout_constraintRight_toRightOf="@id/user_profile_img"
         app:layout_constraintBottom_toTopOf="@id/divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
