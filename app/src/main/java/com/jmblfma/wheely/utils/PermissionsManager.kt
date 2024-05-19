@@ -16,6 +16,7 @@ object PermissionsManager {
             // API level 34 and above
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.FOREGROUND_SERVICE,
                 Manifest.permission.FOREGROUND_SERVICE_LOCATION,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -25,6 +26,7 @@ object PermissionsManager {
             // API level 33
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 Manifest.permission.FOREGROUND_SERVICE,
                 Manifest.permission.POST_NOTIFICATIONS
@@ -34,6 +36,7 @@ object PermissionsManager {
             // API level 29 to below 33
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION,
                 Manifest.permission.FOREGROUND_SERVICE
             )
@@ -42,6 +45,7 @@ object PermissionsManager {
             // API level 28 to below 29
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.FOREGROUND_SERVICE
             )
         }
