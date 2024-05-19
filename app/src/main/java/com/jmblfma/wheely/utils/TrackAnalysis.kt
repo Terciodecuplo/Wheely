@@ -11,7 +11,8 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object TrackAnalysis {
-    const val FAILED_CALC_MSG = "NaN"
+    const val FAILED_CALC_MSG = "0"
+    const val FAILED_DATE_TIME_MSG = "DATE_PARSER_FAILED"
 
     fun formatSpeedInKmh(speedInMs: Double?, decimalPlaces: Int = 2): String {
         return speedInMs?.let {
@@ -19,7 +20,7 @@ object TrackAnalysis {
                 "%.${decimalPlaces}f km/h",
                 convertSpeedToKmh(speedInMs)
             )
-        } ?: FAILED_CALC_MSG
+        } ?: "$FAILED_CALC_MSG km/h"
     }
 
     fun formatDistanceInKm(distanceInMeters: Double?, decimalPlaces: Int = 2): String {
@@ -28,7 +29,7 @@ object TrackAnalysis {
                 "%.${decimalPlaces}f km",
                 convertDistanceToKm(distanceInMeters)
             )
-        } ?: FAILED_CALC_MSG
+        } ?: "$FAILED_CALC_MSG km"
     }
 
     fun formatAltitudeInMeters(altitude: Double?, decimalPlaces: Int = 0): String {
@@ -97,6 +98,7 @@ object TrackAnalysis {
         return formatSpeedInKmh(averageSpeed, 0)
     }
 
+    // TODO review potential crashes when using applying mapNotNull/maxOrnull
     fun getTracksTotalDistanceInKm(trackBatch: List<Track>): String {
         // same logic as for average speed
         val totalDistance = trackBatch.mapNotNull { it.totalDistance }.sum() // handles emptyList fine
@@ -149,7 +151,7 @@ object TrackAnalysis {
             val dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(it), ZoneId.systemDefault())
             val formatter = DateTimeFormatter.ofPattern(format, Locale.getDefault())
             dateTime.format(formatter)
-        } ?: FAILED_CALC_MSG
+        } ?: FAILED_DATE_TIME_MSG
     }
 
     fun convertTimestampToTime(timestamp: Long?): String {
@@ -192,7 +194,7 @@ object TrackAnalysis {
         return if (timeMillis != null) {
             formatDuration(computeDurationFromMillis(timeMillis))
         } else {
-            FAILED_CALC_MSG
+            FAILED_DATE_TIME_MSG
         }
     }
 
@@ -201,7 +203,7 @@ object TrackAnalysis {
             val mode = if (withSeconds) 2 else 1
             formatDuration(computeDurationBetweenTimestamps(startTimestamp, endTimestamp), mode)
         } else {
-            FAILED_CALC_MSG
+            FAILED_DATE_TIME_MSG
         }
     }
 
