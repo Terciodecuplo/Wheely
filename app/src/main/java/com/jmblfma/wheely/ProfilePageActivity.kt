@@ -71,15 +71,19 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding.totalTracksValue.text = trackHistoryList.size.toString()
         binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(trackHistoryList)
         binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackHistoryList)
+        if (trackHistoryList.isNotEmpty()) getLongestRoute()
     }
 
     private fun setupObservers() {
         viewModel.userTrackList.observe(this) {
-            trackHistoryList = it ?: emptyList()
-            setupUserFields()
+            if (it != null) {
+                trackHistoryList = it
+                Log.d("TESTING","TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}")
+                setupUserFields()
+            }
         }
         viewModel.vehicleList.observe(this) {
-            userVehicleList = it ?: emptyList()
+            if (it != null) userVehicleList = it
         }
     }
 
@@ -135,9 +139,11 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun restoreUI() {
-        val bannerBitmap = BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner)
+        val bannerBitmap =
+            BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner)
         binding.bannerProfile.setImageBitmap(bannerBitmap)
-        val imageProfileBitmap = BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage)
+        val imageProfileBitmap =
+            BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage)
         binding.profileImage.setImageBitmap(imageProfileBitmap)
     }
 
@@ -235,7 +241,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun getLongestRoute() {
-        binding.selectedHighlightText.text = getString(R.string.longest_route)
+        if (trackHistoryList.isNotEmpty())
+            binding.selectedHighlightText.text = getString(R.string.longest_route)
         binding.selectedHighlightValue.text = TrackAnalysis.getLongestTrackInKm(trackHistoryList)
 
     }
@@ -264,10 +271,8 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     private fun profileUserMainDataSetup() {
         Log.d(
-            "SaveImageWorker",
-            "ProfilePageActivity/ binding.userName.text ${binding.userName.text}"
+            "TESTING", "TRACKHISTORY IS NOT EMPTY ${trackHistoryList.size}"
         )
-
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
         setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
