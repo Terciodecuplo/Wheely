@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.TrackViewerActivity
 import com.jmblfma.wheely.model.Track
@@ -46,7 +47,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         }
 
         fun bind(track: Track, user: User?) {
-            userProfileImage.setImageResource(R.drawable.user_default_pic)
+            setPostImage(user)
             userName.text = user?.nickname ?: "UNKNOWN USER"
             trackName.text = track.name
             val trackDateAndTime = track.getFormattedDateTime()
@@ -64,6 +65,14 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
                 MapUtils.loadRoutePreview(mapPreview, it)
             }
             selectedTrackId = track.trackId
+        }
+
+        private fun setPostImage(user: User?) {
+            if (user != null) {
+                Glide.with(userProfileImage.context)
+                    .load(user.profileImage)
+                    .into(userProfileImage)
+            }
         }
     }
 

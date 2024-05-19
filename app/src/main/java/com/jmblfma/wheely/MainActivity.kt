@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun checkUsersInDB() {
         viewModel.fetchAllUsers.observe(this) {
             if (it.isEmpty()) {
