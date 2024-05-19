@@ -3,79 +3,205 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="20dp">
+    android:paddingBottom="20dp">
 
-    <GridLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_profile_img"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="15dp"
+        android:layout_rowSpan="2"
+        app:cardCornerRadius="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:rowCount="2"
-        android:columnCount="2"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginHorizontal="15dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="User Name"
+        app:layout_constraintStart_toEndOf="@id/user_profile_img"
+        app:layout_constraintTop_toTopOf="@id/user_profile_img"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/user_image_holder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:layout_rowSpan="2"
-            app:cardCornerRadius="30dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <ImageView
-                android:id="@+id/user_profile_img"
-                android:layout_width="70dp"
-                android:layout_height="70dp" />
-        </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/user_name"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_width="wrap_content"
-            android:gravity="bottom"
-            android:textStyle="bold"
-            android:text="VAL_USER_NAME" />
-        <TextView
-            android:id="@+id/track_date_and_location"
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:gravity="top"
-            android:textSize="15sp"
-            android:text="DATE, TIME AND GEN. LOCATION?" />
-    </GridLayout>
-
+    <TextView
+        android:id="@+id/track_date_and_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        android:textColor="@color/grey"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="Full Date"
+        app:layout_constraintStart_toEndOf="@id/user_profile_img"
+        app:layout_constraintTop_toBottomOf="@id/user_name"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <TextView
         android:id="@+id/track_name"
-        style="@style/TestTextFieldStyleForStats"
-        android:gravity="start"
-        android:layout_width="match_parent"
-        android:autoSizeMinTextSize="12dp"
-        android:text="VAL_TRACK_NAME"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
-    <TextView
-        android:id="@+id/track_stats"
-        style="@style/TestTextFieldStyleForStats"
-        app:layout_constraintTop_toBottomOf="@+id/track_name"
-        android:layout_width="match_parent"
-        android:gravity="start"
-        android:text="VAL_DURATION - VAL_DISTANCE - VAL_AVE_SPEED" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/track_stats" >
+        android:layout_marginHorizontal="15dp"
+        android:paddingTop="10dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Track Name"
+        app:layout_constraintTop_toBottomOf="@id/user_profile_img"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <!-- Stats grid -->
+    <GridLayout
+        android:id="@+id/track_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rowCount="2"
+        android:columnCount="4"
+        android:paddingTop="5dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:alignmentMode="alignMargins"
+        app:layout_constraintTop_toBottomOf="@id/track_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/track_duration_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:padding="5dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:text="@string/feed_duration_label"/>
+        <TextView
+            android:id="@+id/track_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:padding="5dp"
+            android:textColor="@color/textColor"
+            android:text="@string/feed_distance_label"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/track_speed_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:padding="5dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:text="@string/feed_aveSpeed_label"/>
+        <TextView
+            android:id="@+id/track_difficulty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:padding="5dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:text="@string/feed_difficulty_label"/>
+        <TextView
+            android:id="@+id/track_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:padding="5dp"
+            android:textColor="@color/grey"
+            android:textSize="15sp"
+            android:text="0h 0min 0s"/>
+        <TextView
+            android:id="@+id/track_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:textColor="@color/grey"
+            android:textSize="15sp"
+            android:text="0,00 km"/>
+        <TextView
+            android:id="@+id/track_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:padding="5dp"
+            android:textColor="@color/grey"
+            android:textSize="15sp"
+            android:text="0.00 km/h"/>
+        <TextView
+            android:id="@+id/track_difficulty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="fill_horizontal"
+            android:textColor="@color/grey"
+            android:padding="5dp"
+            android:textSize="15sp"
+            android:text="Easy"/>
+    </GridLayout>
+
+    <!-- Map view container -->
+    <FrameLayout
+        android:id="@+id/map_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/track_stats"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
         <org.osmdroid.views.MapView
             android:id="@+id/map_preview"
             android:layout_width="match_parent"
-            android:layout_height="180dp" />
+            android:layout_height="230dp" />
         <View
             android:id="@+id/map_preview_holder"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="230dp"
             android:clickable="true"
             android:focusable="true"
-            android:background="@android:color/transparent" /> <!-- This transparent view will catch all touches -->
+            android:background="@android:color/transparent" />
+
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/track_description"
+        app:layout_constraintTop_toBottomOf="@id/map_container"
+        app:layout_constraintRight_toRightOf="@id/user_profile_img"
+        app:layout_constraintBottom_toTopOf="@id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="#F5F5F5"
+        android:padding="10dp"
+        android:textColor="#212121"
+        android:textSize="16sp"
+        android:text="Description here" />
+    <!-- Divider at the bottom -->
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="10dp"
+        app:layout_constraintTop_toBottomOf="@id/track_description"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

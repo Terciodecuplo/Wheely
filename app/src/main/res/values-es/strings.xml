@@ -134,4 +134,10 @@
     <string name="permissions_denied">¡Permisos no proporcionados!</string>
     <string name="permissions_denied_extended">Accede a opciones de aplicaciones y actívalas manualmente</string>
     <string name="camera_permission_denied_message">Es necesario aceptar los permisos de cámara para usarla.</string>
+
+    <string name="feed_duration_label">Duración</string>
+    <string name="feed_distance_label">Distancia</string>
+    <string name="feed_aveSpeed_label">Velocidad</string>
+    <string name="feed_difficulty_label">Dificultad</string>
+    <string name="feed_description_label">Descripción</string>
 </resources>

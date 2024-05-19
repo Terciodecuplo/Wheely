@@ -110,14 +110,15 @@ object TrackAnalysis {
         return formatDistanceInKm(longestTrack, 0)
     }
 
-    fun getTracksTotalDuration(trackBatch: List<Track>): String {
+    fun getTracksTotalDuration(trackBatch: List<Track>, showMinutes: Boolean = false): String {
         var totalDuration = Duration.ZERO
         trackBatch.forEach {
             if (it.startTime != null && it.endTime != null) {
                 totalDuration += computeDurationBetweenTimestamps(it.startTime!!, it.endTime!!)
             }
         }
-        return formatDuration(totalDuration, 0)
+        val mode = if (showMinutes) 1 else 0
+        return formatDuration(totalDuration, mode)
     }
 
     fun getTracksMaxSpeed(trackBatch: List<Track>): String {

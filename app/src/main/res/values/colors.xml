@@ -40,6 +40,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="semitransparentWhite">#56FFFFFF</color>
     <color name="semitransparentPrimary">#8B5FB6FF</color>
+    <color name="feedDivider">#C7C7C7</color>
 
     <!-- MARKERS COLORS -->
     <color name="startMarkerColor">@color/locationPointer</color>
