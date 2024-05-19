@@ -12,17 +12,23 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.jmblfma.wheely.databinding.VehicleStatsLayoutBinding
+import com.jmblfma.wheely.model.Track
+import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 
 class VehicleStatsActivity : AppCompatActivity() {
     private lateinit var binding: VehicleStatsLayoutBinding
     private val viewModel: NewVehicleDataViewModel by viewModels()
+    private var vehicleTrackList: List<Track> = emptyList()
+    private lateinit var vehicle: Vehicle
     private var vehicleId: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = VehicleStatsLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupObservers()
         setSupportActionBar(binding.toolbarVehicleStats)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -35,20 +41,39 @@ class VehicleStatsActivity : AppCompatActivity() {
         vehicleId = intent.extras?.getInt("vehicleId")
             ?: throw IllegalArgumentException("Vehicle ID not found")
         Log.d("VEHICLE", "vehicleID = $vehicleId")
-        getVehicleData(vehicleId)
     }
 
-    private fun getVehicleData(vehicleId: Int) {
+    override fun onResume() {
+        super.onResume()
         viewModel.fetchSingleVehicle(vehicleId)
+        viewModel.getVehicleTrackList(vehicleId)
+    }
+
+    private fun setupObservers() {
         viewModel.vehicleData.observe(this) {
-            Log.d("VEHICLE", "Observer says = ${it.name}")
-            setVehicleImage(binding.vehicleImage, it.image)
-            binding.vehicleNameEdittext.setText(it.name)
-            binding.vehicleBrandEdittext.setText(it.brand)
-            binding.vehicleModelEdittext.setText(it.model)
-            binding.hpEdittext.setText(it.horsepower.toString())
-            binding.yearEdittext.setText(it.year)
+            vehicle = it
         }
+        viewModel.vehicleTrackList.observe(this) {
+            vehicleTrackList = it
+            Log.d("TESTING", "The TRACKLIST CONTAINS => ${vehicleTrackList[0].name}")
+            getVehicleData()
+        }
+    }
+
+    private fun getVehicleData() {
+        Log.d("TESTING", "Observer says = ${vehicle.name} size of the list = ${vehicleTrackList.size}")
+
+        setVehicleImage(binding.vehicleImage, vehicle.image)
+        binding.vehicleNameEdittext.setText(vehicle.name)
+        binding.vehicleBrandEdittext.setText(vehicle.brand)
+        binding.vehicleModelEdittext.setText(vehicle.model)
+        binding.hpEdittext.setText(vehicle.horsepower.toString())
+        binding.yearEdittext.setText(vehicle.year)
+        binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(vehicleTrackList)
+        binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(vehicleTrackList)
+        binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(vehicleTrackList)
+        binding.totalTracksValue.text = vehicleTrackList.size.toString()
+
     }
 
     private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
