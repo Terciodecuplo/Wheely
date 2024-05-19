@@ -69,17 +69,15 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding.totalTracksValue.text = trackHistoryList.size.toString()
         binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(trackHistoryList)
         binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackHistoryList)
-        //getMaxSpeed()
     }
 
     private fun setupObservers() {
         viewModel.userTrackList.observe(this) {
-            trackHistoryList = it
+            trackHistoryList = it ?: emptyList()
             setupUserFields()
-
         }
         viewModel.vehicleList.observe(this) {
-            userVehicleList = it
+            userVehicleList = it ?: emptyList()
         }
     }
 
@@ -108,18 +106,13 @@ class ProfilePageActivity : NavigationMenuActivity() {
         viewModel.fetchUserVehicles(userId)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Unregister the receiver to avoid memory leaks
-        unregisterReceiver(updateReceiver)
-    }
-
     private fun setupUpdateReceiver() {
         updateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
                     Log.d("SaveImageWorker", "Broadcast received")
                     updateBannerUI()
+                    setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
                 }
             }
         }
@@ -250,7 +243,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
 
     private fun profileUserMainDataSetup() {
-        Log.d("TESTING", "ProfilePageActivity/ binding.userName.text ${binding.userName.text}")
+        Log.d("SaveImageWorker", "ProfilePageActivity/ binding.userName.text ${binding.userName.text}")
 
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
@@ -266,7 +259,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        Log.d("SAVING USER", "imagePath: $imagePath")
+        Log.d("SaveImageWorker", "imagePath: $imagePath")
         if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(R.drawable.user_default_pic)

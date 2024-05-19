@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -29,7 +30,9 @@ import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
 import com.jmblfma.wheely.utils.ImagePicker.createImageFile
 import com.jmblfma.wheely.utils.ImagePicker.fixImageOrientation
+import com.jmblfma.wheely.utils.ImageWorkerUtil
 import com.jmblfma.wheely.utils.PermissionsManager
+import com.jmblfma.wheely.utils.SignUpManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +50,6 @@ class NewUserActivity : AppCompatActivity() {
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private var photoURI: Uri? = null
-    private var savedPath: String? = null
 
     companion object {
         private val EMAIL_PATTERN = "^[a-zA-Z0-9_.-]+@[a-zA-Z-]+\\.[a-zA-Z]{2,}$".toRegex()
@@ -69,6 +71,7 @@ class NewUserActivity : AppCompatActivity() {
         binding.toolbarTitle.text = getString(R.string.signup_layout_title)
         binding.toolbarNewUser.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
+            SignUpManager.restoreState()
         }
         binding.userBirthdayEdittext.setOnClickListener {
             showDatePicker()
@@ -148,93 +151,80 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
-        val currentProfileImagePath = UserSessionManager.getCurrentUser()?.profileImage
-        val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let { receivedUri ->
-                    // Use Glide to load and display the image without delays
-                    Glide
-                        .with(this@NewUserActivity)
+                    Glide.with(this@NewUserActivity)
                         .load(receivedUri)
                         .into(binding.userImage)
-                    val bitmap = fixImageOrientation(this, uri)
-                    // Save the image asynchronously
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let { it ->
-                            currentProfileImagePath?.let { path ->
-                                val file = File(path)
-                                if (file.exists()) {
-                                    file.delete()
-                                }
-                            }
-                            savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@NewUserActivity, it, "profile-pic-$imageId.jpg"
-                            )
-                        }
-                    }
+                    processImageAndSave(receivedUri, "user", "profile", "profile-pic")
                 }
             }
     }
 
     private fun setupTakePictureLauncher() {
-        val currentBannerImagePath = UserSessionManager.getCurrentUser()?.profileBanner
-        val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.userImage.setImageURI(receivedUri)
-                        val bitmap = fixImageOrientation(this, receivedUri)
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            bitmap?.let { it ->
-                                currentBannerImagePath?.let { path ->
-                                    val file = File(path)
-                                    if (file.exists()) {
-                                        file.delete()
-                                    }
-                                }
-                                savedPath = ImagePicker.saveImageToInternalStorage(
-                                    this@NewUserActivity, it, "profile-pic-$imageId.jpg"
-                                )
-                            }
-                        }
+                        Log.d("SaveImageWorker", "URI candidate = $receivedUri")
+                        processImageAndSave(receivedUri, "user", "profile", "profile-pic")
                     }
                 }
             }
     }
 
+    private fun processImageAndSave(
+        uri: Uri,
+        entityType: String,
+        imageType: String,
+        prefix: String
+    ) {
+        val entityId = -1
+        ImageWorkerUtil.enqueueImageSave(
+            this,
+            uri,
+            entityId,
+            entityType,
+            imageType,
+            prefix
+        )
+        Log.d(
+            "SaveImageWorker",
+            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
+        )
+
+    }
+
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.CAMERA
+                this,
+                Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             takePicture()
         } else {
-            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+            PermissionsManager.getCameraPermission(this, NewUserActivity.CAMERA_REQUEST_CODE)
         }
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                takePicture()
-            } else {
-                // Permission is denied
-                showSnackbar(getString(R.string.camera_permission_denied_message))
-            }
+        if (requestCode == NewUserActivity.CAMERA_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            takePicture()
+        } else {
+            showSnackbar(getString(R.string.camera_permission_denied_message))
         }
     }
 
     private fun takePicture() {
-        // Ensure the device has a camera
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            photoURI =
-                createImageFile(this)
+            photoURI = ImagePicker.createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
             showSnackbar(getString(R.string.no_camera_device_message))
@@ -242,7 +232,6 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun chooseImageFromGallery() {
-        // MIME type for image/* to select any image type
         imagePickerLauncher.launch("image/*")
     }
 
@@ -281,6 +270,7 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun postUser() {
+        Log.d("SaveImageWorker", "Candidate profile image path = ${SignUpManager.userProfilePictureCandidate}")
         viewModel.setUserCandidate(
             User(
                 0,
@@ -289,7 +279,7 @@ class NewUserActivity : AppCompatActivity() {
                 binding.userLastnameEdittext.text.toString(),
                 binding.userEmailEdittext.text.toString(),
                 binding.userBirthdayEdittext.text.toString(),
-                savedPath,
+                SignUpManager.userProfilePictureCandidate,
                 null
             )
         )
