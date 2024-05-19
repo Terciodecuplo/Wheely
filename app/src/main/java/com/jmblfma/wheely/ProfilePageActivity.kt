@@ -289,7 +289,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     private fun getMaxSpeed() {
         UserSessionManager.highlightPreference(1)
         binding.selectedHighlightText.text = getString(R.string.max_speed)
-        // binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
+        binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
     }
 
 
