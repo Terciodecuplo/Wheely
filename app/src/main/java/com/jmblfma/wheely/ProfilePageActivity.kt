@@ -71,14 +71,37 @@ class ProfilePageActivity : NavigationMenuActivity() {
         binding.totalTracksValue.text = trackHistoryList.size.toString()
         binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(trackHistoryList)
         binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackHistoryList)
-        if (trackHistoryList.isNotEmpty()) getLongestRoute()
+        if (trackHistoryList.isNotEmpty()) {
+            when (UserSessionManager.getPreferredHighlight()){
+                1->{
+                    getMaxSpeed()
+                }
+                2->{
+                    getLongestRoute()
+                }
+                3->{
+                    getNumberOfVehicles()
+                }
+                4->{
+                    getMaxAltitude()
+                }
+                else->{
+                    binding.selectedHighlightText.text = getString(R.string.total_routes)
+                    binding.selectedHighlightValue.text = "0"
+                }
+            }
+
+        }
     }
 
     private fun setupObservers() {
         viewModel.userTrackList.observe(this) {
             if (it != null) {
                 trackHistoryList = it
-                Log.d("TESTING","TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}")
+                Log.d(
+                    "TESTING",
+                    "TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}"
+                )
                 setupUserFields()
             }
         }
@@ -241,24 +264,29 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun getLongestRoute() {
-        if (trackHistoryList.isNotEmpty())
-            binding.selectedHighlightText.text = getString(R.string.longest_route)
+        UserSessionManager.highlightPreference(2)
+        binding.selectedHighlightText.text = getString(R.string.longest_route)
         binding.selectedHighlightValue.text = TrackAnalysis.getLongestTrackInKm(trackHistoryList)
 
     }
 
     private fun getNumberOfVehicles() {
+        UserSessionManager.highlightPreference(3)
+
         binding.selectedHighlightText.text = getString(R.string.number_of_vehicles)
         binding.selectedHighlightValue.text = userVehicleList.size.toString()
     }
 
     private fun getMaxAltitude() {
+        UserSessionManager.highlightPreference(4)
+
         binding.selectedHighlightText.text = getString(R.string.max_altitude)
         binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxAltitude(trackHistoryList)
     }
 
 
     private fun getMaxSpeed() {
+        UserSessionManager.highlightPreference(1)
         binding.selectedHighlightText.text = getString(R.string.max_speed)
         binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
     }
