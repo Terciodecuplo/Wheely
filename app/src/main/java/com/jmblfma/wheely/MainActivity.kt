@@ -1,6 +1,8 @@
 package com.jmblfma.wheely
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
