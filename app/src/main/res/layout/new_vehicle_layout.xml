@@ -85,9 +85,10 @@
 
             <Button
                 android:id="@+id/add_vehicle_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginHorizontal="50dp"
+                android:layout_marginVertical="10dp"
                 android:text="@string/add_vehicle_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
