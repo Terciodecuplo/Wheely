@@ -74,6 +74,7 @@ class TrackDataRepository() {
     suspend fun fetchTrackByID(trackId: Int): Track? = trackDao.getTrackWithPoints(trackId)
 
     suspend fun fetchTrackListByUser(userId: Int): List<Track> = trackDao.getAllTracksForUser(userId)
+    suspend fun fetchTrackListByVehicle(vehicleId: Int): List<Track> = trackDao.getAllTracksForVehicle(vehicleId)
     suspend fun deleteTrackById(trackId: Int): Boolean {
         return trackDao.deleteTrackById(trackId) > 0
     }

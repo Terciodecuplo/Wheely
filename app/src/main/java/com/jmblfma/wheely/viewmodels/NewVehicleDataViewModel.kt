@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.repository.TrackDataRepository
 import com.jmblfma.wheely.repository.UserDataRepository
 import com.jmblfma.wheely.repository.VehicleDataRepository
 import kotlinx.coroutines.launch
@@ -13,6 +15,7 @@ import kotlinx.coroutines.launch
 class NewVehicleDataViewModel : ViewModel() {
     private val repository = VehicleDataRepository.sharedInstance
     private val userRepository = UserDataRepository.sharedInstance
+    private val trackRepository = TrackDataRepository.sharedInstance
 
     private val _userCandidateData = MutableLiveData<User?>()
     var userCandidateData: LiveData<User?> = _userCandidateData
@@ -30,6 +33,13 @@ class NewVehicleDataViewModel : ViewModel() {
     private val _removeVehicleStatus = MutableLiveData<Int?>()
     val removeVehicleStatus: LiveData<Int?> = _removeVehicleStatus
 
+    private val _vehicleTrackList = MutableLiveData<List<Track>>()
+    val vehicleTrackList: LiveData<List<Track>> = _vehicleTrackList
+    fun getVehicleTrackList(vehicleId: Int){
+        viewModelScope.launch {
+            _vehicleTrackList.postValue(trackRepository.fetchTrackListByVehicle(vehicleId))
+        }
+    }
     fun getUserCandidate() {
         viewModelScope.launch {
             _userCandidateData.postValue(userRepository.getUserCandidate())
