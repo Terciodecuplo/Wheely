@@ -118,7 +118,7 @@ class TrackingService : Service(), SensorEventListener {
     private lateinit var locationCallback: LocationCallback
     private var isPaused: Boolean = false
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint("MissingPermission") // permissions are checked before ever launching the service
     private fun startLocationUpdates() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -191,7 +191,7 @@ class TrackingService : Service(), SensorEventListener {
     private fun updateNotification(elapsedTime: Long) {
         val updatedNotification = notificationBuilder
             ?.setContentText(
-                getString(R.string.tracking_notification_elapsed_time) + TrackAnalysis.formatDurationFromMillis(
+                getString(R.string.tracking_notification_elapsed_time) + " " + TrackAnalysis.formatDurationFromMillis(
                     elapsedTime
                 )
             )

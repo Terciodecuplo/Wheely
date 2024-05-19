@@ -46,6 +46,7 @@ class SaveTrackFragment : DialogFragment() {
         binding.spinnerDifficulty.adapter = difficultyAdapter
 
         binding.saveButton.setOnClickListener {
+            // text length is limited in the UI
             val name = binding.editTextName.text.toString()
             val description = binding.editTextDescription.text.toString()
             val selectedVehicleId = (binding.spinnerVehicles.selectedItem as Vehicle).vehicleId

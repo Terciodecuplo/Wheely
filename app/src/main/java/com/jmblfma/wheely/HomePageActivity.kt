@@ -25,9 +25,8 @@ class HomePageActivity : NavigationMenuActivity() {
         setSupportActionBar(binding.toolbarHome)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.toolbarTitle.text = getString(R.string.post_layout_title)
-
-        setupFeedObservers()
         setupBottomNavigation()
+        setupFeedObservers()
     }
 
     override fun onResume() {
@@ -40,10 +39,9 @@ class HomePageActivity : NavigationMenuActivity() {
         viewModel.combinedData.observe(this) { (trackList, userList) ->
             if (trackList != null && userList != null) {
                 val usersById = userList.associateBy { it.userId }
-                binding.postRecycler.adapter = PostsAdapter(trackList, usersById)
+                binding.postRecycler.adapter = PostsAdapter(trackList.reversed(), usersById)
                 binding.postRecycler.layoutManager =
-                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
-                binding.postRecycler.scrollToPosition(trackList.size - 1)
+                    LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             }
         }
     }

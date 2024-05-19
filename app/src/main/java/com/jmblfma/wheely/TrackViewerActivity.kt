@@ -27,7 +27,6 @@ class TrackViewerActivity : NavigationMenuActivity() {
         super.onCreate(savedInstanceState)
         binding = TrackViewerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         LanguageSelector.updateLocale(this, LanguageSelector.loadLanguage(this))
         setupBottomNavigation()
         setupButtonListeners()
@@ -39,11 +38,9 @@ class TrackViewerActivity : NavigationMenuActivity() {
         } else {
             viewModel.fetchLastTrack()
         }
-
+        // LEGACY TESTING
+        // viewModel.fetchTrackList()
         // setupAllTracksStats()
-
-        // TODO maybe only testing:
-        viewModel.fetchTrackList()
     }
 
     override fun onBackPressed() {
@@ -215,5 +212,4 @@ class TrackViewerActivity : NavigationMenuActivity() {
         super.onPause()
         binding.mapView.onPause() // Ensures any changes or state are paused
     }
-
 }

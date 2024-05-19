@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -288,7 +289,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     private fun getMaxSpeed() {
         UserSessionManager.highlightPreference(1)
         binding.selectedHighlightText.text = getString(R.string.max_speed)
-        binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
+        // binding.selectedHighlightValue.text = TrackAnalysis.getTracksMaxSpeed(trackHistoryList)
     }
 
 
@@ -420,10 +421,16 @@ class ProfilePageActivity : NavigationMenuActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            takePicture()
-        } else {
-            showSnackbar(getString(R.string.camera_permission_denied_message))
+
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                takePicture()
+            } else {
+                // Permission is denied
+                Toast.makeText(this, getString(R.string.camera_permission_denied_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permissions_denied_extended), Toast.LENGTH_LONG).show()
+            }
         }
     }
 

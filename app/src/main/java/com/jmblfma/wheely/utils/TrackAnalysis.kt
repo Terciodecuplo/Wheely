@@ -92,18 +92,19 @@ object TrackAnalysis {
     // TRACK BATCH ANALYSIS
     fun getTracksAverageSpeedInKmh(trackBatch: List<Track>): String {
         // if a particular track's ave. speed is NULL; skips this value to compute the average (ie mapNotNull)
-        val averageSpeed = trackBatch.mapNotNull { it.averageSpeed }.average()
+        val speeds = trackBatch.mapNotNull { it.averageSpeed }
+        val averageSpeed = if (speeds.isNotEmpty()) speeds.average() else null
         return formatSpeedInKmh(averageSpeed, 0)
     }
 
     fun getTracksTotalDistanceInKm(trackBatch: List<Track>): String {
         // same logic as for average speed
-        val totalDistance = trackBatch.mapNotNull { it.totalDistance }.sum()
+        val totalDistance = trackBatch.mapNotNull { it.totalDistance }.sum() // handles emptyList fine
         return formatDistanceInKm(totalDistance, 0)
     }
 
     fun getLongestTrackInKm(trackBatch: List<Track>): String {
-        val longestTrack = trackBatch.mapNotNull { it.totalDistance }.max()
+        val longestTrack = trackBatch.mapNotNull { it.totalDistance }.maxOrNull()
         return formatDistanceInKm(longestTrack, 0)
     }
 
@@ -118,12 +119,12 @@ object TrackAnalysis {
     }
 
     fun getTracksMaxSpeed(trackBatch: List<Track>): String {
-        val maxSpeed = trackBatch.mapNotNull { it.maxSpeed }.max()
+        val maxSpeed = trackBatch.mapNotNull { it.maxSpeed }.maxOrNull()
         return formatSpeedInKmh(maxSpeed, 0)
     }
 
     fun getTracksMaxAltitude(trackBatch: List<Track>): String {
-        val maxAltitude = trackBatch.mapNotNull { it.maxAltitude }.max()
+        val maxAltitude = trackBatch.mapNotNull { it.maxAltitude }.maxOrNull()
         return formatAltitudeInMeters(maxAltitude, 0)
     }
 
@@ -134,7 +135,7 @@ object TrackAnalysis {
             } else {
                 null
             }
-        }.max()
+        }.maxOrNull()
         return formatDuration(maxDuration, 1)
     }
 
@@ -204,10 +205,11 @@ object TrackAnalysis {
         }
     }
 
-    private fun formatDuration(duration: Duration, mode: Int = 2): String {
-        val hours = duration.toHours()
-        val minutes = duration.toMinutes() % 60 // % 60 solves: 210/60 = 3(%=.5)  .5*60 = 30 min
-        val seconds = duration.seconds % 60
+    private fun formatDuration(duration: Duration?, mode: Int = 2): String {
+        val currentDuration = duration ?: Duration.ZERO
+        val hours = currentDuration.toHours()
+        val minutes = currentDuration.toMinutes() % 60 // % 60 solves: 210/60 = 3(%=.5)  .5*60 = 30 min
+        val seconds = currentDuration.seconds % 60
         return when (mode) {
             0 -> {
                 "${hours} h"
