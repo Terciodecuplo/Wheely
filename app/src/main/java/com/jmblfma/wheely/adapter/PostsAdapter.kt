@@ -68,7 +68,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
             trackDateAndTime.text = track.getFormattedDateTime()
 
             trackDuration.text = track.getFormattedDuration()
-            trackDistance.text  = track.getFormattedDistanceInKm()
+            trackDistance.text = track.getFormattedDistanceInKm()
             trackSpeed.text = track.getFormattedAverageSpeedInKmh()
             if (track.difficultyValue != Difficulty.UNKNOWN) {
                 trackDifficulty.text = track.difficultyValue.toString()
@@ -95,9 +95,15 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
 
         private fun setPostImage(user: User?) {
             if (user != null) {
-                Glide.with(userProfileImage.context)
-                    .load(user.profileImage)
-                    .into(userProfileImage)
+                if (user.profileImage != null) {
+                    Glide.with(userProfileImage.context)
+                        .load(user.profileImage)
+                        .into(userProfileImage)
+                } else {
+                    Glide.with(userProfileImage.context)
+                        .load(R.drawable.user_default_pic)
+                        .into(userProfileImage)
+                }
             }
         }
     }
