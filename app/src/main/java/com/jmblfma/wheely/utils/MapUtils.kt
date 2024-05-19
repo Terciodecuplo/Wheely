@@ -2,9 +2,7 @@ package com.jmblfma.wheely.utils
 
 import CustomAccuracyOverlay
 import android.content.Context
-import android.graphics.Color
 import android.location.Location
-import android.util.Log
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import com.jmblfma.wheely.MyApp
@@ -26,9 +24,9 @@ object MapUtils {
         21.0 // sensible: 20; switch to 30.0 for debugging (might generate crashes)
     const val ACTIVE_ZOOM_LEVEL = 20.0
     const val DEFAULT_ZOOM_LEVEL = 18.0
-    val ROUTE_ACTIVE_COLOR = Color.RED
-    val ROUTE_LOAD_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.colorPrimary)
-    val ROUTE_PENDING_SAVE_COLOR = Color.MAGENTA
+    private val ROUTE_ACTIVE_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.activeRouteColor)
+    private val ROUTE_LOAD_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.loadedRouteColor)
+    private val ROUTE_PENDING_SAVE_COLOR = ContextCompat.getColor(MyApp.applicationContext(), R.color.unsavedRouteColor)
     fun setupMap(mapView: MapView, context: Context) {
         isMapReady = false
         mapView.setTileSource(TileSourceFactory.MAPNIK)
@@ -227,15 +225,17 @@ object MapUtils {
     }
 
     const val BOUNDING_BOX_PADDING = 100
+    const val BOUNDING_BOX_PADDING_LARGE = 350
     var isMapReady = false
     // TODO thing about the use of this in viewer vs recording vs post adapter a bit more
     // it works fine in this state but might be able to refactor the system
     fun centerAndZoomOverCurrentRoute(
         mapView: MapView,
         animated: Boolean = true,
-        checkMapState: Boolean = true
+        checkMapState: Boolean = true,
+        largePadding: Boolean = false
     ) {
-        Log.d("NewDebug", "centerAndZoomOverCurrentRoute - $isMapReady")
+        val selectedPadding = if (largePadding) BOUNDING_BOX_PADDING_LARGE else BOUNDING_BOX_PADDING
         val currentRoute = mapView.overlays.filterIsInstance<Polyline>().firstOrNull()
         currentRoute?.let {
             val boundingBox = currentRoute.bounds
@@ -247,12 +247,11 @@ object MapUtils {
                         // remove the listener to prevent multiple calls
                         mapView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         isMapReady = true
-                        mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
-                        Log.d("NewDebug", "onGlobalLayout - $isMapReady")
+                        mapView.zoomToBoundingBox(boundingBox, animated, selectedPadding)
                     }
                 })
             } else {
-                mapView.zoomToBoundingBox(boundingBox, animated, BOUNDING_BOX_PADDING)
+                mapView.zoomToBoundingBox(boundingBox, animated, selectedPadding)
             }
         }
     }

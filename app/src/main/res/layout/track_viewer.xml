@@ -13,153 +13,175 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
-    <GridLayout
-        android:id="@+id/statsGridLayout"
+    <LinearLayout
+        android:id="@+id/topContainer"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:rowCount="2"
-        android:columnCount="5"
-        android:background="@color/semitransparentWhite"
-        app:layout_constraintTop_toTopOf="parent">
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_white_bg"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
+        <TextView
+            android:id="@+id/numberOfTracks"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:textSize="15sp"
+            android:textStyle="bold|italic"
+            android:paddingBottom="5dp"
+            android:text="Tracks available: 0"/>
         <TextView
             android:id="@+id/trackName"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_columnSpan="3"
-            android:text="VAL_NAME"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="TrackName"/>
         <TextView
             android:id="@+id/trackDate"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_columnSpan="2"
-            android:text="VAL_DATE" />
-        <TextView
-            android:id="@+id/startTime"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_columnSpan="2"
-            android:text="VAL_START_TIME"/>
-        <TextView
-            android:id="@+id/endTime"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_columnSpan="2"
-            android:text="VAL_END_TIME"/>
-        <TextView
-            android:id="@+id/numOfTracks"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="T_TRACKS"/>
-        <TextView
-            android:id="@+id/elapsedTime"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_DUR"/>
-        <TextView
-            android:id="@+id/speed"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_AVESP"/>
-        <TextView
-            android:id="@+id/distance"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_DIST"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="Full Date"/>
+    </LinearLayout>
+    <!-- Container for Stats -->
+    <LinearLayout
+        android:id="@+id/topLeftContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_white_bg"
+        app:layout_constraintTop_toBottomOf="@id/topContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
+
         <TextView
             android:id="@+id/maxSpeed"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_MAX_SPEED"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorSecondary"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="00 km (max)"/>
+        <TextView
+            android:id="@+id/aveSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="00 km (ave)"/>
+        <TextView
+            android:id="@+id/elevation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/green"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="1000 m (ele)"/>
+        <TextView
+            android:id="@+id/maxAltitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="1000 m (max)"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bottomLeftContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="start"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/rounded_white_bg"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
 
         <TextView
-            android:id="@+id/trackID"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="VAL_ID"/>
-    </GridLayout>
-
-    <GridLayout
-        android:id="@+id/allTrackStats"
-        android:background="@color/semitransparentWhite"
-        android:visibility="visible"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:rowCount="1"
-        android:columnCount="4"
-        app:layout_constraintTop_toBottomOf="@id/statsGridLayout">
-
+            android:id="@+id/distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="38sp"
+            android:textStyle="bold"
+            android:text="000.00 km"/>
         <TextView
-            android:id="@+id/all_tracks_distance"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="T_DIST"/>
-        <TextView
-            android:id="@+id/all_tracks_duration"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="T_DUR"/>
-        <TextView
-            android:id="@+id/all_tracks_average_speed"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="T_aveSp" />
-        <TextView
-            android:id="@+id/all_tracks_max_speed"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="T_maxSp" />
-    </GridLayout>
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:textSize="38sp"
+            android:textStyle="bold"
+            android:text="00h00min00s"/>
+    </LinearLayout>
 
-    <GridLayout
-        style="@style/TestMapButtonGridLayout"
-        android:layout_width="match_parent"
-        android:id="@+id/testButtonGrid"
-        android:rowCount="2"
-        android:columnCount="4"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation">
-
-        <Button
-            android:id="@+id/buttonLoadPrev"
-            style="@style/TestMapButtonGenericFeatures"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="PREV" />
-        <Button
-            android:id="@+id/buttonLoadNext"
-            style="@style/TestMapButtonGenericFeatures"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="NEXT" />
+    <!-- Container for Buttons -->
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:paddingBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread">
         <Button
             android:id="@+id/buttonDeleteLoadedTrack"
-            style="@style/TestMapButtonGenericFeatures"
-            android:backgroundTint="@android:color/holo_red_light"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="DEL" />
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:backgroundTint="@color/button_discard_track_tint"
+            app:rippleColor="@color/orangeRipple"
+            app:icon="@drawable/ic_bin"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="40dp" />
         <Button
-            android:id="@+id/buttonClearUI"
-            style="@style/TestMapButtonGenericFeatures"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:text="Clear" />
-    </GridLayout>
+            android:id="@+id/buttonRestoreView"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            app:icon="@drawable/ic_center"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="40dp" />
+
+        <Button
+            android:id="@+id/buttonLoadNext"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+            app:icon="@drawable/ic_arrow_upward"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50dp" />
+        <Button
+            android:id="@+id/buttonLoadPrev"
+            style="@style/TrackRecordingButtonGeneric"
+            android:visibility="visible"
+            app:icon="@drawable/ic_arrow_downward"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="50dp" />
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

@@ -37,9 +37,12 @@
             android:text="VAL_USER_NAME" />
         <TextView
             android:id="@+id/track_date_and_location"
-            style="@style/TestTextFieldStyleForStats"
-            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
             android:gravity="top"
+            android:textSize="15sp"
             android:text="DATE, TIME AND GEN. LOCATION?" />
     </GridLayout>
 

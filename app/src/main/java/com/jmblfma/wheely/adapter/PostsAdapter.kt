@@ -48,7 +48,6 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         fun bind(track: Track, user: User?) {
             userProfileImage.setImageResource(R.drawable.user_default_pic)
             userName.text = user?.nickname ?: "UNKNOWN USER"
-
             trackName.text = track.name
             val trackDateAndTime = track.getFormattedDateTime()
             trackDateAndLocation.text =

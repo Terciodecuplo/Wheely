@@ -57,8 +57,8 @@ data class Track(
     fun getFormattedDate(): String {
         return TrackAnalysis.convertTimestampToDate(this.startTime)
     }
-    fun getFormattedDuration(): String {
-        return TrackAnalysis.formatDurationBetweenTimestamps(this.startTime, this.endTime)
+    fun getFormattedDuration(withSeconds: Boolean = false): String {
+        return TrackAnalysis.formatDurationBetweenTimestamps(this.startTime, this.endTime, withSeconds)
     }
     fun getFormattedTime(isStart: Boolean): String {
         return if (isStart) {
@@ -71,16 +71,16 @@ data class Track(
         return TrackAnalysis.convertTimestampToDateTime(this.startTime)
     }
     fun getFormattedAverageSpeedInKmh(): String {
-        return TrackAnalysis.formatSpeedInKmh(this.averageSpeed)
+        return TrackAnalysis.formatSpeedInKmh(this.averageSpeed, 0)
     }
     fun getFormattedDistanceInKm(): String {
         return TrackAnalysis.formatDistanceInKm(this.totalDistance)
     }
     fun getFormattedMaxAltitudInMeters(): String {
-        return TrackAnalysis.formatAltitudeInMeters(this.maxAltitude)
+        return TrackAnalysis.formatAltitudeInMeters(this.maxAltitude, 0)
     }
     fun getFormattedMaxSpeedInKmh(): String {
-        return TrackAnalysis.formatSpeedInKmh(this.maxSpeed)
+        return TrackAnalysis.formatSpeedInKmh(this.maxSpeed, 0)
     }
 }
 

@@ -41,6 +41,14 @@
     <color name="semitransparentWhite">#56FFFFFF</color>
     <color name="semitransparentPrimary">#8B5FB6FF</color>
 
+    <!-- MARKERS COLORS -->
+    <color name="startMarkerColor">@color/locationPointer</color>
+    <color name="endMarkerColor">#9C27B0</color>
+    <color name="locationDirectionArrow">@color/colorPrimary</color>
+    <color name="locationPointer">#FF6565</color>
+    <color name="activeRouteColor">@color/red</color>
+    <color name="unsavedRouteColor">#E91E63</color>
+    <color name="loadedRouteColor">@color/colorPrimary</color>
 
     <!-- BUTTON COLORS -->
     <color name="red">#FF0000</color>
