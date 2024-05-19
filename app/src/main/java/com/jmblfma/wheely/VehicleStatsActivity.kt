@@ -69,7 +69,7 @@ class VehicleStatsActivity : AppCompatActivity() {
         binding.vehicleModelEdittext.setText(vehicle.model)
         binding.hpEdittext.setText(vehicle.horsepower.toString())
         binding.yearEdittext.setText(vehicle.year)
-        binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(vehicleTrackList)
+        binding.totalRidingTime.text = TrackAnalysis.getTracksTotalDuration(vehicleTrackList, true)
         binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(vehicleTrackList)
         binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(vehicleTrackList)
         binding.totalTracksValue.text = vehicleTrackList.size.toString()

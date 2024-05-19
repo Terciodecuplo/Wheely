@@ -163,12 +163,17 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun restoreUI() {
-        val bannerBitmap =
-            BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner)
-        binding.bannerProfile.setImageBitmap(bannerBitmap)
-        val imageProfileBitmap =
-            BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage)
-        binding.profileImage.setImageBitmap(imageProfileBitmap)
+
+        if(UserSessionManager.getCurrentUser()?.profileBanner != null){
+            binding.bannerProfile.setImageBitmap(BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner))
+        } else {
+            binding.bannerProfile.setImageResource(R.drawable.ic_profile_banner)
+        }
+        if(UserSessionManager.getCurrentUser()?.profileImage != null){
+            binding.profileImage.setImageBitmap(BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage))
+        } else {
+            binding.profileImage.setImageResource(R.drawable.user_default_pic)
+        }
     }
 
     override fun onBackPressed() {
