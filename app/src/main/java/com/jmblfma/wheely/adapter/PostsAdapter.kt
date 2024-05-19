@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.TrackViewerActivity
+import com.jmblfma.wheely.data.Difficulty
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.MapUtils
@@ -20,9 +21,14 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
     class PostViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userProfileImage: ImageView = view.findViewById(R.id.user_profile_img)
         val userName: TextView = view.findViewById(R.id.user_name)
-        val trackDateAndLocation: TextView = view.findViewById(R.id.track_date_and_location)
+        val trackDateAndTime: TextView = view.findViewById(R.id.track_date_and_time)
         val trackName: TextView = view.findViewById(R.id.track_name)
-        val trackStats: TextView = view.findViewById(R.id.track_stats)
+        val trackDuration: TextView = view.findViewById(R.id.track_duration)
+        val trackDistance: TextView = view.findViewById(R.id.track_distance)
+        val trackSpeed: TextView = view.findViewById(R.id.track_speed)
+        val trackDifficulty: TextView = view.findViewById(R.id.track_difficulty)
+        val trackDifficultyTitle: TextView = view.findViewById(R.id.track_difficulty_title)
+        val trackDescription: TextView = view.findViewById(R.id.track_description)
         val mapPreview: MapView = view.findViewById(R.id.map_preview)
         val mapPreviewHolder: View = view.findViewById<View>(R.id.map_preview_holder)
 
@@ -46,19 +52,38 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
         }
 
         fun bind(track: Track, user: User?) {
+            // TODO Jose
             userProfileImage.setImageResource(R.drawable.user_default_pic)
-            userName.text = user?.nickname ?: "UNKNOWN USER"
-            trackName.text = track.name
-            val trackDateAndTime = track.getFormattedDateTime()
-            trackDateAndLocation.text =
-                trackDateAndTime // TODO add general location when implemented
 
-            val trackDuration = track.getFormattedDuration()
-            val trackDistance = track.getFormattedDistanceInKm()
-            val trackAveSpeed = track.getFormattedAverageSpeedInKmh()
-            val statsText =
-                "Time: $trackDuration · Distance: $trackDistance · Speed: $trackAveSpeed"
-            trackStats.text = statsText
+            userName.text = user?.nickname ?: "UNKNOWN USER"
+            if (track.name.isNotBlank()) {
+                trackName.text = track.name
+                trackName.visibility = View.VISIBLE
+            } else {
+                trackName.visibility = View.GONE
+            }
+
+            trackDateAndTime.text = track.getFormattedDateTime()
+
+            trackDuration.text = track.getFormattedDuration()
+            trackDistance.text  = track.getFormattedDistanceInKm()
+            trackSpeed.text = track.getFormattedAverageSpeedInKmh()
+            if (track.difficultyValue != Difficulty.UNKNOWN) {
+                trackDifficulty.text = track.difficultyValue.toString()
+                trackDifficulty.visibility = View.VISIBLE
+                trackDifficultyTitle.visibility = View.VISIBLE
+            } else {
+                trackDifficulty.visibility = View.GONE
+                trackDifficultyTitle.visibility = View.GONE
+            }
+
+            if (!track.description.isNullOrBlank()) {
+                trackDescription.text = track.description;
+                trackDescription.visibility = View.VISIBLE;
+            } else {
+                trackDescription.visibility = View.GONE;
+            }
+
 
             track.trackData?.let {
                 MapUtils.loadRoutePreview(mapPreview, it)

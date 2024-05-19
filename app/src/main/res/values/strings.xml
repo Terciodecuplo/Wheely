@@ -139,4 +139,10 @@
     <string name="permissions_denied">Permissions not granted! </string>
     <string name="permissions_denied_extended">Please go to app settings and manually enable them.</string>
     <string name="camera_permission_denied_message">Camera permission is necessary to use the camera</string>
+
+    <string name="feed_duration_label">Duration</string>
+    <string name="feed_distance_label">Distance</string>
+    <string name="feed_aveSpeed_label">Speed (ave.)</string>
+    <string name="feed_difficulty_label">Difficulty</string>
+    <string name="feed_description_label">Description</string>
 </resources>
