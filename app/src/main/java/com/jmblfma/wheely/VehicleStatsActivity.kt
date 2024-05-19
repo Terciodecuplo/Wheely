@@ -52,12 +52,12 @@ class VehicleStatsActivity : AppCompatActivity() {
     private fun setupObservers() {
         viewModel.vehicleData.observe(this) {
             vehicle = it
+            viewModel.vehicleTrackList.observe(this) { list ->
+                vehicleTrackList = list
+                getVehicleData()
+            }
         }
-        viewModel.vehicleTrackList.observe(this) {
-            vehicleTrackList = it
-            Log.d("TESTING", "The TRACKLIST CONTAINS => ${vehicleTrackList[0].name}")
-            getVehicleData()
-        }
+
     }
 
     private fun getVehicleData() {
