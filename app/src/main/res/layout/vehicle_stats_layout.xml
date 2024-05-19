@@ -153,12 +153,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textColor="@color/subtext_grey"
-                android:text="Riding time:"
+                android:text="@string/riding_time"
                 app:layout_constraintBottom_toTopOf="@+id/total_distance_value"
                 app:layout_constraintStart_toStartOf="@+id/year_edittext"
                 app:layout_constraintTop_toBottomOf="@+id/year_edittext" />
 
-            <EditText
+            <TextView
                 android:id="@+id/total_riding_time"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
@@ -166,15 +166,7 @@
                 android:layout_marginStart="10dp"
                 android:background="@android:color/transparent"
                 android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
+                android:text="--"
                 app:layout_constraintEnd_toEndOf="@+id/year_edittext"
                 app:layout_constraintStart_toEndOf="@+id/textView"
                 app:layout_constraintTop_toBottomOf="@+id/year_edittext" />
@@ -183,29 +175,21 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total distance:"
+                android:text="@string/total_distance"
                 android:textColor="@color/subtext_grey"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/total_distance_value"
                 app:layout_constraintStart_toStartOf="@+id/textView"
                 app:layout_constraintTop_toTopOf="@+id/total_distance_value" />
 
-            <EditText
+            <TextView
                 android:id="@+id/total_distance_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
                 android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
+                android:text="--"
                 app:layout_constraintEnd_toEndOf="@+id/total_riding_time"
                 app:layout_constraintStart_toStartOf="@+id/total_riding_time"
                 app:layout_constraintTop_toBottomOf="@+id/total_riding_time" />
@@ -214,14 +198,14 @@
                 android:id="@+id/max_speed_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Max speed:"
+                android:text="@string/max_speed"
                 android:textColor="@color/subtext_grey"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/max_speed_value"
                 app:layout_constraintStart_toStartOf="@+id/textView2"
                 app:layout_constraintTop_toTopOf="@+id/max_speed_value" />
 
-            <EditText
+            <TextView
                 android:id="@+id/max_speed_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -229,14 +213,7 @@
                 android:background="@android:color/transparent"
                 android:backgroundTint="@color/subtext_grey"
                 android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
+                android:text="--"
                 app:layout_constraintEnd_toEndOf="@+id/total_distance_value"
                 app:layout_constraintStart_toStartOf="@+id/total_distance_value"
                 app:layout_constraintTop_toBottomOf="@id/total_distance_value" />
@@ -245,29 +222,21 @@
                 android:id="@+id/total_tracks_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total routes:"
+                android:text="@string/total_routes"
                 android:textColor="@color/subtext_grey"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/total_tracks_value"
                 app:layout_constraintStart_toStartOf="@+id/max_speed_text"
                 app:layout_constraintTop_toTopOf="@+id/total_tracks_value" />
 
-            <EditText
+            <TextView
                 android:id="@+id/total_tracks_value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
                 android:backgroundTint="@color/subtext_grey"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-                android:imeOptions="actionNext"
-                android:inputType="textPersonName|textCapSentences"
-                android:maxLines="1"
-                android:minHeight="48dp"
-                android:text="test"
+                android:text="--"
                 app:layout_constraintEnd_toEndOf="@+id/max_speed_value"
                 app:layout_constraintStart_toStartOf="@+id/max_speed_value"
                 app:layout_constraintTop_toBottomOf="@id/max_speed_value" />

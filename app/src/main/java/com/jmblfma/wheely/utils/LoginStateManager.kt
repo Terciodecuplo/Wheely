@@ -1,6 +1,7 @@
 package com.jmblfma.wheely.utils
 
 import android.content.Context
+import android.text.Highlights
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -33,4 +34,10 @@ object LoginStateManager {
         val userJson = prefs.getString("currentUser", null)
         return userJson?.let { gson.fromJson(it, User::class.java) }
     }
+
+    fun setUserHighlightPreference(highlightsSelected : Int){
+        prefs.edit().putInt("highlightPreferred", highlightsSelected).apply()
+    }
+
+    fun getUserHighlightPreference() : Int = prefs.getInt("highlightPreferred", 0)
 }

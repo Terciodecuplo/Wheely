@@ -25,7 +25,9 @@ import com.jmblfma.wheely.databinding.NewVehicleLayoutBinding
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.ImageWorkerUtil
 import com.jmblfma.wheely.utils.PermissionsManager
+import com.jmblfma.wheely.utils.SignUpManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +42,6 @@ class AddVehicleActivity : AppCompatActivity() {
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var photoURI: Uri? = null
-    private var savedPath: String? = null
     private lateinit var userCandidate: User
 
     companion object {
@@ -94,6 +95,7 @@ class AddVehicleActivity : AppCompatActivity() {
                     viewModel.addVehicle(newVehicle)
                     viewModel.vehiclePostStatus.observe(this){
                         if (it == true){
+                            SignUpManager.restoreState()
                             Toast.makeText(this, getString(R.string.new_vehicle_notification), Toast.LENGTH_SHORT).show()
                         } else {
                             Toast.makeText(this, getString(R.string.add_vehicle_error), Toast.LENGTH_SHORT).show()
@@ -158,7 +160,7 @@ class AddVehicleActivity : AppCompatActivity() {
             binding.newVehicleYearEdittext.text.toString(),
             horsepower,
             LocalDate.now().toString(),
-            savedPath
+            SignUpManager.vehiclePictureCandidate
         )
     }
 
@@ -181,79 +183,80 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
-        val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let { receivedUri ->
-                    // Use Glide to load and display the image without delays
-                    Glide
-                        .with(this@AddVehicleActivity)
+                    Glide.with(this@AddVehicleActivity)
                         .load(receivedUri)
                         .into(binding.vehiclePreviewImage)
-                    val bitmap = ImagePicker.fixImageOrientation(this, uri)
-                    // Save the image asynchronously
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let {
-                            savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
-                            )
-                        }
-                    }
+                    processImageAndSave(receivedUri, "vehicle", "vehicle", "vehicle-pic")
                 }
             }
     }
 
     private fun setupTakePictureLauncher() {
-        val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.vehiclePreviewImage.setImageURI(receivedUri)
-                        val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            bitmap?.let {
-                                savedPath = ImagePicker.saveImageToInternalStorage(
-                                    this@AddVehicleActivity, it, "vehicle-pic-$imageId.jpg"
-                                )
-                            }
-                        }
+                        Log.d("SaveImageWorker", "URI candidate = $receivedUri")
+                        processImageAndSave(receivedUri, "vehicle", "vehicle", "vehicle-pic")
                     }
                 }
             }
     }
 
+    private fun processImageAndSave(
+        uri: Uri,
+        entityType: String,
+        imageType: String,
+        prefix: String
+    ) {
+        val entityId = -1
+        ImageWorkerUtil.enqueueImageSave(
+            this,
+            uri,
+            entityId,
+            entityType,
+            imageType,
+            prefix
+        )
+        Log.d(
+            "SaveImageWorker",
+            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
+        )
+
+    }
+
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.CAMERA
+                this,
+                Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             takePicture()
         } else {
-            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+            PermissionsManager.getCameraPermission(this, AddVehicleActivity.CAMERA_REQUEST_CODE)
         }
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted
-                takePicture()
-            } else {
-                // Permission was denied
-                showSnackbar(getString(R.string.camera_permission_denied_message))
-            }
+        if (requestCode == AddVehicleActivity.CAMERA_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            takePicture()
+        } else {
+            showSnackbar(getString(R.string.camera_permission_denied_message))
         }
     }
 
     private fun takePicture() {
-        // Ensure the device has a camera
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            photoURI =
-                ImagePicker.createImageFile(this)
+            photoURI = ImagePicker.createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
             showSnackbar(getString(R.string.no_camera_device_message))
@@ -261,7 +264,6 @@ class AddVehicleActivity : AppCompatActivity() {
     }
 
     private fun chooseImageFromGallery() {
-        // MIME type for image/* to select any image type
         imagePickerLauncher.launch("image/*")
     }
 

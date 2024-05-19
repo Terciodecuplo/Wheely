@@ -2,7 +2,10 @@ package com.jmblfma.wheely
 
 import android.Manifest
 import android.app.DatePickerDialog
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
@@ -27,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.UserStatsLayoutBinding
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.utils.ImagePicker
+import com.jmblfma.wheely.utils.ImageWorkerUtil
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.UserSessionManager
@@ -40,11 +44,13 @@ import java.util.UUID
 
 class UserStatsActivity : AppCompatActivity() {
     private lateinit var binding: UserStatsLayoutBinding
+    private lateinit var updateReceiver : BroadcastReceiver
     private val calendar = Calendar.getInstance()
     private val viewModel: UserDataViewModel by viewModels()
     private var trackList: List<Track> = emptyList()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private lateinit var candidateUri: Uri
     private var photoURI: Uri? = null
     private var savedPath: String? = null
 
@@ -88,13 +94,15 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun setupUserStats() {
-        binding.totalTimeValue.text = TrackAnalysis.getTracksTotalDuration(trackList)
-        binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(trackList)
-        binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
-        binding.avgSpeedValue.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
-        binding.longestRouteValue.text = TrackAnalysis.getLongestTrackInKm(trackList)
-        binding.maxDurationValue.text = TrackAnalysis.getTracksMaxDuration(trackList)
-        binding.maxAltitudeValue.text = TrackAnalysis.getTracksMaxAltitude(trackList)
+        if(trackList.isNotEmpty()) {
+            binding.totalTimeValue.text = TrackAnalysis.getTracksTotalDuration(trackList)
+            binding.maxSpeedValue.text = TrackAnalysis.getTracksMaxSpeed(trackList)
+            binding.totalDistanceValue.text = TrackAnalysis.getTracksTotalDistanceInKm(trackList)
+            binding.avgSpeedValue.text = TrackAnalysis.getTracksAverageSpeedInKmh(trackList)
+            binding.longestRouteValue.text = TrackAnalysis.getLongestTrackInKm(trackList)
+            binding.maxDurationValue.text = TrackAnalysis.getTracksMaxDuration(trackList)
+            binding.maxAltitudeValue.text = TrackAnalysis.getTracksMaxAltitude(trackList)
+        }
         binding.totalRoutesValue.text = trackList.size.toString()
     }
 
@@ -104,14 +112,32 @@ class UserStatsActivity : AppCompatActivity() {
         viewModel.fetchTrackListByUser(userId)
     }
 
-    private fun submitChanges() {
-        if (!formHasErrors(findViewById(R.id.statsLayout))) {
-            updateUser()
+    private fun setupUpdateReceiver() {
+        updateReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
+                    Log.d("SaveImageWorker", "Broadcast received")
+                    updateUser()
+                }
+            }
         }
-        blockDataEdition()
+        val intentFilter = IntentFilter("com.jmblfma.wheely.UPDATE_USER_INFO")
+        registerReceiver(updateReceiver, intentFilter)
     }
 
-    private fun updateUser() {
+    private fun submitChanges() {
+        if (!formHasErrors(findViewById(R.id.statsLayout))) {
+            updateUserPic()
+        }
+        finishEditUserData()
+    }
+
+    private fun updateUserPic() {
+        processImageAndSave(candidateUri, "user", "profile", "profile-pic")
+        setupUpdateReceiver()
+    }
+
+    private fun updateUser(){
         UserSessionManager.getCurrentUser()?.let {
             viewModel.updateUserPersonalInfo(
                 it.userId,
@@ -238,6 +264,21 @@ class UserStatsActivity : AppCompatActivity() {
         }
     }
 
+    private fun finishEditUserData() {
+        val isEditable = false
+        manageFields(binding.userNicknameEdittext, isEditable)
+        manageFields(binding.userFirstnameEdittext, isEditable)
+        manageFields(binding.userLastnameEdittext, isEditable)
+        binding.userEmailEdittext.setTextColor(getColor(R.color.black))
+        binding.userBirthdayEdittext.isClickable = false
+        binding.editUserImage.visibility = View.GONE
+        binding.submitChangesContainer.visibility = View.GONE
+        val layoutParams = binding.userStatsContainer.layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.bottomMargin = 0
+        binding.userStatsContainer.layoutParams = layoutParams
+
+    }
+
     private fun blockDataEdition() {
         startActivity(Intent(this, UserStatsActivity::class.java))
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -281,96 +322,78 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun setupImagePickerLauncher() {
-        val currentProfileImagePath = UserSessionManager.getCurrentUser()?.profileImage
-        Log.d("UPDATE PIC", "Current: $currentProfileImagePath")
-        val imageId = UUID.randomUUID().toString()
         imagePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let { receivedUri ->
-                    // Use Glide to load and display the image without delays
-                    Glide
-                        .with(this@UserStatsActivity)
-                        .load(receivedUri)
+                    Glide.with(this@UserStatsActivity).load(receivedUri)
                         .into(binding.userImage)
-                    val bitmap = ImagePicker.fixImageOrientation(this, uri)
-                    // Save the image asynchronously
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        bitmap?.let { bitmap ->
-                            currentProfileImagePath?.let { path ->
-                                val file = File(path)
-                                if (file.exists()) {
-                                    file.delete()
-                                }
-                            }
-                            savedPath = ImagePicker.saveImageToInternalStorage(
-                                this@UserStatsActivity, bitmap, "profile-pic-$imageId.jpg"
-                            )
-                        }
-                        Log.d("UPDATE PIC", "Saved path from storage: $savedPath")
-                    }
+                    candidateUri = receivedUri
                 }
             }
     }
 
     private fun setupTakePictureLauncher() {
-        val currentProfileImagePath = UserSessionManager.getCurrentUser()?.profileImage
-        val imageId = UUID.randomUUID().toString()
         takePictureLauncher =
             registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.userImage.setImageURI(receivedUri)
-                        val bitmap = ImagePicker.fixImageOrientation(this, receivedUri)
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            bitmap?.let { bitmap ->
-                                currentProfileImagePath?.let { path ->
-                                    val file = File(path)
-                                    if (file.exists()) {
-                                        file.delete()
-                                    }
-                                }
-                                savedPath = ImagePicker.saveImageToInternalStorage(
-                                    this@UserStatsActivity, bitmap, "profile-pic-$imageId.jpg"
-                                )
-                            }
-                            Log.d("UPDATE PIC", "Saved path from camera: $savedPath")
-                        }
+                        candidateUri = receivedUri
                     }
                 }
             }
     }
 
+    private fun processImageAndSave(
+        uri: Uri,
+        entityType: String,
+        imageType: String,
+        prefix: String
+    ) {
+        val entityId = UserSessionManager.getCurrentUser()?.userId
+        ImageWorkerUtil.enqueueImageSave(
+            this,
+            uri,
+            entityId,
+            entityType,
+            imageType,
+            prefix
+        )
+        Log.d(
+            "SaveImageWorker",
+            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
+        )
+
+    }
+
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(
-                this, Manifest.permission.CAMERA
+                this,
+                Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             takePicture()
         } else {
-            PermissionsManager.getCameraPermission(this, CAMERA_REQUEST_CODE)
+            PermissionsManager.getCameraPermission(this, UserStatsActivity.CAMERA_REQUEST_CODE)
         }
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>, grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                takePicture()
-            } else {
-                // Permission is denied
-                showSnackbar(getString(R.string.camera_permission_denied_message))
-            }
+        if (requestCode == UserStatsActivity.CAMERA_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            takePicture()
+        } else {
+            showSnackbar(getString(R.string.camera_permission_denied_message))
         }
     }
 
     private fun takePicture() {
-        // Ensure the device has a camera
         if (packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            photoURI =
-                ImagePicker.createImageFile(this)
+            photoURI = ImagePicker.createImageFile(this)
             takePictureLauncher.launch(photoURI)
         } else {
             showSnackbar(getString(R.string.no_camera_device_message))
@@ -378,7 +401,6 @@ class UserStatsActivity : AppCompatActivity() {
     }
 
     private fun chooseImageFromGallery() {
-        // MIME type for image/* to select any image type
         imagePickerLauncher.launch("image/*")
     }
 

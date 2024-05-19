@@ -42,20 +42,18 @@ class TrackHistoryFragment : Fragment(), TrackHistoryAdapter.OnTrackItemClickLis
         userVehicles: List<Vehicle>
     ) {
         trackHistoryAdapter =
-            TrackHistoryAdapter(trackHistoryList, userVehicles, requireContext(), this)
+            TrackHistoryAdapter(trackHistoryList.reversed(), userVehicles, requireContext(), this)
 
         view.findViewById<RecyclerView>(R.id.trackHistory_recycler).apply {
             adapter = trackHistoryAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
                     val appBarLayout = activity?.findViewById<AppBarLayout>(R.id.app_bar_layout)
-                    val tabLayout = activity?.findViewById<TabLayout>(R.id.tab_layout)
 
                     appBarLayout?.let { appBar ->
-                        val tabHeight = tabLayout?.height ?: 0
 
                         // Determine the change we want in translationY
                         val currentTranslation = appBar.translationY
@@ -74,7 +72,6 @@ class TrackHistoryFragment : Fragment(), TrackHistoryAdapter.OnTrackItemClickLis
                     }
                 }
             })
-            scrollToPosition(trackHistoryList.size - 1)
         }
     }
 
