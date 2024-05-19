@@ -56,6 +56,8 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.13.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.13.0")
     implementation ("androidx.exifinterface:exifinterface:1.3.7")
+    implementation ("androidx.work:work-runtime-ktx:2.9.0")
+
 
     // To support coroutines
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

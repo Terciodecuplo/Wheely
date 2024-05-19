@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.utils.TrackAnalysis
 
 class TrackHistoryAdapter(
     private val trackHistoryList: List<Track>,
@@ -75,10 +76,7 @@ class TrackHistoryAdapter(
         var vehicle = vehicleList.find { it.vehicleId == track.vehicleUsedId }
 
         holder.trackTitle.text = titleTextFormatter(holder, track, vehicle)
-        holder.trackDate.text = context.getString(R.string.date_time_history_list,
-            track.getFormattedDate(),
-            track.getFormattedTime(true)
-        )
+        holder.trackDate.text = track.getFormattedDateTime()
 
         holder.trackDuration.text = track.getFormattedDuration()
         holder.trackDistance.text = track.getFormattedDistanceInKm()
@@ -94,13 +92,18 @@ class TrackHistoryAdapter(
         track: Track,
         vehicle: Vehicle?
     ): SpannableString {
+        var formattedText = ""
         val trackName = if (track.name.isNullOrEmpty()) context.getString(R.string.default_track_name) else track.name
-        val formattedText = String.format(
-            holder.trackTitle.context.getString(R.string.vehicle_used_in_track),
-            trackName,
-            vehicle?.brand,
-            vehicle?.model
-        )
+        if(vehicle != null) {
+            formattedText = String.format(
+                holder.trackTitle.context.getString(R.string.vehicle_used_in_track),
+                trackName,
+                vehicle.brand,
+                vehicle.model
+            )
+        } else {
+            formattedText = trackName
+        }
 
         val spannable = SpannableString(formattedText)
 

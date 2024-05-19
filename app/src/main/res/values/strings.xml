@@ -67,8 +67,8 @@
     <string name="year_range_error">Year must be between %1$d and %2$d</string>
     <string name="funny_info">Did you know the first motorcycle was invented in 1885?</string>
     <string name="edit_profile_banner">Edit banner</string>
-    <string name="your_highlight">HIGHLIGHTS</string>
-    <string name="select_highlights">Select highlights</string>
+    <string name="your_highlight">HIGHLIGHT</string>
+    <string name="select_highlights">Select highlight</string>
     <string name="total_distance">Total Distance</string>
     <string name="total_routes">Total Routes</string>
     <string name="total_duration">Total Duration</string>
