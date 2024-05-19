@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -46,6 +47,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private val viewModel: UserDataViewModel by viewModels()
     private var photoURI: Uri? = null
+    private var imActive: Boolean = false
 
     companion object {
         private const val CAMERA_REQUEST_CODE = 101
@@ -99,6 +101,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     override fun onResume() {
         super.onResume()
+        imActive = true
         setupUpdateReceiver()
         profileUserMainDataSetup()
         val userId = UserSessionManager.getCurrentUser()!!.userId
@@ -106,19 +109,36 @@ class ProfilePageActivity : NavigationMenuActivity() {
         viewModel.fetchUserVehicles(userId)
     }
 
+    override fun onPause() {
+        super.onPause()
+        imActive = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        imActive = false
+        unregisterReceiver(updateReceiver)
+    }
+
     private fun setupUpdateReceiver() {
         updateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
                     Log.d("SaveImageWorker", "Broadcast received")
-                    updateBannerUI()
-                    setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
+                    if (imActive) restoreUI()
                 }
             }
         }
 
         val intentFilter = IntentFilter("com.jmblfma.wheely.UPDATE_USER_INFO")
         registerReceiver(updateReceiver, intentFilter)
+    }
+
+    private fun restoreUI() {
+        val bannerBitmap = BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileBanner)
+        binding.bannerProfile.setImageBitmap(bannerBitmap)
+        val imageProfileBitmap = BitmapFactory.decodeFile(UserSessionManager.getCurrentUser()?.profileImage)
+        binding.profileImage.setImageBitmap(imageProfileBitmap)
     }
 
     override fun onBackPressed() {
@@ -243,7 +263,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
 
     private fun profileUserMainDataSetup() {
-        Log.d("SaveImageWorker", "ProfilePageActivity/ binding.userName.text ${binding.userName.text}")
+        Log.d(
+            "SaveImageWorker",
+            "ProfilePageActivity/ binding.userName.text ${binding.userName.text}"
+        )
 
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"

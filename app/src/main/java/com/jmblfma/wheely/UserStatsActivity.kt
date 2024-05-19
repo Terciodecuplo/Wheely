@@ -50,6 +50,7 @@ class UserStatsActivity : AppCompatActivity() {
     private var trackList: List<Track> = emptyList()
     private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
+    private lateinit var candidateUri: Uri
     private var photoURI: Uri? = null
     private var savedPath: String? = null
 
@@ -109,12 +110,6 @@ class UserStatsActivity : AppCompatActivity() {
         super.onResume()
         val userId = UserSessionManager.getCurrentUser()!!.userId
         viewModel.fetchTrackListByUser(userId)
-        setupUpdateReceiver()
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        // Unregister the receiver to avoid memory leaks
-        unregisterReceiver(updateReceiver)
     }
 
     private fun setupUpdateReceiver() {
@@ -122,7 +117,7 @@ class UserStatsActivity : AppCompatActivity() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
                     Log.d("SaveImageWorker", "Broadcast received")
-                    //updateUI()
+                    updateUser()
                 }
             }
         }
@@ -132,12 +127,17 @@ class UserStatsActivity : AppCompatActivity() {
 
     private fun submitChanges() {
         if (!formHasErrors(findViewById(R.id.statsLayout))) {
-            updateUser()
+            updateUserPic()
         }
         finishEditUserData()
     }
 
-    private fun updateUser() {
+    private fun updateUserPic() {
+        processImageAndSave(candidateUri, "user", "profile", "profile-pic")
+        setupUpdateReceiver()
+    }
+
+    private fun updateUser(){
         UserSessionManager.getCurrentUser()?.let {
             viewModel.updateUserPersonalInfo(
                 it.userId,
@@ -163,7 +163,7 @@ class UserStatsActivity : AppCompatActivity() {
                 submitChanges()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
-                //blockDataEdition()
+                blockDataEdition()
                 Toast.makeText(this, "Edition cancelled", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             }
@@ -327,7 +327,7 @@ class UserStatsActivity : AppCompatActivity() {
                 uri?.let { receivedUri ->
                     Glide.with(this@UserStatsActivity).load(receivedUri)
                         .into(binding.userImage)
-                    processImageAndSave(receivedUri, "user", "profile", "profile-pic")
+                    candidateUri = receivedUri
                 }
             }
     }
@@ -338,7 +338,7 @@ class UserStatsActivity : AppCompatActivity() {
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.userImage.setImageURI(receivedUri)
-                        processImageAndSave(receivedUri, "user", "profile", "profile-pic")
+                        candidateUri = receivedUri
                     }
                 }
             }

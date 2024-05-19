@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.Vehicle
+import com.jmblfma.wheely.utils.TrackAnalysis
 
 class TrackHistoryAdapter(
     private val trackHistoryList: List<Track>,
@@ -75,10 +76,7 @@ class TrackHistoryAdapter(
         var vehicle = vehicleList.find { it.vehicleId == track.vehicleUsedId }
 
         holder.trackTitle.text = titleTextFormatter(holder, track, vehicle)
-        holder.trackDate.text = context.getString(R.string.date_time_history_list,
-            track.getFormattedDate(),
-            track.getFormattedTime(true)
-        )
+        holder.trackDate.text = track.getFormattedDateTime()
 
         holder.trackDuration.text = track.getFormattedDuration()
         holder.trackDistance.text = track.getFormattedDistanceInKm()
