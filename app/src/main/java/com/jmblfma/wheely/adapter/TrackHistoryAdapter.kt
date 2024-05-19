@@ -77,7 +77,6 @@ class TrackHistoryAdapter(
 
         holder.trackTitle.text = titleTextFormatter(holder, track, vehicle)
         holder.trackDate.text = track.getFormattedDateTime()
-
         holder.trackDuration.text = track.getFormattedDuration()
         holder.trackDistance.text = track.getFormattedDistanceInKm()
         holder.trackAvgSpeed.text = track.getFormattedAverageSpeedInKmh()
