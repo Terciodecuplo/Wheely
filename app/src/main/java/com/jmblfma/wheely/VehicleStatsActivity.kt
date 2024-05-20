@@ -2,7 +2,6 @@ package com.jmblfma.wheely
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -40,7 +39,7 @@ class VehicleStatsActivity : AppCompatActivity() {
 
         vehicleId = intent.extras?.getInt("vehicleId")
             ?: throw IllegalArgumentException("Vehicle ID not found")
-        Log.d("VEHICLE", "vehicleID = $vehicleId")
+        // Log.d("VEHICLE", "vehicleID = $vehicleId")
     }
 
     override fun onResume() {
@@ -61,7 +60,7 @@ class VehicleStatsActivity : AppCompatActivity() {
     }
 
     private fun getVehicleData() {
-        Log.d("TESTING", "Observer says = ${vehicle.name} size of the list = ${vehicleTrackList.size}")
+        // Log.d("TESTING", "Observer says = ${vehicle.name} size of the list = ${vehicleTrackList.size}")
 
         setVehicleImage(binding.vehicleImage, vehicle.image)
         binding.vehicleNameEdittext.setText(vehicle.name)
@@ -96,7 +95,7 @@ class VehicleStatsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.remove_vehicle_menu_option -> {
-                Log.d("VEHICLE", "vehicle removed -> Show dialog")
+                // Log.d("VEHICLE", "vehicle removed -> Show dialog")
                 removeVehicleDialog()
             }
         }

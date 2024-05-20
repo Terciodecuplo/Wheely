@@ -1,10 +1,7 @@
 package com.jmblfma.wheely
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
@@ -36,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.loginButton.setOnClickListener {
             val email = binding.loginEmail.text.toString()
-            Log.d("TESTING", "MainActivity/ loginButton $email")
+            // Log.d("TESTING", "MainActivity/ loginButton $email")
             attemptToLogin(email)
 
         }
@@ -79,13 +76,13 @@ class MainActivity : AppCompatActivity() {
     private fun attemptToLogin(email: String) {
         viewModel.fetchUser(email)
         viewModel.fetchedUser.observe(this) {
-            Log.d("TESTING", "MainActivity/ attemptToLogin() executed")
+            // Log.d("TESTING", "MainActivity/ attemptToLogin() executed")
             if (it != null) {
                 UserSessionManager.loginUser(it)
                 navigateToHomePage()
                 finish()
             } else {
-                Log.d("TESTING", "MainActivity/ USER DOES NOT EXIST")
+                // Log.d("TESTING", "MainActivity/ USER DOES NOT EXIST")
                 showSnackbar(getString(R.string.missing_user))
 
             }

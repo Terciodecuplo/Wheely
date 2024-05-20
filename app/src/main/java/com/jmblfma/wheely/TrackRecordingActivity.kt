@@ -206,8 +206,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                 }
             }
         }
-        // TODO maybe delete this function?
-        // normally we you want to recenter you also want to restore the zoom level?
         binding.buttonCenterAndFollow.setOnClickListener {
             resetAutoCenterState()
             // disabled in SAVING MODE
@@ -217,7 +215,6 @@ class TrackRecordingActivity : NavigationMenuActivity() {
             }
         }
         // TODO add button to zoom out to current live track using MapUtils.centerAndZoomOverCurrentRoute?
-
     }
 
     var isTriggeredByUser: Boolean = false
@@ -468,11 +465,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                 }
 
                 TrackingService.SERVICE_STOPPED -> {
-                    Toast.makeText(
-                        this@TrackRecordingActivity,
-                        getString(R.string.active_tracking_stopped),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Toast.makeText(this@TrackRecordingActivity, getString(R.string.active_tracking_stopped), Toast.LENGTH_SHORT).show()
                 }
 
                 TrackingService.SERVICE_ACC_MET -> {

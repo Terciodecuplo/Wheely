@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
@@ -99,10 +98,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         viewModel.userTrackList.observe(this) {
             if (it != null) {
                 trackHistoryList = it
-                Log.d(
-                    "TESTING",
-                    "TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}"
-                )
+                // Log.d("TESTING", "TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}")
                 setupUserFields()
             }
         }
@@ -152,7 +148,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
         updateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
-                    Log.d("SaveImageWorker", "Broadcast received")
+                    // Log.d("SaveImageWorker", "Broadcast received")
                     if (imActive) restoreUI()
                 }
             }
@@ -225,16 +221,13 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
             R.id.change_lang_menu_option -> {
                 val newLang = if (LanguageSelector.getCurrentLanguage() == "en") "es" else "en"
-                Log.d("LANGUAGE", "NEW LANG: ${newLang}")
+                // Log.d("LANGUAGE", "NEW LANG: ${newLang}")
 
                 LanguageSelector.saveLanguage(this, newLang)
-                Log.d("LANGUAGE", "CURRENT LANGUAGE SAVE: ${LanguageSelector.getCurrentLanguage()}")
+                // Log.d("LANGUAGE", "CURRENT LANGUAGE SAVE: ${LanguageSelector.getCurrentLanguage()}")
 
                 LanguageSelector.updateLocale(this, newLang)
-                Log.d(
-                    "LANGUAGE",
-                    "CURRENT LANGUAGE UPDATE: ${LanguageSelector.getCurrentLanguage()}"
-                )
+                // Log.d("LANGUAGE", "CURRENT LANGUAGE UPDATE: ${LanguageSelector.getCurrentLanguage()}")
 
                 startActivity(Intent(this, ProfilePageActivity::class.java))
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -304,9 +297,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
 
     private fun profileUserMainDataSetup() {
-        Log.d(
-            "TESTING", "TRACKHISTORY IS NOT EMPTY ${trackHistoryList.size}"
-        )
+        // Log.d("TESTING", "TRACKHISTORY IS NOT EMPTY ${trackHistoryList.size}")
         binding.userName.text =
             UserSessionManager.getCurrentUser()?.nickname ?: "[no_user_selected]"
         setProfileImage(binding.profileImage, UserSessionManager.getCurrentUser()?.profileImage)
@@ -321,7 +312,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun setProfileImage(imageView: ImageView, imagePath: String?) {
-        Log.d("SaveImageWorker", "imagePath: $imagePath")
+        // Log.d("SaveImageWorker", "imagePath: $imagePath")
         if (imagePath.isNullOrEmpty()) {
             Glide.with(imageView.context)
                 .load(R.drawable.user_default_pic)
@@ -401,10 +392,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
             imageType,
             prefix
         )
-        Log.d(
-            "SaveImageWorker",
-            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
-        )
+        // Log.d("SaveImageWorker", "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix")
 
     }
 
@@ -453,10 +441,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
     }
 
     private fun updateBannerUI() {
-        Log.d(
-            "SaveImageWorker",
-            "Banner RELOADED => ${UserSessionManager.getCurrentUser()?.profileBanner}"
-        )
+        // Log.d("SaveImageWorker", "Banner RELOADED => ${UserSessionManager.getCurrentUser()?.profileBanner}")
         Glide.with(this)
             .load(UserSessionManager.getCurrentUser()?.profileBanner)
             .into(binding.bannerProfile)

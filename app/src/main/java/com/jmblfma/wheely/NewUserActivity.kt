@@ -11,7 +11,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -22,25 +21,17 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewUserLayoutBinding
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.utils.ImagePicker
-import com.jmblfma.wheely.utils.ImagePicker.createImageFile
-import com.jmblfma.wheely.utils.ImagePicker.fixImageOrientation
 import com.jmblfma.wheely.utils.ImageWorkerUtil
 import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.SignUpManager
-import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 import java.util.Calendar
 import java.util.Locale
-import java.util.UUID
 
 class NewUserActivity : AppCompatActivity() {
     private lateinit var binding: NewUserLayoutBinding
@@ -168,7 +159,7 @@ class NewUserActivity : AppCompatActivity() {
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.userImage.setImageURI(receivedUri)
-                        Log.d("SaveImageWorker", "URI candidate = $receivedUri")
+                        // Log.d("SaveImageWorker", "URI candidate = $receivedUri")
                         processImageAndSave(receivedUri, "user", "profile", "profile-pic")
                     }
                 }
@@ -190,10 +181,7 @@ class NewUserActivity : AppCompatActivity() {
             imageType,
             prefix
         )
-        Log.d(
-            "SaveImageWorker",
-            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
-        )
+        // Log.d("SaveImageWorker", "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix")
 
     }
 
@@ -270,7 +258,7 @@ class NewUserActivity : AppCompatActivity() {
     }
 
     private fun postUser() {
-        Log.d("SaveImageWorker", "Candidate profile image path = ${SignUpManager.userProfilePictureCandidate}")
+        // Log.d("SaveImageWorker", "Candidate profile image path = ${SignUpManager.userProfilePictureCandidate}")
         viewModel.setUserCandidate(
             User(
                 0,

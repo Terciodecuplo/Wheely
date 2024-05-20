@@ -41,7 +41,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
                 selectedTrackId?.let { trackId ->
                     val intent = Intent(view.context, TrackViewerActivity::class.java).apply {
                         putExtra("TRACK_ID", trackId)
-                        // TODO review flags a bit more
+                        // TODO review flags
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     }
                     view.context.startActivity(intent)
@@ -71,7 +71,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
             trackDistance.text = track.getFormattedDistanceInKm()
             trackSpeed.text = track.getFormattedAverageSpeedInKmh()
             if (track.difficultyValue != Difficulty.UNKNOWN) {
-                trackDifficulty.text = track.difficultyValue.toString()
+                trackDifficulty.text = track.difficultyValue.getLocalizedName(itemView.context)
                 trackDifficulty.visibility = View.VISIBLE
                 trackDifficultyTitle.visibility = View.VISIBLE
             } else {

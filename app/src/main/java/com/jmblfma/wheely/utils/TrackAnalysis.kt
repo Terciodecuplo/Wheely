@@ -99,6 +99,7 @@ object TrackAnalysis {
     }
 
     // TODO review potential crashes when using applying mapNotNull/maxOrnull
+    // controlled in UI as well so safe for now
     fun getTracksTotalDistanceInKm(trackBatch: List<Track>): String {
         // same logic as for average speed
         val totalDistance = trackBatch.mapNotNull { it.totalDistance }.sum() // handles emptyList fine

@@ -227,7 +227,7 @@ object MapUtils {
     const val BOUNDING_BOX_PADDING = 100
     const val BOUNDING_BOX_PADDING_LARGE = 350
     var isMapReady = false
-    // TODO thing about the use of this in viewer vs recording vs post adapter a bit more
+    // TODO think about the use of this in viewer vs recording vs post adapter a bit more
     // it works fine in this state but might be able to refactor the system
     fun centerAndZoomOverCurrentRoute(
         mapView: MapView,

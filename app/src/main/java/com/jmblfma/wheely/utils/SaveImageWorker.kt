@@ -3,7 +3,6 @@ package com.jmblfma.wheely.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.jmblfma.wheely.model.User
@@ -25,7 +24,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
 
             val bitmap = uri?.let { ImagePicker.fixImageOrientation(applicationContext, it) }
             if (bitmap == null) {
-                Log.e("SaveImageWorker", "Failed to fix image orientation or decode bitmap")
+                // Log.e("SaveImageWorker", "Failed to fix image orientation or decode bitmap")
                 return@withContext Result.failure()
             }
 
@@ -37,7 +36,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     )
                 }
             if (savedPath == null) {
-                Log.e("SaveImageWorker", "Failed to save image to internal storage")
+                // Log.e("SaveImageWorker", "Failed to save image to internal storage")
                 return@withContext Result.failure()
             }
 
@@ -47,7 +46,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
             if (entityId != -1) sendUpdateBroadcast()
             Result.success()
         } catch (e: Exception) {
-            Log.e("SaveImageWorker", "Error processing image", e)
+            // Log.e("SaveImageWorker", "Error processing image", e)
             Result.failure()
         } finally {
 
@@ -61,7 +60,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
         imageType: String,
         path: String
     ) {
-        Log.d("SaveImageWorker", "entityId ======> $entityId path ========> $path")
+        // Log.d("SaveImageWorker", "entityId ======> $entityId path ========> $path")
         runBlocking {
             when (entityType) {
                 "user" -> {
@@ -69,7 +68,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
                     if (imageType == "banner") {
                         userRepository.updateUserBanner(entityId, path) { result ->
                             updateCurrentUserImageData(null, path)
-                            Log.d("SaveImageWorker", "User banner updated, affected rows: $result")
+                            // Log.d("SaveImageWorker", "User banner updated, affected rows: $result")
 
                         }
                     } else if (imageType == "profile") {
@@ -83,10 +82,7 @@ class SaveImageWorker(appContext: Context, workerParams: WorkerParameters) :
                                 null,
                                 path
                             ) { result ->
-                                Log.d(
-                                    "SaveImageWorker",
-                                    "User profile image updated, affected rows: $result"
-                                )
+                                //Log.d("SaveImageWorker", "User profile image updated, affected rows: $result")
                                 updateCurrentUserImageData(path, null)
                             }
                         } else {

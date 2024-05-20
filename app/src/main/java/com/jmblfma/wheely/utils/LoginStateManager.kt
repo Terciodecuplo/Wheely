@@ -26,7 +26,7 @@ object LoginStateManager {
     fun saveCurrentUser(user: User?) {
         val gson = GsonBuilder().serializeNulls().create()
         val userJson = gson.toJson(user) // Converts null to "null" if user is null
-        Log.d("SAVING USER","User image = $userJson")
+        // Log.d("SAVING USER","User image = $userJson")
         prefs.edit().putString("currentUser", userJson).apply()
     }
 

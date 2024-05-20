@@ -1,12 +1,10 @@
 package com.jmblfma.wheely.data
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.User
 import com.jmblfma.wheely.model.Vehicle
 
@@ -28,7 +26,7 @@ interface VehicleDao {
     suspend fun deleteVehicle(vehicleId: Int, userId: Int): Int?
     @Transaction
     suspend fun insertVehicleWithNewUser(user: User, vehicle: Vehicle) {
-        Log.d("VEHICLE","Posting vehicle with new user")
+        // Log.d("VEHICLE","Posting vehicle with new user")
         val userId = postUser(user)
         postVehicle(vehicle.copy(ownerId = userId.toInt()))
     }

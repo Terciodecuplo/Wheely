@@ -1,7 +1,6 @@
 package com.jmblfma.wheely.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +49,7 @@ class ProfileVehicleListAdapter(
 
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         val vehicle = vehicleList[position]
-        Log.d("VehicleAdapter", "Binding vehicle: ${vehicle.model}")
+        // Log.d("VehicleAdapter", "Binding vehicle: ${vehicle.model}")
         setVehicleImage(holder.imageView, vehicle.image)
         holder.motoName.text = vehicle.name
 
@@ -81,7 +80,7 @@ class ProfileVehicleListAdapter(
 
     private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
         if (imagePath.isNullOrEmpty()) {
-            Log.d("VEHICLE","Image path = $imagePath")
+            // Log.d("VEHICLE","Image path = $imagePath")
             Glide.with(imageView.context)
                 .load(R.drawable.vehicle_placeholder) // Your placeholder drawable
                 .into(imageView)

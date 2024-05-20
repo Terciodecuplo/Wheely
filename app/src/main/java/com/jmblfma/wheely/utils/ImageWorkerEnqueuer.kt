@@ -2,7 +2,6 @@ package com.jmblfma.wheely.utils
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.work.Constraints
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -40,7 +39,7 @@ object ImageWorkerUtil {
             .build()
 
         WorkManager.getInstance(context).enqueue(saveImageWorkRequest)
-        Log.d("SaveImageWorker", " INPUT DATA =====> $inputData")
+        // Log.d("SaveImageWorker", " INPUT DATA =====> $inputData")
 
     }
 }

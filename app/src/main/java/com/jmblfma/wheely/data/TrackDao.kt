@@ -1,6 +1,5 @@
 package com.jmblfma.wheely.data
 
-import android.util.Log
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -44,15 +43,14 @@ interface TrackDao {
     @Transaction
     suspend fun insertTrackWithPoints(track: Track): Boolean {
         return try {
-            // TODO review ID logic
             val trackId = insertTrack(track)
-            Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ trackId: $trackId")
+            // Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ trackId: $trackId")
             track.trackData!!.forEach {
                 insertTrackPoint(it.copy(trackId = trackId.toInt()))
             }
             true
         } catch (e: Exception) {
-            Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ failed", e)
+            // Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ failed", e)
             false
         }
     }

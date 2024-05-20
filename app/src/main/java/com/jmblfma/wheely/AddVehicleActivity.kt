@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -18,7 +17,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.NewVehicleLayoutBinding
@@ -30,10 +28,7 @@ import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.SignUpManager
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.UUID
 
 
 class AddVehicleActivity : AppCompatActivity() {
@@ -73,7 +68,7 @@ class AddVehicleActivity : AppCompatActivity() {
             viewModel.getUserCandidate()
             viewModel.userCandidateData.observe(this) {
                 if (it != null) {
-                    Log.d("USERDATA", "user posted = $it")
+                    // Log.d("USERDATA", "user posted = $it")
                     userCandidate = it
                 }
 
@@ -200,7 +195,7 @@ class AddVehicleActivity : AppCompatActivity() {
                 if (success) {
                     photoURI?.let { receivedUri ->
                         binding.vehiclePreviewImage.setImageURI(receivedUri)
-                        Log.d("SaveImageWorker", "URI candidate = $receivedUri")
+                        // Log.d("SaveImageWorker", "URI candidate = $receivedUri")
                         processImageAndSave(receivedUri, "vehicle", "vehicle", "vehicle-pic")
                     }
                 }
@@ -222,11 +217,7 @@ class AddVehicleActivity : AppCompatActivity() {
             imageType,
             prefix
         )
-        Log.d(
-            "SaveImageWorker",
-            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
-        )
-
+        // Log.d("SaveImageWorker", "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix")
     }
 
     private fun checkCameraPermission() {
