@@ -10,7 +10,6 @@ import com.jmblfma.wheely.model.TrackPoint
 import com.jmblfma.wheely.utils.UserSessionManager
 
 class TrackDataRepository() {
-    // TODO db temporarily set to legacy
     private val roomsDB = RoomDatabaseBuilder.sharedInstance
     private val trackDao: TrackDao = roomsDB.trackDao()
 

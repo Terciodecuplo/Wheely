@@ -57,9 +57,6 @@ class TrackingService : Service(), SensorEventListener {
         }
     }
 
-    // TODO ? request location access at runtime
-    // https://developer.android.com/develop/sensors-and-location/location/permissions
-
     // SERVICE CFG AND STATES
     override fun onCreate() {
         super.onCreate()
@@ -92,7 +89,6 @@ class TrackingService : Service(), SensorEventListener {
     private var notificationBuilder: Notification.Builder? = null
     private fun startForegroundService() {
         notificationBuilder = Notification.Builder(this, CHANNEL_ID)
-            // TODO move to strings
             .setContentTitle(getString(R.string.tracking_notification_title))
             .setContentText(getString(R.string.tracking_notification_content))
             .setSmallIcon(R.drawable.ic_tracker)

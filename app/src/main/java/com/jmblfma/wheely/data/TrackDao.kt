@@ -43,7 +43,6 @@ interface TrackDao {
     @Transaction
     suspend fun insertTrackWithPoints(track: Track): Boolean {
         return try {
-            // TODO review ID logic
             val trackId = insertTrack(track)
             // Log.d("TESTING", "TrackDao/ insertTrackWithPoints/ trackId: $trackId")
             track.trackData!!.forEach {
