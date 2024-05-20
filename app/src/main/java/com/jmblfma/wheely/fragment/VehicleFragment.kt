@@ -2,7 +2,6 @@ package com.jmblfma.wheely.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +63,7 @@ class VehicleFragment : Fragment(), ProfileVehicleListAdapter.OnVehicleItemClick
     override fun onVehicleItemClick(vehicle: Vehicle) {
         val intent = Intent(requireContext(), VehicleStatsActivity::class.java)
         intent.putExtra("vehicleId", vehicle.vehicleId)
-        Log.d("VEHICLE", "Vehicle selected = $vehicle")
+        // Log.d("VEHICLE", "Vehicle selected = $vehicle")
         startActivity(intent)
     }
 

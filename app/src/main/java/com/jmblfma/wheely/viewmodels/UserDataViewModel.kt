@@ -1,6 +1,5 @@
 package com.jmblfma.wheely.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -71,7 +70,7 @@ class UserDataViewModel : ViewModel() {
     fun updateUserBanner(userId: Int, bannerPath: String?) {
         viewModelScope.launch {
             repository.updateUserBanner(userId, bannerPath) { rowsAffected ->
-                Log.d("UPDATE USER", "Rows affected = $rowsAffected")
+                // Log.d("UPDATE USER", "Rows affected = $rowsAffected")
                 if (rowsAffected == 1) {
                     _userUpdateStatus.postValue("${UserSessionManager.getCurrentUser()?.nickname} has changed the data successfully")
                 } else {

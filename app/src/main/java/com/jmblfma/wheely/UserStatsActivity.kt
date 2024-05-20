@@ -10,7 +10,6 @@ import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,7 +23,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import com.jmblfma.wheely.databinding.UserStatsLayoutBinding
@@ -35,12 +33,8 @@ import com.jmblfma.wheely.utils.PermissionsManager
 import com.jmblfma.wheely.utils.TrackAnalysis
 import com.jmblfma.wheely.utils.UserSessionManager
 import com.jmblfma.wheely.viewmodels.UserDataViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
 import java.util.Calendar
 import java.util.Locale
-import java.util.UUID
 
 class UserStatsActivity : AppCompatActivity() {
     private lateinit var binding: UserStatsLayoutBinding
@@ -116,7 +110,7 @@ class UserStatsActivity : AppCompatActivity() {
         updateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == "com.jmblfma.wheely.UPDATE_USER_INFO") {
-                    Log.d("SaveImageWorker", "Broadcast received")
+                    // Log.d("SaveImageWorker", "Broadcast received")
                     updateUser()
                 }
             }
@@ -359,10 +353,7 @@ class UserStatsActivity : AppCompatActivity() {
             imageType,
             prefix
         )
-        Log.d(
-            "SaveImageWorker",
-            "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix"
-        )
+        // Log.d("SaveImageWorker", "Enqueuing image save: uri=$uri, entityId=$entityId, entityType=$entityType, imageType=$imageType, fileName=$prefix")
 
     }
 

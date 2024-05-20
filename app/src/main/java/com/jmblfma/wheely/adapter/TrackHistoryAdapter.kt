@@ -6,7 +6,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +17,6 @@ import com.bumptech.glide.Glide
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.Vehicle
-import com.jmblfma.wheely.utils.TrackAnalysis
 
 class TrackHistoryAdapter(
     private val trackHistoryList: List<Track>,
@@ -108,10 +106,7 @@ class TrackHistoryAdapter(
 
         val trackNameLength = trackName.length
         val trackTitleMotoInfoLength = formattedText.length
-        Log.d(
-            "TESTING",
-            "TrackNameLength => $trackNameLength  |||| Rest => $trackTitleMotoInfoLength"
-        )
+        // Log.d("TESTING", "TrackNameLength => $trackNameLength  |||| Rest => $trackTitleMotoInfoLength")
 
 
         val textSize24sp = TypedValue.applyDimension(
@@ -159,7 +154,7 @@ class TrackHistoryAdapter(
 
     private fun setVehicleImage(imageView: ImageView, imagePath: String?) {
         if (imagePath.isNullOrEmpty()) {
-            Log.d("VEHICLE", "Image path = $imagePath")
+            // Log.d("VEHICLE", "Image path = $imagePath")
             Glide.with(imageView.context)
                 .load(R.drawable.vehicle_placeholder) // Your placeholder drawable
                 .into(imageView)
