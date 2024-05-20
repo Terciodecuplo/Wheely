@@ -34,16 +34,18 @@ class SaveTrackFragment : DialogFragment() {
         val loadedVehicles = viewModel.loadedVehicles.value?.toMutableList() ?: mutableListOf()
         // DISABLED AT UI LEVEL 20240508; user MUST go and create a vehicle before saving the track
         // we prevent the user from launching this dialog if there aren't any vehicles added
-        // track logic supports NO vehicle though and can be created after restoring the dummy one:
+        // track logic supports NO vehicle tya hough and can be created after restoring the dummy one:
         // Dummy 'No Vehicle' option to allow choosing none
         // loadedVehicles.add(Vehicle(vehicleId = 0, name = getString(R.string.no_vehicle_assigned_option)))
         val vehicleAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, loadedVehicles)
         vehicleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerVehicles.adapter = vehicleAdapter
 
-        val difficultyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, Difficulty.values())
+        val difficultyPairs = Difficulty.entries.map { it to it.getLocalizedName(requireContext()) }
+        val difficultyAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item,  difficultyPairs.map { it.second })
         difficultyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerDifficulty.adapter = difficultyAdapter
+        // store the map in the tag for later retrieval of the difficulty objects from their name
 
         binding.saveButton.setOnClickListener {
             // text length is limited in the UI
@@ -51,7 +53,9 @@ class SaveTrackFragment : DialogFragment() {
             val description = binding.editTextDescription.text.toString()
             val selectedVehicleId = (binding.spinnerVehicles.selectedItem as Vehicle).vehicleId
             val vehicleId = if (selectedVehicleId == 0) null else selectedVehicleId
-            val selectedDifficulty = binding.spinnerDifficulty.selectedItem as Difficulty
+            val selectedDifficultyName = binding.spinnerDifficulty.selectedItem as String
+            // 1. first gets the pair Difficulty, Name; 2. first gets the associated Difficulty
+            val selectedDifficulty = difficultyPairs.first { it.second == selectedDifficultyName }.first
 
             viewModel.saveCurrentTrack(
                 name,
@@ -63,19 +67,6 @@ class SaveTrackFragment : DialogFragment() {
         }
     }
 }
-
-/* TEST METHOD
-private fun loadVehicles(): List<Vehicle> {
-    // Test List
-    val testVehicles = listOf(
-        Vehicle(name = "Model S", vehicleId = 1),
-        Vehicle(name = "Model 3", vehicleId = 2),
-        Vehicle(name = "Model X", vehicleId = 3),
-        Vehicle(name = "Model Y", vehicleId = 4)
-    )
-    return testVehicles
-}
- */
 
 
 

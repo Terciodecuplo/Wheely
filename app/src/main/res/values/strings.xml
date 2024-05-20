@@ -126,7 +126,7 @@
     <string name="save_track_dialog_name_hint">Track name (optional)</string>
     <string name="save_track_dialog_description_hint">Description (optional)</string>
     <string name="save_track_dialog_button_text">Save</string>
-    <string name="save_track_dialog_difficulty_title">Select Difficulty Level</string>
+    <string name="save_track_dialog_difficulty_title">Select Difficulty</string>
     <string name="save_track_dialog_vehicle_title">Select Vehicle</string>
 
     <string name="difficulty_easy">Easy</string>

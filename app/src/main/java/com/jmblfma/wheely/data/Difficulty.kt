@@ -1,23 +1,22 @@
 package com.jmblfma.wheely.data
-import androidx.core.content.ContextCompat.getString
+import android.content.Context
 import androidx.room.TypeConverter
-import com.jmblfma.wheely.MyApp
 import com.jmblfma.wheely.R
 
 enum class Difficulty(val value: Int) {
-    UNKNOWN(0){
-        override fun toString() = getString(MyApp.applicationContext(), R.string.difficulty_none)
-    },
-    EASY(1){
-        override fun toString() = getString(MyApp.applicationContext(), R.string.difficulty_easy)
-    },
-    MEDIUM(2){
-        override fun toString() = getString(MyApp.applicationContext(), R.string.difficulty_medium)
-    },
-    HARD(3){
-        override fun toString() = getString(MyApp.applicationContext(), R.string.difficulty_hard)
-    };
+    UNKNOWN(0),
+    EASY(1),
+    MEDIUM(2),
+    HARD(3);
 
+    fun getLocalizedName(context: Context): String {
+        return when (this) {
+            UNKNOWN -> context.getString(R.string.difficulty_none)
+            EASY -> context.getString(R.string.difficulty_easy)
+            MEDIUM -> context.getString(R.string.difficulty_medium)
+            HARD -> context.getString(R.string.difficulty_hard)
+        }
+    }
     companion object {
         fun fromInt(value: Int) = values().first { it.value == value }
     }

@@ -71,7 +71,7 @@ class PostsAdapter(private val trackList: List<Track>, private val usersById: Ma
             trackDistance.text = track.getFormattedDistanceInKm()
             trackSpeed.text = track.getFormattedAverageSpeedInKmh()
             if (track.difficultyValue != Difficulty.UNKNOWN) {
-                trackDifficulty.text = track.difficultyValue.toString()
+                trackDifficulty.text = track.difficultyValue.getLocalizedName(itemView.context)
                 trackDifficulty.visibility = View.VISIBLE
                 trackDifficultyTitle.visibility = View.VISIBLE
             } else {

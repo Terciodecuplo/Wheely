@@ -117,7 +117,7 @@
     <string name="no_tracks_available">Sin rutas que mostrar</string>
     <string name="num_of_tracks">Rutas disponibles:</string>
 
-    <string name="save_track_dialog_title">Guardar nueva ruta</string>
+    <string name="save_track_dialog_title">Guardar ruta</string>
     <string name="save_track_dialog_name_hint">Nombre ruta (opcional)</string>
     <string name="save_track_dialog_description_hint">Descripción (opcional)</string>
     <string name="save_track_dialog_button_text">Guardar</string>
