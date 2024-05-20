@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -155,7 +156,13 @@ class ProfilePageActivity : NavigationMenuActivity() {
         }
 
         val intentFilter = IntentFilter("com.jmblfma.wheely.UPDATE_USER_INFO")
-        registerReceiver(updateReceiver, intentFilter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // use the new method with RECEIVER_NOT_EXPORTED
+            registerReceiver(updateReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            // use the legacy method
+            registerReceiver(updateReceiver, intentFilter)
+        }
     }
 
     private fun restoreUI() {
