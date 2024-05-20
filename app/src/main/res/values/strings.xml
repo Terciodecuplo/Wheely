@@ -91,16 +91,6 @@
     <string name="track_load_success">Track loaded successfully!</string>
     <string name="track_load_failure">Track load FAILED</string>
     <string name="track_cant_cycle_load">No tracks available to cycle through</string>
-    <string name="vehicles_loaded">Vehicle list loaded…</string>
-    <string name="telemetry_standby_placeholder" translatable="false">---</string>
-    <string name="active_tracking_launching">Launching active tracking…</string>
-    <string name="active_tracking_requested">Tracking will start automatically when GPS signal is good.</string>
-    <string name="active_tracking_ongoing">Tracking route…</string>
-    <string name="active_tracking_stopping">Stopping tracking…</string>
-    <string name="active_tracking_stopped">Tracking stopped</string>
-    <string name="tracking_didnt_save_anything">Nothing recorded yet…</string>
-    <string name="accuracy_threshold_waiting">Waiting for good GPS signal…</string>
-    <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
     <string name="snackbar_dismiss">Dismiss</string>
     <string name="user_stats_menu_item">User stats</string>
     <string name="vehicle_used_in_track">%1$s with my %2$s %3$s</string>
@@ -121,6 +111,17 @@
     <string name="elevation_label">(elevation)</string>
     <string name="no_tracks_available">No tracks available</string>
     <string name="num_of_tracks">Tracks available:</string>
+
+    <string name="vehicles_loaded">Vehicle list loaded…</string>
+    <string name="telemetry_standby_placeholder" translatable="false">---</string>
+    <string name="active_tracking_launching">Launching active tracking…</string>
+    <string name="active_tracking_requested">Recording will start when GPS signal is good.</string>
+    <string name="active_tracking_ongoing">Recording started</string>
+    <string name="active_tracking_stopping">Stopping tracking…</string>
+    <string name="active_tracking_stopped">Tracking stopped</string>
+    <string name="tracking_didnt_save_anything">Nothing recorded yet</string>
+    <string name="accuracy_threshold_waiting">Waiting for good GPS signal…</string>
+    <string name="accuracy_threshold_reached">GPS signal good for tracking!</string>
 
     <string name="save_track_dialog_title">Save new route</string>
     <string name="save_track_dialog_name_hint">Track name (optional)</string>

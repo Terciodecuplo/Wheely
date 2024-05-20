@@ -468,11 +468,7 @@ class TrackRecordingActivity : NavigationMenuActivity() {
                 }
 
                 TrackingService.SERVICE_STOPPED -> {
-                    Toast.makeText(
-                        this@TrackRecordingActivity,
-                        getString(R.string.active_tracking_stopped),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Toast.makeText(this@TrackRecordingActivity, getString(R.string.active_tracking_stopped), Toast.LENGTH_SHORT).show()
                 }
 
                 TrackingService.SERVICE_ACC_MET -> {
