@@ -24,6 +24,11 @@ class VehicleFragment : Fragment(), ProfileVehicleListAdapter.OnVehicleItemClick
     private lateinit var vehicleList: List<Vehicle>
     private val repository = VehicleDataRepository.sharedInstance
 
+    // TODO VIP cleanup legacy fetching logic and update to viewModel architecture
+    // vehicleList = repository.fetchVehicles(userId) crashes app in some cases
+    // the update should be triggered from an observer using a viewModel so that
+    // profileVehicleListAdapter.updateVehicles(vehicleList) is only called after
+    // the retrieval of the data has been successful
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fetchVehicles()
