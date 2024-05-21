@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -80,7 +81,7 @@ class TrackingService : Service(), SensorEventListener {
         val serviceChannel = NotificationChannel(
             CHANNEL_ID,
             "Foreground Service Channel",
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_LOW
         )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(serviceChannel)
@@ -192,7 +193,8 @@ class TrackingService : Service(), SensorEventListener {
                 )
             )
             ?.build()
-        startForeground(1, updatedNotification)
+        val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.notify(1, updatedNotification)
     }
 
     private fun stopTimer() {
