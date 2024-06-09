@@ -86,12 +86,10 @@ class ProfilePageActivity : NavigationMenuActivity() {
                 4->{
                     getMaxAltitude()
                 }
-                else->{
-                    binding.selectedHighlightText.text = getString(R.string.total_routes)
-                    binding.selectedHighlightValue.text = "0"
-                }
             }
 
+        } else {
+            getNumberOfVehicles()
         }
     }
 
@@ -100,11 +98,12 @@ class ProfilePageActivity : NavigationMenuActivity() {
             if (it != null) {
                 trackHistoryList = it
                 // Log.d("TESTING", "TrackHistoyList State = $trackHistoryList ----- and size ${trackHistoryList.size}")
-                setupUserFields()
             }
         }
         viewModel.vehicleList.observe(this) {
             if (it != null) userVehicleList = it
+            setupUserFields()
+
         }
     }
 
