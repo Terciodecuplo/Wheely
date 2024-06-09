@@ -2,10 +2,13 @@ package com.jmblfma.wheely.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,44 +18,30 @@ import com.jmblfma.wheely.adapter.ProfileVehicleListAdapter
 import com.jmblfma.wheely.model.Vehicle
 import com.jmblfma.wheely.repository.VehicleDataRepository
 import com.jmblfma.wheely.utils.UserSessionManager
+import com.jmblfma.wheely.viewmodels.NewVehicleDataViewModel
+import com.jmblfma.wheely.viewmodels.UserDataViewModel
 import kotlinx.coroutines.launch
 
 class VehicleFragment : Fragment(), ProfileVehicleListAdapter.OnVehicleItemClickListener{
 
     private lateinit var profileVehicleListAdapter: ProfileVehicleListAdapter
     private lateinit var gridRecyclerView: RecyclerView
-    private lateinit var vehicleList: List<Vehicle>
-    private val repository = VehicleDataRepository.sharedInstance
-
-    // TODO VIP cleanup legacy fetching logic and update to viewModel architecture
-    // vehicleList = repository.fetchVehicles(userId) crashes app in some cases
-    // the update should be triggered from an observer using a viewModel so that
-    // profileVehicleListAdapter.updateVehicles(vehicleList) is only called after
-    // the retrieval of the data has been successful
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fetchVehicles()
-    }
+    private val viewModel: NewVehicleDataViewModel by viewModels()
 
     override fun onResume() {
         super.onResume()
-        fetchVehicles()
-    }
-
-    private fun fetchVehicles() {
-        lifecycleScope.launch {
-            val userId = UserSessionManager.getCurrentUser()?.userId
-            if (userId != null) {
-                vehicleList = repository.fetchVehicles(userId)
-                profileVehicleListAdapter.updateVehicles(vehicleList)
-            }
-        }
+        val userId = UserSessionManager.getCurrentUser()!!.userId
+        viewModel.fetchVehicleList(userId)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.vehicleList.observe(viewLifecycleOwner){ userVehicles ->
+            Log.d("TESTING", "There is moto")
+            profileVehicleListAdapter.updateVehicles(userVehicles)
+        }
         return inflater.inflate(R.layout.fragment_vehicle, container, false)
 
     }

@@ -35,6 +35,14 @@ class NewVehicleDataViewModel : ViewModel() {
 
     private val _vehicleTrackList = MutableLiveData<List<Track>>()
     val vehicleTrackList: LiveData<List<Track>> = _vehicleTrackList
+
+    private val _vehicleList = MutableLiveData<List<Vehicle>>()
+    var vehicleList: LiveData<List<Vehicle>> = _vehicleList
+    fun fetchVehicleList(userId: Int) {
+        viewModelScope.launch {
+            _vehicleList.postValue(repository.fetchVehicles(userId))
+        }
+    }
     fun getVehicleTrackList(vehicleId: Int){
         viewModelScope.launch {
             _vehicleTrackList.postValue(trackRepository.fetchTrackListByVehicle(vehicleId))
@@ -45,7 +53,6 @@ class NewVehicleDataViewModel : ViewModel() {
             _userCandidateData.postValue(userRepository.getUserCandidate())
         }
     }
-
 
     fun insertVehicleWithNewUser(user: User, vehicle: Vehicle) {
         viewModelScope.launch {
