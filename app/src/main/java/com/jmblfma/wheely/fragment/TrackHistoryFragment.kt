@@ -13,6 +13,7 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.jmblfma.wheely.R
 import com.jmblfma.wheely.TrackViewerActivity
+import com.jmblfma.wheely.adapter.ProfileVehicleListAdapter
 import com.jmblfma.wheely.adapter.TrackHistoryAdapter
 import com.jmblfma.wheely.model.Track
 import com.jmblfma.wheely.model.Vehicle
@@ -27,13 +28,22 @@ class TrackHistoryFragment : Fragment(), TrackHistoryAdapter.OnTrackItemClickLis
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_track_history, container, false)
+        return inflater.inflate(R.layout.fragment_track_history, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewModel(view)
+    }
+
+    private fun observeViewModel(view: View) {
         viewModel.userTrackList.observe(viewLifecycleOwner) { trackHistory ->
             viewModel.vehicleList.observe(viewLifecycleOwner) { userVehicles ->
-                setupRecyclerView(view, trackHistory, userVehicles)
+                if (trackHistory.isNotEmpty() && userVehicles.isNotEmpty()) {
+                    setupRecyclerView(view, trackHistory, userVehicles)
+                }
             }
         }
-        return view
     }
 
     private fun setupRecyclerView(
@@ -82,4 +92,5 @@ class TrackHistoryFragment : Fragment(), TrackHistoryAdapter.OnTrackItemClickLis
         }
         startActivity(intent)
     }
+
 }

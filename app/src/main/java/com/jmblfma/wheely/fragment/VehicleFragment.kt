@@ -60,10 +60,4 @@ class VehicleFragment : Fragment(), ProfileVehicleListAdapter.OnVehicleItemClick
         // Log.d("VEHICLE", "Vehicle selected = $vehicle")
         startActivity(intent)
     }
-
-    companion object {
-        fun newInstance(): VehicleFragment {
-            return VehicleFragment()
-        }
-    }
 }

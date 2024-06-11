@@ -15,7 +15,7 @@ class ProfileViewPagerAdapter(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> TrackHistoryFragment()
-            1 -> VehicleFragment.newInstance()
+            1 -> VehicleFragment()
             else -> throw IllegalStateException("Unexpected position $position")
         }
     }

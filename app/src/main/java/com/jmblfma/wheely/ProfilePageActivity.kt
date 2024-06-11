@@ -109,6 +109,7 @@ class ProfilePageActivity : NavigationMenuActivity() {
 
     private fun setupFragments() {
         val viewPager: ViewPager2 = binding.viewPager
+        viewPager.offscreenPageLimit = 2
         val tabLayout: TabLayout = binding.tabLayout
         val profileViewPagerAdapter = ProfileViewPagerAdapter(this)
 
